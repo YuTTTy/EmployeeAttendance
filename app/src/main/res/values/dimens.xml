@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--字号使用-->
+    <dimen name="text_title">16dp</dimen><!--用于页面标题/说明-->
+    <dimen name="text_button">14dp</dimen><!--用于主要按钮文字-->
+    <dimen name="text_main_content">12dp</dimen><!--用于主要文案内容，输入框，提示文案-->
+    <dimen name="text_assist_content">11dp</dimen><!--用于辅助内容，说明内容-->
+    <dimen name="text_note">10dp</dimen><!--用于标签内容，注释，最小内容文案-->
+    <dimen name="text_min">8dp</dimen><!--最小文字-->
+
+    <dimen name="usually_width">45dp</dimen><!--常用宽度-->
+    <dimen name="usually_hight">45dp</dimen><!--常用高度-->
+    <dimen name="usually_width_spacing">10dp</dimen>
+    <dimen name="usually_height_spacing">10dp</dimen>
+</resources>

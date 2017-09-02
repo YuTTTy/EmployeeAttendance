@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <!--基础色彩-->
+    <color name="baseBg">#F8F8FA</color><!--用于客户端背景颜色-->
+    <color name="baseTextMain">#485259</color><!--用于主要文字，标题，内容-->
+    <color name="baseTextSub">#878787</color><!--用于次级文字，标题，内容-->
+    <color name="baseTextAssist">#CFCFCF</color><!--用于主要文字文字辅助美容，提示文字内容，标签内容-->
+    <color name="baseLine">#ECECEC</color><!--用于线条颜色-->
+    <color name="baseButton">#6ab7ff</color>
+
+    <!-- 通用 -->
+    <color name="alpha">#00ffffff</color>
+    <color name="alpha_black">#aa000000</color>
+    <color name="black">#000000</color>
+    <color name="blue_black">#000055</color>
+    <color name="white">#ffffff</color>
+    <color name="red">#ff6b4d</color>
+    <color name="yellow">#cccc33</color>
+    <color name="blue">#99ccff</color>
+    <color name="green">#99cc33</color>
+    <color name="gray">#d0d0d0</color>
+</resources>
