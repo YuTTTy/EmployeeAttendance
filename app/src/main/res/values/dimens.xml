@@ -12,4 +12,10 @@
     <dimen name="usually_hight">45dp</dimen><!--常用高度-->
     <dimen name="usually_width_spacing">10dp</dimen>
     <dimen name="usually_height_spacing">10dp</dimen>
+    <dimen name="usually_spacing_big">20dp</dimen>
+    <dimen name="usually_spacing_middle">10dp</dimen>
+    <dimen name="usually_spacing_small">5dp</dimen>
+    <dimen name="usually_line">1dp</dimen>
+    <dimen name="usually_line_middle">0.5dp</dimen>
+    <dimen name="usually_line_small">0.1dp</dimen>
 </resources>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:paddingBottom="@dimen/usually_spacing_middle"
+    android:paddingLeft="@dimen/usually_spacing_small"
+    android:paddingRight="@dimen/usually_spacing_small"
+    android:paddingTop="@dimen/usually_spacing_middle">
+
+    <TextView
+        android:id="@+id/item_check_apply_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="申请人："
+        android:textColor="@color/baseTextSub"
+        android:textSize="@dimen/text_main_content" />
+
+    <TextView
+        android:id="@+id/item_check_apply_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/item_check_apply_name"
+        android:text="value"
+        android:textColor="@color/baseTextMain"
+        android:textSize="@dimen/text_main_content" />
+
+    <TextView
+        android:id="@+id/item_check_apply_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_check_apply_name"
+        android:layout_marginTop="@dimen/usually_spacing_small"
+        android:text="时间："
+        android:textColor="@color/baseTextSub"
+        android:textSize="@dimen/text_main_content" />
+
+    <TextView
+        android:id="@+id/item_check_apply_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_check_apply_name_text"
+        android:layout_marginTop="@dimen/usually_spacing_small"
+        android:layout_toRightOf="@+id/item_check_apply_time"
+        android:text="value"
+        android:textColor="@color/baseTextMain"
+        android:textSize="@dimen/text_main_content" />
+
+    <TextView
+        android:id="@+id/item_check_apply_reason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_check_apply_time"
+        android:layout_marginTop="@dimen/usually_spacing_small"
+        android:text="事由："
+        android:textColor="@color/baseTextSub"
+        android:textSize="@dimen/text_main_content" />
+
+    <TextView
+        android:id="@+id/item_check_apply_reason_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_check_apply_time_text"
+        android:layout_marginTop="@dimen/usually_spacing_small"
+        android:layout_toRightOf="@+id/item_check_apply_reason"
+        android:text="value"
+        android:textColor="@color/baseTextMain"
+        android:textSize="@dimen/text_main_content" />
+
+    <TextView
+        android:id="@+id/item_check_apply_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_check_apply_reason"
+        android:layout_marginTop="@dimen/usually_spacing_small"
+        android:text="类型："
+        android:textColor="@color/baseTextSub"
+        android:textSize="@dimen/text_main_content" />
+
+    <TextView
+        android:id="@+id/item_check_apply_type_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_check_apply_reason_text"
+        android:layout_marginTop="@dimen/usually_spacing_small"
+        android:layout_toRightOf="@+id/item_check_apply_type"
+        android:text="value"
+        android:textColor="@color/baseTextMain"
+        android:textSize="@dimen/text_main_content" />
+
+    <TextView
+        android:id="@+id/item_check_apply_state_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/item_check_apply_name_text"
+        android:layout_marginTop="@dimen/usually_spacing_big"
+        android:text="未审批"
+        android:textColor="@color/baseTextMain"
+        android:textSize="@dimen/text_main_content" />
+</RelativeLayout>

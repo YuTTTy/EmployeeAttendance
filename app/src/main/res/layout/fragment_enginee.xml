@@ -9,18 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/main_body"
+        <GridView
+            android:id="@+id/enginee_gridview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="50dp"></FrameLayout>
-
-        <android.support.v4.app.FragmentTabHost
-            android:id="@+id/main_tabhost"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/alpha"></android.support.v4.app.FragmentTabHost>
-
+            android:numColumns="2"></GridView>
     </RelativeLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

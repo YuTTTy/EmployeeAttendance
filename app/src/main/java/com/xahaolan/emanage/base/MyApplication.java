@@ -40,4 +40,12 @@ public class MyApplication extends Application {
     public void clearMemory(){
 
     }
+
+    public static Boolean getFirstMain() {
+        return firstMain;
+    }
+
+    public static void setFirstMain(Boolean firstMain) {
+        MyApplication.firstMain = firstMain;
+    }
 }

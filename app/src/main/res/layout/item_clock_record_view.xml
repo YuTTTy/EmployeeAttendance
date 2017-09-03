@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/item_clock_record_view_head"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher_round" />
+
+    <TextView
+        android:id="@+id/item_clock_record_view_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/usually_spacing_small"
+        android:layout_toRightOf="@+id/item_clock_record_view_head"
+        android:text="name"
+        android:textColor="@color/baseTextMain"
+        android:textSize="@dimen/text_main_content" />
+
+    <TextView
+        android:id="@+id/item_clock_record_view_arrive_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_clock_record_view_name"
+        android:layout_marginLeft="@dimen/usually_spacing_small"
+        android:layout_marginTop="@dimen/usually_spacing_small"
+        android:layout_toRightOf="@+id/item_clock_record_view_head"
+        android:text="签到"
+        android:textColor="@color/baseTextSub"
+        android:textSize="@dimen/text_assist_content" />
+
+    <TextView
+        android:id="@+id/item_clock_record_view_arrive_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_clock_record_view_arrive_text"
+        android:layout_marginLeft="@dimen/usually_spacing_small"
+        android:layout_marginTop="2dp"
+        android:layout_toRightOf="@+id/item_clock_record_view_head"
+        android:text="arriveTime"
+        android:textColor="@color/baseTextMain"
+        android:textSize="@dimen/text_assist_content" />
+
+    <TextView
+        android:id="@+id/item_clock_record_view_out_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_clock_record_view_name"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="@dimen/usually_spacing_small"
+        android:layout_toRightOf="@+id/item_clock_record_view_head"
+        android:text="签退"
+        android:textColor="@color/baseTextSub"
+        android:textSize="@dimen/text_assist_content" />
+
+    <TextView
+        android:id="@+id/item_clock_record_view_out_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_clock_record_view_arrive_text"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="2dp"
+        android:layout_toRightOf="@+id/item_clock_record_view_head"
+        android:text="arriveTime"
+        android:textColor="@color/baseTextMain"
+        android:textSize="@dimen/text_assist_content" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/item_clock_record_view_name"
+        android:src="@drawable/ic_launcher_round" />
+</RelativeLayout>

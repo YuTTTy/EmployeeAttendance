@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.xahaolan.emanage">
 
-    <uses-permission
-        android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,6 +21,59 @@
         <activity
             android:name=".ui.MainActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+
+        <!--考勤-->
+        <activity
+            android:name=".ui.checkwork.CheckWorkActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+        <!--请假申请 外出登记 出差申请 加班登记-->
+        <activity
+            android:name=".ui.checkwork.apply.DocumentActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+        <!-- 详情 -->
+        <activity
+            android:name=".ui.checkwork.apply.DocumentDetailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+
+        <!--打卡记录-->
+        <activity
+            android:name=".ui.checkwork.clockrecord.ClockRecordActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+        <!--查看我的申请,审批-->
+        <activity
+            android:name=".ui.checkwork.check.CheckApplyActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+
+        <!-- 日报 -->
+        <activity
+            android:name=".ui.daily.DailyActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+        <!-- 工作轨迹 -->
+        <activity
+            android:name=".ui.trail.WorkTrailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+        <!-- 任务 -->
+        <activity
+            android:name=".ui.task.TaskActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+        <!-- 客户拜访 -->
+        <activity
+            android:name=".ui.visit.VisitActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+        <!-- 更多 -->
+        <activity
+            android:name=".ui.more.MoreActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"></activity>
     </application>

@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/public_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></include>
+
+        <RelativeLayout
+            android:background="@color/baseBg"
+            android:layout_width="match_parent"
+            android:paddingTop="@dimen/usually_spacing_middle"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:id="@+id/apply_document_submit_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_alignParentBottom="true">
+
+                <TextView
+                    android:layout_marginLeft="@dimen/usually_spacing_big"
+                    android:layout_marginRight="@dimen/usually_spacing_big"
+                    android:layout_marginTop="@dimen/usually_spacing_middle"
+                    android:layout_marginBottom="@dimen/usually_spacing_middle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/blue"
+                    android:gravity="center"
+                    android:padding="@dimen/usually_spacing_middle"
+                    android:text="提交"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_button" />
+            </FrameLayout>
+
+            <ScrollView
+                android:layout_marginBottom="@dimen/usually_spacing_middle"
+                android:layout_width="match_parent"
+                android:layout_above="@+id/apply_document_submit_layout"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/apply_document_scroll_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/apply_document_start_position_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/usually_spacing_middle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="始发地："
+                            android:textColor="@color/baseTextSub"
+                            android:textSize="@dimen/text_main_content" />
+
+                        <EditText
+                            android:id="@+id/apply_document_start_position_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="输入始发地"
+                            android:padding="@dimen/usually_spacing_small"
+                            android:textColor="@color/baseTextAssist"
+                            android:textSize="@dimen/text_main_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/apply_document_end_position_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/usually_spacing_middle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="目的地："
+                            android:textColor="@color/baseTextSub"
+                            android:textSize="@dimen/text_main_content" />
+
+                        <EditText
+                            android:id="@+id/apply_document_end_position_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="输入目的地"
+                            android:padding="@dimen/usually_spacing_small"
+                            android:textColor="@color/baseTextAssist"
+                            android:textSize="@dimen/text_main_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/apply_document_out_time_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/usually_spacing_middle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="外出时间："
+                            android:textColor="@color/baseTextSub"
+                            android:textSize="@dimen/text_main_content" />
+
+                        <EditText
+                            android:id="@+id/apply_document_out_time_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/usually_spacing_small"
+                            android:textColor="@color/baseTextAssist"
+                            android:textSize="@dimen/text_main_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/apply_document_start_time_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/usually_spacing_middle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="开始时间："
+                            android:textColor="@color/baseTextSub"
+                            android:textSize="@dimen/text_main_content" />
+
+                        <EditText
+                            android:id="@+id/apply_document_start_time_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/usually_spacing_small"
+                            android:textColor="@color/baseTextAssist"
+                            android:textSize="@dimen/text_main_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/apply_document_end_time_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/usually_spacing_middle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="结束时间："
+                            android:textColor="@color/baseTextSub"
+                            android:textSize="@dimen/text_main_content" />
+
+                        <EditText
+                            android:id="@+id/apply_document_end_time_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/usually_spacing_small"
+                            android:textColor="@color/baseTextAssist"
+                            android:textSize="@dimen/text_main_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/apply_document_work_time_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/usually_spacing_middle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="加班时长："
+                            android:textColor="@color/baseTextSub"
+                            android:textSize="@dimen/text_main_content" />
+
+                        <EditText
+                            android:id="@+id/apply_document_work_time_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/usually_spacing_small"
+                            android:textColor="@color/baseTextAssist"
+                            android:textSize="@dimen/text_main_content" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/apply_document_leave_day_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/usually_spacing_middle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="请假天数："
+                            android:textColor="@color/baseTextSub"
+                            android:textSize="@dimen/text_main_content" />
+
+                        <EditText
+                            android:id="@+id/apply_document_leave_day_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:padding="@dimen/usually_spacing_small"
+                            android:textColor="@color/baseTextAssist"
+                            android:textSize="@dimen/text_main_content" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="15dp"
+                            android:text="天"
+                            android:textColor="@color/baseTextMain"
+                            android:textSize="@dimen/text_main_content" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/apply_document_leave_type_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/usually_spacing_middle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="请假天数："
+                            android:textColor="@color/baseTextSub"
+                            android:textSize="@dimen/text_main_content"
+                            android:id="@+id/textView" />
+
+                        <EditText
+                            android:id="@+id/apply_document_leave_type_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="点击选择类型"
+                            android:padding="@dimen/usually_spacing_middle"
+                            android:textColor="@color/baseTextAssist"
+                            android:textSize="@dimen/text_main_content"
+                            android:layout_below="@+id/textView"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="10dp"
+                            android:src="@drawable/ic_launcher_round" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/apply_document_traffic_tool_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/usually_spacing_middle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="交通工具："
+                            android:textColor="@color/baseTextSub"
+                            android:textSize="@dimen/text_main_content" />
+
+                        <EditText
+                            android:id="@+id/apply_document_traffic_tool_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:hint="请选择交通工具"
+                            android:padding="@dimen/usually_spacing_middle"
+                            android:textColor="@color/baseTextAssist"
+                            android:textSize="@dimen/text_main_content" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="10dp"
+                            android:src="@drawable/ic_launcher_round" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:id="@+id/apply_document_reason_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/usually_spacing_middle">
+
+                        <TextView
+                            android:id="@+id/apply_document_reason_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="请假是由："
+                            android:textColor="@color/baseTextSub"
+                            android:textSize="@dimen/text_main_content" />
+
+                        <EditText
+                            android:id="@+id/apply_document_reason_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="请填写请假是由"
+                            android:padding="@dimen/usually_spacing_small"
+                            android:textColor="@color/baseTextAssist"
+                            android:textSize="@dimen/text_main_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/apply_document_voice_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/apply_document_voice_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_launcher_round" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_launcher_round" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/apply_document_photos_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/apply_document_photos_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_launcher_round" />
+
+                        <LinearLayout
+                            android:id="@+id/apply_document_photos_items_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"></LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/apply_document_examine_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/usually_spacing_middle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="审核人员："
+                            android:textColor="@color/baseTextSub"
+                            android:textSize="@dimen/text_main_content" />
+
+                        <EditText
+                            android:id="@+id/apply_document_examine_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/usually_spacing_small"
+                            android:textColor="@color/baseTextAssist"
+                            android:textSize="@dimen/text_main_content" />
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+        </RelativeLayout>
+    </LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
