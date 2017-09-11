@@ -32,11 +32,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-//    sourceSets {
-//        main { // 设置Jni so文件路径 如果有jniLibs目录就不需要设置
-//            jniLibs.srcDirs = ['libs']
-//        }
-//    }
+    sourceSets {
+        main { // 设置Jni so文件路径 如果有jniLibs目录就不需要设置
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
@@ -48,6 +48,4 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
     compile 'com.google.code.gson:gson:2.2.4'
-//    compile files('libs/BaiduLBS_Android.jar')
-    compile files('libs/BaiduTraceSDK_v2_1_11.jar')
 }

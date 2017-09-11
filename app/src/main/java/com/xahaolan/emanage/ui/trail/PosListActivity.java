@@ -2,18 +2,11 @@ package com.xahaolan.emanage.ui.trail;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.View;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.baidu.location.LocationClient;
-import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.MapView;
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.adapter.PosListAdapter;
 import com.xahaolan.emanage.base.BaseActivity;
-import com.xahaolan.emanage.utils.mine.MyUtils;
 
 import java.util.ArrayList;
 import java.util.List;

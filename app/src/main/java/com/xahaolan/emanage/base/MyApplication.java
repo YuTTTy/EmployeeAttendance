@@ -3,8 +3,6 @@ package com.xahaolan.emanage.base;
 import android.app.Application;
 import android.content.Context;
 
-import com.baidu.mapapi.SDKInitializer;
-
 /**
  * Created by Administrator on 2016/6/17.
  */
@@ -35,9 +33,6 @@ public class MyApplication extends Application {
         myApplication = this;
         applicationContext = this;
 
-        // 在使用 SDK 各组间之前初始化 context 信息，传入 ApplicationContext
-        /*百度地图*/
-        SDKInitializer.initialize(this);
     }
 
     /*是否首次进入主页*/
