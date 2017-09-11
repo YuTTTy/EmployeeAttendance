@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="@dimen/usually_spacing_middle">
+
+        <ImageView
+            android:id="@+id/item_daily_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_launcher_round" />
+
+        <TextView
+            android:id="@+id/item_daily_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/item_daily_head"
+            android:layout_marginLeft="@dimen/usually_spacing_small"
+            android:layout_marginTop="@dimen/usually_spacing_small"
+            android:layout_toRightOf="@+id/item_daily_head"
+            android:text="name"
+            android:textColor="@color/baseTextMain"
+            android:textSize="@dimen/text_main_content" />
+
+        <TextView
+            android:id="@+id/item_daily_department"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_daily_name"
+            android:layout_marginLeft="@dimen/usually_spacing_small"
+            android:layout_marginTop="@dimen/usually_spacing_small"
+            android:layout_toRightOf="@+id/item_daily_head"
+            android:text="部门"
+            android:textColor="@color/baseTextSub"
+            android:textSize="@dimen/text_assist_content" />
+
+        <TextView
+            android:id="@+id/item_daily_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/usually_spacing_middle"
+            android:text="日报"
+            android:textColor="@color/baseTextSub"
+            android:textSize="@dimen/text_main_content" />
+
+        <TextView
+            android:id="@+id/item_daily_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_daily_head"
+            android:layout_marginTop="@dimen/usually_spacing_small"
+            android:text="content"
+            android:textColor="@color/baseTextMain"
+            android:textSize="@dimen/text_main_content" />
+
+        <ImageView
+            android:id="@+id/item_daily_address_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_daily_content"
+            android:layout_marginTop="@dimen/usually_spacing_small"
+            android:src="@drawable/ic_launcher_round" />
+
+        <TextView
+            android:id="@+id/item_daily_address_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_daily_content"
+            android:layout_toRightOf="@+id/item_daily_address_icon"
+            android:text="address"
+            android:textColor="@color/baseTextSub"
+            android:textSize="@dimen/text_assist_content" />
+
+        <TextView
+            android:id="@+id/item_daily_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_daily_address_icon"
+            android:layout_marginTop="2dp"
+            android:text="time"
+            android:textColor="@color/baseTextSub"
+            android:textSize="@dimen/text_assist_content" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_daily_address_icon"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/usually_spacing_middle"
+            android:src="@drawable/ic_launcher_round" />
+    </RelativeLayout>
+</RelativeLayout>

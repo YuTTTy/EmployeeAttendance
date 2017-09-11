@@ -14,5 +14,97 @@
             layout="@layout/public_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></include>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.baidu.mapapi.map.MapView
+                android:id="@+id/clock_card_baidumap"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"></com.baidu.mapapi.map.MapView>
+
+            <RelativeLayout
+                android:id="@+id/work_trail_time_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/usually_spacing_middle"
+                android:background="@color/white"
+                android:padding="@dimen/usually_spacing_middle">
+
+                <TextView
+                    android:id="@+id/work_trail_time_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="time"
+                    android:textColor="@color/textRedSecond"
+                    android:textSize="@dimen/text_main_content" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/usually_spacing_small"
+                    android:layout_toRightOf="@+id/work_trail_time_text"
+                    android:src="@drawable/ico_down_gray" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/work_trail_pos_list_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="@dimen/usually_spacing_middle"
+                    android:text="位置列表"
+                    android:textColor="@color/baseTextMain"
+                    android:textSize="@dimen/text_main_content" />
+
+                <View
+                    android:layout_width="@dimen/usually_line_middle"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/usually_spacing_small"
+                    android:layout_marginTop="@dimen/usually_spacing_small"
+                    android:background="@color/baseLine"></View>
+
+                <TextView
+                    android:id="@+id/work_trail_trail_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="@dimen/usually_spacing_middle"
+                    android:text="工作轨迹"
+                    android:textColor="@color/baseTextMain"
+                    android:textSize="@dimen/text_main_content" />
+
+                <View
+                    android:layout_width="@dimen/usually_line_middle"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/usually_spacing_small"
+                    android:layout_marginTop="@dimen/usually_spacing_small"
+                    android:background="@color/baseLine"></View>
+
+                <TextView
+                    android:id="@+id/work_trail_location_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="@dimen/usually_spacing_middle"
+                    android:text="位置列表"
+                    android:textColor="@color/baseTextMain"
+                    android:textSize="@dimen/text_main_content" />
+            </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

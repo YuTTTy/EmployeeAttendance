@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="@dimen/usually_spacing_middle">
+
+        <TextView
+            android:id="@+id/item_task_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="head"
+            android:textColor="@color/baseTextMain"
+            android:textSize="@dimen/text_main_content" />
+
+        <TextView
+            android:id="@+id/item_task_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/usually_spacing_small"
+            android:layout_toRightOf="@+id/item_task_head"
+            android:text="name"
+            android:textColor="@color/baseTextMain"
+            android:textSize="@dimen/text_main_content" />
+
+        <TextView
+            android:id="@+id/item_task_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_task_head"
+            android:layout_marginTop="@dimen/usually_spacing_small"
+            android:text="content"
+            android:textColor="@color/baseTextMain"
+            android:textSize="@dimen/text_main_content" />
+
+        <TextView
+            android:id="@+id/item_task_cutdown_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_task_content"
+            android:layout_marginTop="@dimen/usually_spacing_small"
+            android:text="count down time"
+            android:textColor="@color/red"
+            android:textSize="@dimen/text_assist_content" />
+
+        <TextView
+            android:id="@+id/item_task_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="time"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/usually_spacing_middle"
+            android:textColor="@color/baseTextMain"
+            android:textSize="@dimen/text_main_content" />
+        <TextView
+            android:id="@+id/item_task_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="state"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/usually_spacing_small"
+            android:textColor="@color/baseTextMain"
+            android:layout_below="@+id/item_task_time"
+            android:textSize="@dimen/text_main_content" />
+    </RelativeLayout>
+</LinearLayout>

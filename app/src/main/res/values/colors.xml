@@ -10,8 +10,12 @@
     <color name="baseTextMain">#485259</color><!--用于主要文字，标题，内容-->
     <color name="baseTextSub">#878787</color><!--用于次级文字，标题，内容-->
     <color name="baseTextAssist">#CFCFCF</color><!--用于主要文字文字辅助美容，提示文字内容，标签内容-->
-    <color name="baseLine">#ECECEC</color><!--用于线条颜色-->
+    <color name="textRed">#ff0000</color>
+    <color name="textRedSecond">#ff6b4d</color>
+    <color name="textWhite">#ffffff</color>
+    <color name="textBlue">#99ccff</color>
     <color name="baseButton">#6ab7ff</color>
+    <color name="baseLine">#ECECEC</color><!--用于线条颜色-->
 
     <!-- 通用 -->
     <color name="alpha">#00ffffff</color>

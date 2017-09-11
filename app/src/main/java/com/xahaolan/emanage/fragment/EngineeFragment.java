@@ -14,7 +14,7 @@ import android.widget.GridView;
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.adapter.MainItemAdapter;
 import com.xahaolan.emanage.ui.checkwork.CheckWorkActivity;
-import com.xahaolan.emanage.ui.daily.DailyActivity;
+import com.xahaolan.emanage.ui.daily.DailyListActivity;
 import com.xahaolan.emanage.ui.more.MoreActivity;
 import com.xahaolan.emanage.ui.task.TaskActivity;
 import com.xahaolan.emanage.ui.trail.WorkTrailActivity;
@@ -74,7 +74,7 @@ public class EngineeFragment extends Fragment {
                         break;
                     //日报
                     case 1:
-                        MyUtils.jump(getActivity(),DailyActivity.class,new Bundle(),false,null);
+                        MyUtils.jump(getActivity(),DailyListActivity.class,new Bundle(),false,null);
                         break;
                     //工作轨迹
                     case 2:

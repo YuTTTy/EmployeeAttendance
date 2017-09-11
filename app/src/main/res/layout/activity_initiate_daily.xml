@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/baseBg"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/public_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></include>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:orientation="vertical"
+            android:padding="@dimen/usually_spacing_middle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="本日工作："
+                android:textColor="@color/baseTextSub"
+                android:textSize="@dimen/text_main_content" />
+
+            <EditText
+                android:id="@+id/initiate_daily_today_et"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/usually_spacing_small"
+                android:textColor="@color/baseTextMain"
+                android:textSize="@dimen/text_main_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:orientation="vertical"
+            android:padding="@dimen/usually_spacing_middle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="明日计划："
+                android:textColor="@color/baseTextSub"
+                android:textSize="@dimen/text_main_content" />
+
+            <EditText
+                android:id="@+id/initiate_daily_tomorrow_et"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/usually_spacing_small"
+                android:textColor="@color/baseTextMain"
+                android:textSize="@dimen/text_main_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:orientation="vertical"
+            android:padding="@dimen/usually_spacing_middle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="总结："
+                android:textColor="@color/baseTextSub"
+                android:textSize="@dimen/text_main_content" />
+
+            <EditText
+                android:id="@+id/initiate_daily_summarize_et"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/usually_spacing_small"
+                android:textColor="@color/baseTextMain"
+                android:textSize="@dimen/text_main_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/usually_spacing_middle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/usually_spacing_middle"
+                android:text="备注信息"
+                android:textColor="@color/baseTextSub"
+                android:textSize="@dimen/text_main_content" />
+
+            <LinearLayout
+                android:id="@+id/initiate_daily_voice_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/usually_spacing_small"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/initiate_daily_voice_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_launcher_round" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_launcher_round" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/initiate_daily_photos_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/initiate_daily_photos_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_launcher_round" />
+
+                <LinearLayout
+                    android:id="@+id/initiate_daily_photos_items_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"></LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/usually_spacing_middle"
+            android:layout_marginTop="@dimen/usually_spacing_middle"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/usually_spacing_middle">
+
+            <TextView
+                android:id="@+id/initiate_daily_btn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/usually_spacing_big"
+                android:layout_marginRight="@dimen/usually_spacing_big"
+                android:background="@color/blue"
+                android:gravity="center"
+                android:text="提交"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_main_content" />
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

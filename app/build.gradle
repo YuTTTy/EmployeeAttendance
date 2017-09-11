@@ -3,11 +3,25 @@ apply plugin: 'com.android.application'
 android {
     useLibrary 'org.apache.http.legacy'/*httpclient过时解决办法*/
     compileSdkVersion 23
-    buildToolsVersion "25.0.3"
+    buildToolsVersion '25.0.0'
+
+    /*jar包重复引用*/
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES' // will not include DEPENDENCIES file
+//        exclude 'META-INF/NOTICE' // will not include NOTICE file
+//        exclude 'META-INF/LICENSE' // will not include LICENSE file
+//        // as noted by @Vishnuvathsan you may also need to include
+//        // variations on the file name. It depends on your dependencies.
+//        // Some other common variations on notice and license file names
+//        exclude 'META-INF/notice'
+//        exclude 'META-INF/notice.txt'
+//        exclude 'META-INF/license'
+//        exclude 'META-INF/license.txt'
+    }
     defaultConfig {
         applicationId "com.xahaolan.emanage"
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -18,11 +32,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    sourceSets {
-        main { // 设置Jni so文件路径 如果有jniLibs目录就不需要设置
-            jniLibs.srcDirs = ['libs']
-        }
-    }
+//    sourceSets {
+//        main { // 设置Jni so文件路径 如果有jniLibs目录就不需要设置
+//            jniLibs.srcDirs = ['libs']
+//        }
+//    }
 }
 
 dependencies {
@@ -34,4 +48,6 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
     compile 'com.google.code.gson:gson:2.2.4'
+//    compile files('libs/BaiduLBS_Android.jar')
+    compile files('libs/BaiduTraceSDK_v2_1_11.jar')
 }

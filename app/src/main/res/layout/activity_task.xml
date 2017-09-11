@@ -8,11 +8,55 @@
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/baseBg"
         android:orientation="vertical">
 
         <include
             layout="@layout/public_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></include>
+
+        <LinearLayout
+            android:id="@+id/task_list_title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/usually_spacing_small"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="@dimen/usually_spacing_middle">
+
+            <TextView
+                android:id="@+id/task_list_title_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="已发布的任务"
+                android:textColor="@color/baseTextMain"
+                android:textSize="@dimen/text_main_content" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ico_right_gray" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/task_list_change_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/usually_spacing_middle"
+            android:text="收到的任务"
+            android:textColor="@color/baseTextMain"
+            android:textSize="@dimen/text_main_content" />
+
+        <ListView
+            android:background="@color/white"
+            android:id="@+id/task_list_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@color/baseLine"
+            android:dividerHeight="@dimen/usually_line"
+            android:listSelector="@android:color/transparent"
+            android:scrollbars="none"></ListView>
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:background="@color/baseBg"
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,5 +15,16 @@
             layout="@layout/public_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></include>
+        <com.xahaolan.emanage.view.MyView.DialyTabView
+            android:id="@+id/daily_list_tab"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/white"></com.xahaolan.emanage.view.MyView.DialyTabView>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/daily_list_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/baseBg"></android.support.v4.view.ViewPager>
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

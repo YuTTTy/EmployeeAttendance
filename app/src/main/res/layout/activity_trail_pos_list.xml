@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/public_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></include>
+
+        <ListView
+            android:id="@+id/trail_pos_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/baseBg"
+            android:divider="@null"
+            android:dividerHeight="@dimen/usually_spacing_middle"
+            android:listSelector="@android:color/transparent"
+            android:scrollbars="none"></ListView>
+    </LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
