@@ -31,7 +31,8 @@ public class MainActivity extends BaseActivity {
     private SwipeRefreshLayout swipeLayout;
     public static MainActivity instance = null;
 
-    private int[] imageArray = {R.drawable.selector_tab_contacts, R.drawable.selector_tab_notice, R.drawable.selector_tab_lease, R.drawable.selector_tab_mine};
+    private int[] imageArray = {R.drawable.selector_tab_contacts, R.drawable.selector_tab_notice,
+            R.drawable.selector_tab_lease, R.drawable.selector_tab_mine};
     private String[] textArray = {"通讯录", "公告", "租凭", "工程"};
     private Class fragmentArray[] = {ContactsFragment.class, NoticeFragment.class, LeaseFragment.class, EngineeFragment.class};
     private FragmentTabHost tabHost;
@@ -114,7 +115,7 @@ public class MainActivity extends BaseActivity {
                     TextView textView = (TextView) itemView.findViewById(R.id.item_main_tab_text);
                     /*当前选中tab*/
                     if (textView != null && textView.getText().toString().equals(tabId)) {
-                        textView.setTextColor(Color.parseColor(MyConstant.COLOR_BLUE));
+                        textView.setTextColor(Color.parseColor(MyConstant.COLOR_GREEN_TEXT));
                     /*未选中tab*/
                     } else {
                         textView.setTextColor(Color.parseColor(MyConstant.COLOR_GRAY_TEXT));

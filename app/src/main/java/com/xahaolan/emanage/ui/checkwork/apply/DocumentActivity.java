@@ -130,7 +130,7 @@ public class DocumentActivity extends BaseActivity {
         switch (applyType) {
             //请假申请
             case MyConstant.APPLY_DOCUMENT_LEAVE_APPLY:
-                setTitle(0, R.color.titleBg, R.drawable.ic_launcher_round, "返回", R.color.baseTextMain, "请假申请", R.color.baseTextMain, "", R.color.baseTextMain, 0);
+                setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "返回", R.color.baseTextMain, "请假申请", R.color.baseTextMain, "", R.color.baseTextMain, 0);
                 start_position_layout.setVisibility(View.GONE);
                 end_position_layout.setVisibility(View.GONE);
                 out_time_layout.setVisibility(View.GONE);
@@ -141,7 +141,7 @@ public class DocumentActivity extends BaseActivity {
                 break;
             //外出登记
             case MyConstant.APPLY_DOCUMENT_OUT_REGISTER:
-                setTitle(0, R.color.titleBg, R.drawable.ic_launcher_round, "返回", R.color.baseTextMain, "外出登记", R.color.baseTextMain, "", R.color.baseTextMain, 0);
+                setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "返回", R.color.baseTextMain, "外出登记", R.color.baseTextMain, "", R.color.baseTextMain, 0);
                 start_position_layout.setVisibility(View.GONE);
                 end_position_layout.setVisibility(View.GONE);
                 work_time_layout.setVisibility(View.GONE);
@@ -153,7 +153,7 @@ public class DocumentActivity extends BaseActivity {
                 break;
             //出差申请
             case MyConstant.APPLY_DOCUMENT_OUT_APPLY:
-                setTitle(0, R.color.titleBg, R.drawable.ic_launcher_round, "返回", R.color.baseTextMain, "出差申请", R.color.baseTextMain, "", R.color.baseTextMain, 0);
+                setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "返回", R.color.baseTextMain, "出差申请", R.color.baseTextMain, "", R.color.baseTextMain, 0);
                 out_time_layout.setVisibility(View.GONE);
                 work_time_layout.setVisibility(View.GONE);
                 leave_day_layout.setVisibility(View.GONE);
@@ -163,7 +163,7 @@ public class DocumentActivity extends BaseActivity {
                 break;
             //加班登记
             case MyConstant.APPLY_DOCUMENT_WORK_REGISTER:
-                setTitle(0, R.color.titleBg, R.drawable.ic_launcher_round, "返回", R.color.baseTextMain, "加班登记", R.color.baseTextMain, "", R.color.baseTextMain, 0);
+                setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "返回", R.color.baseTextMain, "加班登记", R.color.baseTextMain, "", R.color.baseTextMain, 0);
                 start_position_layout.setVisibility(View.GONE);
                 end_position_layout.setVisibility(View.GONE);
                 out_time_layout.setVisibility(View.GONE);

@@ -39,8 +39,10 @@ public class EngineeFragment extends Fragment {
     private GridView grid_view;
     private MainItemAdapter adapter;
 
-    private List<Map<String,Object>> list = new ArrayList<>();
-    private Integer[] imageArr = {R.drawable.ic_launcher,R.drawable.ic_launcher,R.drawable.ic_launcher,R.drawable.ic_launcher,R.drawable.ic_launcher,R.drawable.ic_launcher};
+    private List<Map<String,Object>> list;
+    private Integer[] imageArr = {R.drawable.main_check_work,R.drawable.main_daily,
+            R.drawable.main_trail,R.drawable.main_task,
+            R.drawable.main_visit,R.drawable.main_more};
     private String[] nameArr = {"考勤","日报","工作轨迹","任务","客户拜访","更多"};
     @Nullable
     @Override
@@ -98,6 +100,7 @@ public class EngineeFragment extends Fragment {
     }
 
     public void initData() {
+        list = new ArrayList<>();
         adapter = new MainItemAdapter(getActivity());
         grid_view.setAdapter(adapter);
     }

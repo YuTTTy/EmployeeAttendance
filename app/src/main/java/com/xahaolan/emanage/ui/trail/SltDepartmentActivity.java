@@ -29,7 +29,7 @@ public class SltDepartmentActivity extends BaseActivity {
 
     @Override
     public void setTitleAttribute() {
-        setTitle(0, R.color.titleBg, R.drawable.ic_launcher_round, "", R.color.baseTextMain, "选择员工", R.color.baseTextMain, "", R.color.textRed, 0);
+        setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "", R.color.baseTextMain, "选择员工", R.color.baseTextMain, "", R.color.textRed, 0);
     }
 
     @Override

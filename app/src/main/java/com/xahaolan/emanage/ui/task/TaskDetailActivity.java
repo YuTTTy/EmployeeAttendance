@@ -32,7 +32,7 @@ public class TaskDetailActivity extends BaseActivity {
 
     @Override
     public void setTitleAttribute() {
-        setTitle(0, R.color.titleBg, R.drawable.icon_return_black, "", R.color.baseTextMain, "任务详情", R.color.baseTextMain, "", R.color.baseTextMain, 0);
+        setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "", R.color.baseTextMain, "任务详情", R.color.baseTextMain, "", R.color.baseTextMain, 0);
     }
 
     @Override

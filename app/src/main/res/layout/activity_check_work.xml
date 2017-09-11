@@ -23,33 +23,45 @@
             android:orientation="vertical"></LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="@dimen/usually_height_spacing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/usually_height_spacing"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/check_work_in"
+            <RelativeLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="签到"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_main_content"
-                android:background="@drawable/ic_launcher"
-                />
-            <TextView
-                android:id="@+id/check_work_out"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/check_work_in"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/sign_in"
+                    android:gravity="center"
+                    android:text="签到"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_button" />
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="签退"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_main_content"
-                android:background="@drawable/ic_launcher"
-                />
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/check_work_out"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/sign_out"
+                    android:gravity="center"
+                    android:padding="@dimen/usually_spacing_middle"
+                    android:text="签退"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_button" />
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

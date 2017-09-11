@@ -77,10 +77,10 @@ public class CheckApplyActivity extends BaseActivity {
         adapter = new CheckApplyAdapter(context);
         list_view.setAdapter(adapter);
         if (checkType == MyConstant.CHECK_MINE_APPLY) {
-            setTitle(0, R.color.titleBg, R.drawable.ic_launcher_round, "返回", R.color.baseTextMain, "查看我的申请", R.color.baseTextMain, "", R.color.baseTextMain, 0);
+            setTitle(0, R.color.titleBg, R.drawable.ico_left_gray, "返回", R.color.baseTextMain, "查看我的申请", R.color.baseTextMain, "", R.color.baseTextMain, 0);
             examine_layout.setVisibility(View.GONE);
         } else if (checkType == MyConstant.CHECK_MINE_EXAMINE) {
-            setTitle(0, R.color.titleBg, R.drawable.ic_launcher_round, "返回", R.color.baseTextMain, "查看我的审批", R.color.baseTextMain, "", R.color.baseTextMain, 0);
+            setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "返回", R.color.baseTextMain, "查看我的审批", R.color.baseTextMain, "", R.color.baseTextMain, 0);
             examine_layout.setVisibility(View.VISIBLE);
         }
     }

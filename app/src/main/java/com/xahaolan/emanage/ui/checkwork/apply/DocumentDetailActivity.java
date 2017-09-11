@@ -21,7 +21,7 @@ public class DocumentDetailActivity   extends BaseActivity {
 
     @Override
     public void setTitleAttribute() {
-        setTitle(0,R.color.titleBg,R.drawable.ic_launcher_round,"返回",R.color.baseTextMain,"查看我的登记",R.color.baseTextMain,"",R.color.baseTextMain,0);
+        setTitle(0,R.color.titleBg,R.drawable.ico_left_white,"返回",R.color.baseTextMain,"查看我的登记",R.color.baseTextMain,"",R.color.baseTextMain,0);
     }
 
     @Override

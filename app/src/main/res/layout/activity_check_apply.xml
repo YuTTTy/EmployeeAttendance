@@ -57,6 +57,7 @@
             android:id="@+id/check_apply_slt_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
@@ -72,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
-                android:src="@drawable/ic_launcher_round" />
+                android:src="@drawable/ico_pull_down" />
         </LinearLayout>
 
         <ListView

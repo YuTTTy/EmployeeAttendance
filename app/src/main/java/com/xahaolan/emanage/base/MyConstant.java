@@ -83,6 +83,7 @@ public class MyConstant {
     public static final String COLOR_TEXT_ASSIST = "#CFCFCF";//
     public static final String COLOR_GRAY_TEXT = "#878787";//
     public static final String COLOR_BASE_LINE = "#ECECEC";//
+    public static final String COLOR_GREEN_TEXT = "#99cc33";//
     public static final String COLOR_WHITE = "#ffffff";//
     public static final String COLOR_BASE_BG = "#F8F8FA";//
     public static final String COLOR_ACTIVITY_BG = "#fbfbfe";//

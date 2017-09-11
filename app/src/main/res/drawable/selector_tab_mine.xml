@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/ic_launcher" android:state_selected="true"></item>
-    <item android:drawable="@drawable/ic_launcher_round"></item>
+    <item android:drawable="@drawable/main_tab_project_slt" android:state_selected="true"></item>
+    <item android:drawable="@drawable/main_tab_project_nol"></item>
 </selector>
