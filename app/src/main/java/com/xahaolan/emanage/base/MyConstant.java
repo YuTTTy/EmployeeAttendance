@@ -4,15 +4,8 @@ package com.xahaolan.emanage.base;
  * Created by Administrator on 2016/6/17.
  */
 public class MyConstant {
-    /* test */
-//    public static final String SERVICE_API_DOMAIN = "http://apidev.lebuddy.com.cn";  //API域名（开发环境）
-//    public static final String SERVICE_WEB_DOMAIN = "apidev.lebuddy.com.cn";  //WEB域名（开发环境）
-    /* 正式环境 */
-    public static final String SERVICE_API_DOMAIN = "https://api.lebuddy.com.cn";  //API域名 (正式环境)
-    public static final String SERVICE_WEB_DOMAIN = "www.lebuddy.com.cn";  //web域名（正式环境）
-    public static final String SERVICE_URL = "/api/v1/";   //url
-    public static final String BASE_URL = SERVICE_API_DOMAIN + SERVICE_URL; //拼接API路径
-    public static final String BASE_WEB_URL = "http://" + SERVICE_WEB_DOMAIN +"/";  //拼接web路径
+    /* baseUrl*/
+    public static final String BASE_URL = "http://159.226.139.228:9990/building";
 
     /* 设备类型  */
     public static final int OS_TYPE = 1;//1.android  2.IOS
@@ -20,7 +13,7 @@ public class MyConstant {
     public static final int REQUEST_SUCCESS = 0x1001;//请求成功
     public static final int REQUEST_FIELD = 0x1002;//请求失败
     public static final int REQUEST_ERROR = 0x1003;//请求错误
-    public static final int SUCCESS_CODE = 100000;//success code
+//    public static final int SUCCESS_CODE = 100000;//success code
 
     /* handler request data */
     public static final int HANDLER_SUCCESS = 0x1011;//消息成功

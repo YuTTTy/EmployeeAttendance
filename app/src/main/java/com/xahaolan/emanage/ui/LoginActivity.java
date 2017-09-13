@@ -1,6 +1,8 @@
 package com.xahaolan.emanage.ui;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.EditText;
@@ -8,8 +10,12 @@ import android.widget.TextView;
 
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.base.BaseActivity;
+import com.xahaolan.emanage.base.MyConstant;
+import com.xahaolan.emanage.http.services.LoginServices;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
+
+import java.util.Map;
 
 /**
  * Created by helinjie on 2017/9/2.
@@ -70,21 +76,39 @@ public class LoginActivity extends BaseActivity {
             ToastUtils.showShort(this, "请输入密码");
             return;
         }
-        if (pass_et.getText().toString().length() < 6) {
-            errDeal();
-            ToastUtils.showShort(context, "密码不能小于六位");
-            pass_et.setText("");
-            return;
-        }
+//        if (pass_et.getText().toString().length() < 6) {
+//            errDeal();
+//            ToastUtils.showShort(context, "密码不能小于六位");
+//            pass_et.setText("");
+//            return;
+//        }
+
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-        }
-        MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
-        finish();
+        new LoginServices(context).loginService(account_et.getText().toString(), pass_et.getText().toString(), new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    String data = (String) msg.obj;
+                    if (data != null) {
 
+                    }
+                    MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
+                    finish();
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
     }
     /**
      * 错误处理

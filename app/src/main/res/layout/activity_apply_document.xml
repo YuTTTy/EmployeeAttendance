@@ -291,7 +291,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:layout_marginTop="10dp"
-                            android:src="@drawable/ic_launcher_round" />
+                            android:src="@drawable/ico_right_gray" />
                     </RelativeLayout>
 
                     <LinearLayout
@@ -347,7 +347,7 @@
                             android:id="@+id/apply_document_photos_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_launcher_round" />
+                            android:src="@drawable/photo" />
 
                         <LinearLayout
                             android:id="@+id/apply_document_photos_items_layout"

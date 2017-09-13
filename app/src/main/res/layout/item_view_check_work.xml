@@ -14,7 +14,7 @@
             android:id="@+id/item_view_check_work_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_launcher_round" />
+            android:src="@drawable/ico_left_gray" />
 
         <TextView
             android:id="@+id/item_view_check_work_text"

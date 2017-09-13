@@ -6,22 +6,31 @@ import java.io.Serializable;
  * Created by aiodiy on 2016/12/15.
  */
 public class RepBase<T> implements Serializable {
-    private Meta meta;
-    private T data;
+    private Boolean success;
+    private String msg;
+    private T obj;
 
-    public Meta getMeta() {
-        return meta;
+    public Boolean getSuccess() {
+        return success;
     }
 
-    public void setMeta(Meta meta) {
-        this.meta = meta;
+    public void setSuccess(Boolean success) {
+        this.success = success;
     }
 
-    public T getData() {
-        return data;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setData(T data) {
-        this.data = data;
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public T getObj() {
+        return obj;
+    }
+
+    public void setObj(T obj) {
+        this.obj = obj;
     }
 }
