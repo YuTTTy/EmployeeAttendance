@@ -49,9 +49,7 @@ public class LoginActivity extends BaseActivity {
         btn_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
-                finish();
-//                requestLogin();
+                login();
             }
         });
     }
@@ -65,7 +63,7 @@ public class LoginActivity extends BaseActivity {
     public void onClick(View v) {
 
     }
-    public void requestLogin(){
+    public void login(){
         if (account_et.getText().toString() == null || account_et.getText().toString().equals("")) {
             errDeal();
             ToastUtils.showShort(this, "请输入手机号码");
@@ -86,6 +84,30 @@ public class LoginActivity extends BaseActivity {
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
+        requestGetSession();
+    }
+    public void requestGetSession(){
+        new LoginServices(context).getSessionService(account_et.getText().toString(), pass_et.getText().toString(), new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    String data = (String) msg.obj;
+                    requestLogin();
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
+    }
+    public void requestLogin(){
         new LoginServices(context).loginService(account_et.getText().toString(), pass_et.getText().toString(), new Handler() {
             @Override
             public void handleMessage(Message msg) {

@@ -50,7 +50,6 @@ public class HttpUtils {
         }
         buffer.deleteCharAt(buffer.length() - 1);
 
-        LogUtils.e(TAG, "URL == " + buffer.toString());
         return buffer.toString();
     }
 

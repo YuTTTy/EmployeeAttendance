@@ -7,8 +7,6 @@ public class MyConstant {
     /* baseUrl*/
     public static final String BASE_URL = "http://159.226.139.228:9990/building";
 
-    /* 设备类型  */
-    public static final int OS_TYPE = 1;//1.android  2.IOS
     /*请求网络*/
     public static final int REQUEST_SUCCESS = 0x1001;//请求成功
     public static final int REQUEST_FIELD = 0x1002;//请求失败
@@ -64,6 +62,8 @@ public class MyConstant {
 
     /*SharedPerferenced存储*/
     public static final String SHARED_SAVE = "xahaolanData";
+    public static final String SESSION_ID = "seddionId";
+
     /*用户登录数据*/
     public static final String SP_LOGIN_DATA = "userData";
     public static final String IS_ALREADY_LOGIN = "isAlreadyLogin";//是否登陆过

@@ -39,6 +39,7 @@ public class LoginServices extends BaseService {
 
     public LoginServices(Context context) {
         super(context);
+        this.context = context;
         //        queue = Volley.newRequestQueue(context);
         String userAgent = "volley/0";
         try {
@@ -53,6 +54,51 @@ public class LoginServices extends BaseService {
     }
 
     /**
+     * get session
+     *
+     * @param username
+     * @param password
+     * @param handler
+     */
+    public void getSessionService(String username,String password, final Handler handler) {
+        LogUtils.e(TAG, "==============================   get session  request  =======================================");
+        String urlStr = MyConstant.BASE_URL + "/system/loginAction!checkuser.action";
+        Map<String, Object> params = new HashMap<>();
+        params.put("username", username);
+        params.put("password", password);
+//        getVerificationParams(params, 1);//获取验证参数
+        Map<String,String> mHeaders = getHeader();
+        GsonRequest<RepBase<String>> request = null;
+        try {
+            request = new GsonRequest<>(context,Request.Method.POST, urlStr, params, new TypeToken<RepBase<String>>() {
+            },
+                    new Response.Listener<RepBase<String>>() {
+                        @Override
+                        public void onResponse(RepBase<String> response) {
+                            if (response == null || response.getSuccess() == null) {
+                                Log.e(TAG, "get session null" + response);
+                                return;
+                            }
+                            Message message = new Message();
+                            if (response.getSuccess()) {
+                                String responseData = response.getObj();
+                                message.what = MyConstant.REQUEST_SUCCESS;
+                                message.obj = responseData;
+                                Log.e(TAG, "get session success");
+                            } else {
+                                message.what = MyConstant.REQUEST_FIELD;
+                                message.obj = response.getMsg();
+                                Log.e(TAG, "get session field");
+                            }
+                            handler.sendMessage(message);
+                        }
+                    }, new EZErrListener<>(context, handler));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        requesQueue.add(request);
+    }
+    /**
      * login
      *
      * @param username
@@ -65,9 +111,11 @@ public class LoginServices extends BaseService {
         Map<String, Object> params = new HashMap<>();
         params.put("username", username);
         params.put("password", password);
+        //        getVerificationParams(params, 1);//获取验证参数
+        Map<String,String> mHeaders = getHeader();
         GsonRequest<RepBase<String>> request = null;
         try {
-            request = new GsonRequest<>(Request.Method.POST, urlStr, params, new TypeToken<RepBase<String>>() {
+            request = new GsonRequest<>(context,Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<String>>() {
             },
                     new Response.Listener<RepBase<String>>() {
                         @Override
@@ -95,7 +143,6 @@ public class LoginServices extends BaseService {
         }
         requesQueue.add(request);
     }
-
     /**
      *             change password
      *
@@ -111,9 +158,11 @@ public class LoginServices extends BaseService {
         params.put("id", id);
         params.put("oldpassword", oldpassword);
         params.put("newpassword", newpassword);
+        //        getVerificationParams(params, 1);//获取验证参数
+        Map<String,String> mHeaders = getHeader();
         GsonRequest<RepBase<Map<String,Object>>> request = null;
         try {
-            request = new GsonRequest<>(Request.Method.POST, urlStr, params, new TypeToken<RepBase<Map<String,Object>>>() {
+            request = new GsonRequest<>(context,Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<Map<String,Object>>>() {
             },
                     new Response.Listener<RepBase<Map<String,Object>>>() {
                         @Override

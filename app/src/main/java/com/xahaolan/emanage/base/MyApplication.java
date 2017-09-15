@@ -37,6 +37,7 @@ public class MyApplication extends Application {
 
     /*是否首次进入主页*/
     private static Boolean firstMain = true;
+    private static String session; //
 
     public void clearMemory(){
 
@@ -48,5 +49,13 @@ public class MyApplication extends Application {
 
     public static void setFirstMain(Boolean firstMain) {
         MyApplication.firstMain = firstMain;
+    }
+
+    public static String getSession() {
+        return session;
+    }
+
+    public static void setSession(String session) {
+        MyApplication.session = session;
     }
 }
