@@ -1,5 +1,6 @@
 package com.xahaolan.emanage.ui.trail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;
@@ -13,16 +14,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by helinjie on 2017/9/10.
+ * Created by helinjie on 2017/9/10.        实时位置
  */
 
 public class PosListActivity extends BaseActivity {
     private static final String TAG = PosListActivity.class.getSimpleName();
     private SwipeRefreshLayout swipeLayout;
+    private Intent intent;
 
     private ListView list_view;
     private PosListAdapter adapter;
-    private List<Map<String,Object>> dataList;
+    private List<Map<String,Object>> locList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +33,7 @@ public class PosListActivity extends BaseActivity {
 
     @Override
     public void setTitleAttribute() {
-        setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "", R.color.baseTextMain, "实时位置", R.color.baseTextMain, "选择员工", R.color.textRed, 0);
+        setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "", R.color.baseTextMain, "实时位置", R.color.baseTextMain, "", R.color.textRed, R.drawable.search);
     }
 
     @Override
@@ -44,8 +46,11 @@ public class PosListActivity extends BaseActivity {
 
     @Override
     public void initData() {
-        dataList = new ArrayList<>();
+        intent = getIntent();
+        locList = (List<Map<String, Object>>) intent.getSerializableExtra("LogList");
         adapter = new PosListAdapter(context);
         list_view.setAdapter(adapter);
+        adapter.resetList(locList);
+        adapter.notifyDataSetChanged();
     }
 }

@@ -1,7 +1,11 @@
 package com.xahaolan.emanage.ui.trail;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -9,7 +13,15 @@ import android.widget.TextView;
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.adapter.EmployeeAdapter;
 import com.xahaolan.emanage.base.BaseActivity;
+import com.xahaolan.emanage.base.MyConstant;
+import com.xahaolan.emanage.http.services.TrailServices;
+import com.xahaolan.emanage.utils.common.StringUtils;
+import com.xahaolan.emanage.utils.common.ToastUtils;
+import com.xahaolan.emanage.utils.mine.MyUtils;
 import com.xahaolan.emanage.view.contacts.SideBar;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by helinjie on 2017/9/10.
@@ -23,6 +35,8 @@ public class SltEmployeeActivity extends BaseActivity {
     private TextView dialog_text;
     private ListView list_view;
     private EmployeeAdapter adapter;
+    private List<Map<String,Object>> dataList;
+    private int personId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +56,19 @@ public class SltEmployeeActivity extends BaseActivity {
         side_bar = (SideBar) findViewById(R.id.trail_list_employee_sidebar);
         dialog_text = (TextView) findViewById(R.id.trail_list_employee_dialog);
         list_view = (ListView) findViewById(R.id.trail_list_employee_listview);
+        list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Map<String,Object> employeeData = (Map<String, Object>) parent.getAdapter().getItem(position);
+                if (employeeData.get("personId")!= null){
+                    personId = (int) employeeData.get("personId");
+                }
+                Bundle bundle = new Bundle();
+                bundle.putInt("personId",personId);
+                MyUtils.jump(context,WorkTrailActivity.class,bundle,false,null);
+                finish();
+            }
+        });
         side_bar.setTextView(dialog_text);
         /*设置字母导航触摸监听*/
         side_bar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
@@ -68,5 +95,37 @@ public class SltEmployeeActivity extends BaseActivity {
         super.onResume();
         adapter = new EmployeeAdapter(context);
         list_view.setAdapter(adapter);
+        requestEmployeeList();
+    }
+
+    /**
+     *        员工列表
+     */
+    public void requestEmployeeList() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new TrailServices(context).employeeListService( new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    dataList = (List<Map<String, Object>>) msg.obj;
+                    if (dataList != null && dataList.size() > 0){
+                        adapter.resetList(dataList);
+                        adapter.notifyDataSetChanged();
+                    }
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
     }
 }

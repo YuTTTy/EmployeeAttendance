@@ -26,4 +26,15 @@ public class AppUtils {
         }
         return personId;
     }
+    public static String getPersonName(){
+        String personName = "";
+        List<Map<String,Object>> dataList = (List<Map<String, Object>>) MyApplication.getLoginData();
+        if (dataList != null && dataList.size() > 0){
+            Map<String,Object> loginData = dataList.get(0);
+            if (loginData.get("personName") != null){
+                personName = (String) loginData.get("personName");
+            }
+        }
+        return personName;
+    }
 }

@@ -108,7 +108,7 @@ public class PhotoCamerManager {
                 camerMsg.what = MyConstant.HANDLER_SUCCESS;
                 camerMsg.obj = getAbsolutePath(Uri.fromFile(addHeadTemp));
                 handler.sendMessage(camerMsg);
-//                startPhotoZoom(Uri.fromFile(addHeadTemp));// 裁剪
+                startPhotoZoom(Uri.fromFile(addHeadTemp));// 裁剪
                 break;
             /*相册*/
             case MyConstant.RESULT_PHOTO:

@@ -144,7 +144,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/usually_spacing_middle"
-                android:src="@drawable/photo" />
+                android:src="@drawable/icon_photo" />
 
             <LinearLayout
                 android:id="@+id/create_task_photos_layout"

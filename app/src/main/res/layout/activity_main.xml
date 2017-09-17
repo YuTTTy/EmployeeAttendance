@@ -22,6 +22,12 @@
                 android:src="@drawable/main_title_icon" />
         </RelativeLayout>
 
+        <FrameLayout
+            android:id="@+id/main_body"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/main_title_layout"></FrameLayout>
+
         <android.support.v4.app.FragmentTabHost
             android:id="@+id/main_tabhost"
             android:layout_width="match_parent"
@@ -29,12 +35,6 @@
             android:layout_alignParentBottom="true"
             android:background="@color/alpha"></android.support.v4.app.FragmentTabHost>
 
-        <FrameLayout
-            android:id="@+id/main_body"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/main_body"
-            android:layout_below="@+id/main_title_layout"></FrameLayout>
 
     </RelativeLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

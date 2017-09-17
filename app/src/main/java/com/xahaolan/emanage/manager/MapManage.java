@@ -80,8 +80,8 @@ public class MapManage {
 
         //定位按钮
 //        aMap.setLocationSource(this);//通过aMap对象设置定位数据源的监听
-        mUiSettings.setMyLocationButtonEnabled(true); //显示默认的定位按钮
-        aMap.setMyLocationEnabled(true);// 可触发定位并显示当前位置
+//        mUiSettings.setMyLocationButtonEnabled(true); //显示默认的定位按钮
+//        aMap.setMyLocationEnabled(true);// 可触发定位并显示当前位置
 
         //比例尺控件   （最大比例是1：10m,最小比例是1：1000Km），位于地图右下角，可控制其显示与隐藏
         mUiSettings.setScaleControlsEnabled(true);//控制比例尺控件是否显示
@@ -237,7 +237,6 @@ public class MapManage {
         aMap.setMyLocationEnabled(true);// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         // 设置定位的类型为定位模式 ，可以由定位、跟随或地图根据面向方向旋转几种
         aMap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
-
     }
 
     /**

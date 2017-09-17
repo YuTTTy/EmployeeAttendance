@@ -2,6 +2,7 @@
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
+    android:background="@color/baseBg"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -15,53 +16,122 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></include>
 
-        <LinearLayout
-            android:id="@+id/check_work_item_layout"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/usually_spacing_small"
-            android:orientation="vertical"></LinearLayout>
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/usually_height_spacing"
-            android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/check_work_item_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/usually_spacing_small"
+                android:orientation="vertical"></LinearLayout>
+
+            <LinearLayout
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/usually_spacing_big"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/usually_height_spacing"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/check_work_in"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/sign_in"
+                        android:gravity="center"
+                        android:text="签到"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_title" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/check_work_out"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:background="@drawable/sign_out"
+                        android:gravity="center"
+                        android:text="签退"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_title"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true" />
+                </RelativeLayout>
+            </LinearLayout>
 
             <RelativeLayout
-                android:layout_width="0dp"
+                android:visibility="gone"
+                android:id="@+id/check_work_map_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_centerInParent="true"
+                android:layout_margin="@dimen/usually_spacing_big"
+                android:background="@color/white"
+                android:padding="@dimen/usually_spacing_middle">
+
+                <com.amap.api.maps.MapView
+                    android:id="@+id/check_work_map"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
 
                 <TextView
-                    android:id="@+id/check_work_in"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/check_work_address"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/sign_in"
-                    android:gravity="center"
-                    android:text="签到"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_button" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/check_work_out"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/sign_out"
+                    android:layout_alignBottom="@+id/check_work_map"
+                    android:background="@color/black"
                     android:gravity="center"
                     android:padding="@dimen/usually_spacing_middle"
-                    android:text="签退"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_button" />
+                    android:text="address"
+                    android:textColor="@color/baseTextMain"
+                    android:textSize="@dimen/text_main_content" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/check_work_map"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/check_work_submit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="@dimen/usually_spacing_middle"
+                        android:text="提交打卡"
+                        android:textColor="@color/baseTextMain"
+                        android:textSize="@dimen/text_main_content" />
+
+                    <View
+                        android:layout_width="@dimen/usually_line_middle"
+                        android:layout_height="match_parent"
+                        android:background="@color/baseLine"></View>
+
+                    <TextView
+                        android:id="@+id/check_work_cancle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="@dimen/usually_spacing_middle"
+                        android:text="取消打卡"
+                        android:textColor="@color/baseTextMain"
+                        android:textSize="@dimen/text_main_content" />
+                </LinearLayout>
             </RelativeLayout>
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

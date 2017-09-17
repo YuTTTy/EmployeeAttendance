@@ -37,7 +37,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="time"
                     android:textColor="@color/textRedSecond"
                     android:textSize="@dimen/text_main_content" />
 
@@ -100,7 +99,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:padding="@dimen/usually_spacing_middle"
-                    android:text="位置列表"
+                    android:text="立即定位"
                     android:textColor="@color/baseTextMain"
                     android:textSize="@dimen/text_main_content" />
             </LinearLayout>

@@ -49,10 +49,10 @@ public class MyConstant {
     public static final int RESULT_TAILER = 0x113;//图片裁剪
     /* date format */
     public static final String DATE_FORMAT_YMDHMS = "yyyy-MM-dd HH:mm:ss";//
+    public static final String DATE_FORMAT_YMD_HM = "yyyy-MM-dd HH:mm";//
     public static final String DATE_FORMAT_YMDH = "yyyy-MM-dd HH";//
     public static final String DATE_FORMAT_YMD = "yyyy-MM-dd";//
-    public static final String DATE_FORMAT_HM = "HH:mm";//
-    public static final String DATE_FORMAT_YMD_HM = "YYYY年MM月dd号 HH:mm";//
+    public static final String DATE_FORMAT_HMS = "HH:mm:ss";//
     /* click index */
     public static final int CLICK_INDEX_FIRST = 0;  //
     public static final int CLICK_INDEX_SECOND = 1;  //
@@ -70,6 +70,7 @@ public class MyConstant {
 
     public static final int CAMERA_JAVA_REQUEST_CODE = 1211;//相机权限请求码
     public static final String IM_IMAGE_PATH = "/lebuddy/im/image"; //拍照图片消息存放位置
+    public static final String IM_VOICE_PATH = "/xahaolan/file/voice"; //语音消息存放位置
 
     /* 色值*/
     public static final String COLOR_TEXT = "#485259";//
@@ -95,4 +96,5 @@ public class MyConstant {
     /* 查看我的申请，审批 */
     public static final int CHECK_MINE_APPLY = 1;  //查看我的申请
     public static final int CHECK_MINE_EXAMINE = 2;  //查看我的审批
+
 }

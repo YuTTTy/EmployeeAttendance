@@ -42,6 +42,9 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="db06270a7d664098edb32506385f38fa" />
+        <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
+        <service android:name="com.amap.api.location.APSService" >
+        </service>
 
         <activity
             android:name=".ui.MainActivity"

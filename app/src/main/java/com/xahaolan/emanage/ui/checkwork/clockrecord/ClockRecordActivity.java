@@ -44,7 +44,7 @@ public class ClockRecordActivity extends BaseActivity {
 
     @Override
     public void setTitleAttribute() {
-        setTitle(0, R.color.titleBg, R.drawable.ic_launcher_round, "返回", R.color.baseTextMain, "打卡记录", R.color.baseTextMain, "", R.color.baseTextMain, 0);
+        setTitle(0, R.color.titleBg, R.drawable.ico_left_gray, "返回", R.color.baseTextMain, "打卡记录", R.color.baseTextMain, "", R.color.baseTextMain, 0);
     }
 
     @Override

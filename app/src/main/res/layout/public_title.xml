@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:src="@drawable/ico_left_white" />
+            android:src="@drawable/ico_left_gray" />
 
         <TextView
             android:id="@+id/public_title_left_text"
@@ -67,7 +67,7 @@
             android:paddingBottom="18dp"
             android:paddingLeft="10dp"
             android:paddingTop="15dp"
-            android:src="@mipmap/ic_launcher_round" />
+            android:src="@drawable/add" />
     </RelativeLayout>
 
 </FrameLayout>

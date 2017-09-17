@@ -19,6 +19,7 @@ import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyApplication;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.http.services.CheckWorkServices;
+import com.xahaolan.emanage.http.services.DailyServices;
 import com.xahaolan.emanage.ui.daily.InitiateDailyActivity;
 import com.xahaolan.emanage.utils.common.LogUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
@@ -149,7 +150,7 @@ public class TabDailyFragment extends BaseFragment {
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        new CheckWorkServices(getActivity()).dailyQueryService(personId,new Handler() {
+        new DailyServices(getActivity()).dailyQueryService(personId,new Handler() {
                     @Override
                     public void handleMessage(Message msg) {
                         super.handleMessage(msg);

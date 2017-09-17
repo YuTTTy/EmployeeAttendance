@@ -12,7 +12,10 @@
         <com.xahaolan.emanage.view.comments.LineGridView
             android:id="@+id/enginee_gridview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:numColumns="2"></com.xahaolan.emanage.view.comments.LineGridView>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:listSelector="@android:color/transparent"
+            android:numColumns="2"
+            android:scrollbars="none"></com.xahaolan.emanage.view.comments.LineGridView>
     </RelativeLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

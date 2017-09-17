@@ -1,11 +1,15 @@
 package com.xahaolan.emanage.ui.checkwork.apply;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -20,8 +24,11 @@ import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyApplication;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.http.services.CheckWorkServices;
+import com.xahaolan.emanage.manager.PhotoCamerManager;
+import com.xahaolan.emanage.manager.VoiceManager;
 import com.xahaolan.emanage.ui.MainActivity;
 import com.xahaolan.emanage.utils.common.ToastUtils;
+import com.xahaolan.emanage.utils.mine.AppUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
 
 import java.util.List;
@@ -35,6 +42,8 @@ public class DocumentActivity extends BaseActivity {
     private static final String TAG = DocumentActivity.class.getSimpleName();
     private SwipeRefreshLayout swipeLayout;
     private Intent intent;
+    private VoiceManager voiceManager;
+    private PhotoCamerManager photoCamerUtil;
     private int applyType;  //1.请假申请  2.外出登记  3.出差申请  4.加班登记
 
     /* 始发地 */
@@ -70,6 +79,7 @@ public class DocumentActivity extends BaseActivity {
     private EditText reason_et;
     /* voice */
     private ImageView voice_icon;
+    private TextView voice_text;
     /* photos */
     private LinearLayout photos_layout;
     private ImageView photo_icon;
@@ -134,6 +144,26 @@ public class DocumentActivity extends BaseActivity {
         reason_et = (EditText) findViewById(R.id.apply_document_reason_et);
         voice_icon = (ImageView) findViewById(R.id.apply_document_voice_icon);
         voice_icon.setOnClickListener(this);
+        voice_text = (TextView) findViewById(R.id.apply_document_voice_length);
+        voice_icon.setOnTouchListener(new View.OnTouchListener() {
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        voiceManager.startRecord();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        voiceManager.stopRecord();
+                        voice_text.setBackground(MyUtils.getShape(MyConstant.COLOR_BLUE, 5f, 1, MyConstant.COLOR_BLUE));
+                        break;
+                }
+                return false;
+            }
+        });
         photos_layout = (LinearLayout) findViewById(R.id.apply_document_photos_layout);
         photo_icon = (ImageView) findViewById(R.id.apply_document_photos_icon);
         photo_icon.setOnClickListener(this);
@@ -146,6 +176,8 @@ public class DocumentActivity extends BaseActivity {
 
     @Override
     public void initData() {
+        voiceManager = new VoiceManager();
+        photoCamerUtil = new PhotoCamerManager((Activity) context, context);
         intent = getIntent();
         applyType = intent.getIntExtra("ApplyType", 1);
         switch (applyType) {
@@ -235,10 +267,19 @@ public class DocumentActivity extends BaseActivity {
                 break;
             /* photos */
             case R.id.apply_document_photos_icon:
+                photoCamerUtil.takePhotoCamer(1, new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        if (msg.what == MyConstant.HANDLER_SUCCESS) {
 
+                        }
+                    }
+                });
                 break;
             /* submit */
             case R.id.apply_document_submit_layout:
+                getParamsData();
                 if (applyType == MyConstant.APPLY_DOCUMENT_LEAVE_APPLY) {
                     requestApplyLeave();
                 } else if (applyType == MyConstant.APPLY_DOCUMENT_OUT_REGISTER) {
@@ -256,6 +297,83 @@ public class DocumentActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
+    }
+
+    public void getParamsData() {
+        /* 请假申请 */
+        if (applyType == MyConstant.APPLY_DOCUMENT_LEAVE_APPLY) {
+            if (start_time_et.getText().toString() == null || start_time_et.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请输入开始时间");
+                return;
+            }
+            if (end_time_et.getText().toString() == null || end_time_et.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请输入结束时间");
+                return;
+            }
+            if (leave_day_et.getText().toString() == null || leave_day_et.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请输入请假天数");
+                return;
+            }
+            if (reason_et.getText().toString() == null || reason_et.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请填写请假事由");
+                return;
+            }
+            /* 外出登记 */
+        } else if (applyType == MyConstant.APPLY_DOCUMENT_OUT_REGISTER) {
+            if (out_time_et.getText().toString() == null || out_time_et.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请输入外出时间");
+                return;
+            }
+            if (start_time_et.getText().toString() == null || start_time_et.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请输入开始时间");
+                return;
+            }
+            if (end_time_et.getText().toString() == null || end_time_et.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请输入结束时间");
+                return;
+            }
+            if (reason_et.getText().toString() == null || reason_et.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请填写外出事由");
+                return;
+            }
+            /* 出差申请 */
+        } else if (applyType == MyConstant.APPLY_DOCUMENT_OUT_APPLY) {
+            if (start_position_et.getText().toString() == null || start_position_et.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请输入始发地");
+                return;
+            }
+            if (end_position_et.getText().toString() == null || end_position_et.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请输入目的地");
+                return;
+            }
+            if (start_time_et.getText().toString() == null || start_time_et.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请输入开始时间");
+                return;
+            }
+            if (end_time_et.getText().toString() == null || end_time_et.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请输入结束时间");
+                return;
+            }
+            if (trafic_tool_et.getText().toString() == null || trafic_tool_et.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请选择交通工具");
+                return;
+            }
+            if (reason_et.getText().toString() == null || reason_et.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请填写出差事由");
+                return;
+            }
+/* 加班登记 */
+        } else if (applyType == MyConstant.APPLY_DOCUMENT_WORK_REGISTER) {
+
+        }
+        personId = AppUtils.getPersonId();
+        personName = AppUtils.getPersonName();
+        startDate = start_time_et.getText().toString();
+        endDate = end_time_et.getText().toString();
+        origin = start_position_et.getText().toString();//      始发地
+        destination = end_position_et.getText().toString();//  目的地
+        vehicle = trafic_tool_et.getText().toString();//  交通工具
+        reason = reason_et.getText().toString();
     }
 
     /**
@@ -370,10 +488,17 @@ public class DocumentActivity extends BaseActivity {
                 });
     }
 
-    public View getPhotoItemView(String imageUrl){
-        View photo_view = LayoutInflater.from(context).inflate(R.layout.item_view_image,null);
+    public View getPhotoItemView(String imageUrl) {
+        View photo_view = LayoutInflater.from(context).inflate(R.layout.item_view_image, null);
         ImageView photo_image = (ImageView) photo_view.findViewById(R.id.item_view_photo_image);
         Glide.with(context).load(imageUrl).into(photo_image);
         return photo_view;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        MyUtils.hideKeyboard((Activity) context);
+        photoCamerUtil.activityResult(requestCode, resultCode, data);
     }
 }
