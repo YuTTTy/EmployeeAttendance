@@ -12,11 +12,13 @@ import android.widget.TextView;
 
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.base.BaseActivity;
+import com.xahaolan.emanage.base.MyApplication;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.http.services.LoginServices;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -94,6 +96,10 @@ public class LoginActivity extends BaseActivity {
         }
         requestGetSession();
     }
+
+    /**
+     *    get session
+     */
     public void requestGetSession(){
         new LoginServices(context).getSessionService(account_et.getText().toString(), pass_et.getText().toString(), new Handler() {
             @Override
@@ -115,6 +121,10 @@ public class LoginActivity extends BaseActivity {
             }
         });
     }
+
+    /**
+     *    login
+     */
     public void requestLogin(){
         new LoginServices(context).loginService(account_et.getText().toString(), pass_et.getText().toString(), new Handler() {
             @Override
@@ -124,12 +134,13 @@ public class LoginActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    String data = (String) msg.obj;
-                    if (data != null) {
-
+                    List<Map<String,Object>> dataList = (List<Map<String, Object>>) msg.obj;
+                    if (dataList != null && dataList.size() > 0) {
+                        Map<String,Object> data = dataList.get(0);
+                        MyApplication.setLoginData(data);
+                        MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
+                        finish();
                     }
-                    MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
-                    finish();
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);

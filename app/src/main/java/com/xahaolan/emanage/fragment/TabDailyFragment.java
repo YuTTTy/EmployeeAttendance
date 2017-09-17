@@ -16,9 +16,13 @@ import android.widget.ListView;
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.adapter.TabDailyAdapter;
 import com.xahaolan.emanage.base.BaseActivity;
+import com.xahaolan.emanage.base.MyApplication;
 import com.xahaolan.emanage.base.MyConstant;
+import com.xahaolan.emanage.http.services.CheckWorkServices;
 import com.xahaolan.emanage.ui.daily.InitiateDailyActivity;
 import com.xahaolan.emanage.utils.common.LogUtils;
+import com.xahaolan.emanage.utils.common.ToastUtils;
+import com.xahaolan.emanage.utils.mine.AppUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
 
 import java.util.List;
@@ -37,8 +41,9 @@ public class TabDailyFragment extends BaseFragment {
 
     private boolean isPrepared; //标志位，标志已经初始化完成
     private View rootView;
-    private int stage; //活动状态 0.全部  1.邀请中  2.判定中 3.履约中 4.完成
-    private List activityList;
+    private int dailyType; //
+    private int personId;
+    private List<Map<String,Object>> dataList;
     private int page = 1;
     private Boolean hasNextPage = false;
     private View foot;//页脚
@@ -49,8 +54,8 @@ public class TabDailyFragment extends BaseFragment {
         if (rootView == null) {
             rootView = inflater.inflate(R.layout.fragment_daily_list, null);
             initView(rootView);
-            stage = getArguments().getInt("ProgressType");
-            LogUtils.e(TAG, "当前进程Progress ：" + stage);
+            dailyType = getArguments().getInt("dailyType");
+            LogUtils.e(TAG, "当前日报type ：" + dailyType);
             isPrepared = true;
             lazyLoad();
         }
@@ -118,6 +123,7 @@ public class TabDailyFragment extends BaseFragment {
     }
 
     public void initData() {
+        personId = AppUtils.getPersonId();
         adapter = new TabDailyAdapter(getActivity());
         list_view.setAdapter(adapter);
     }
@@ -137,12 +143,33 @@ public class TabDailyFragment extends BaseFragment {
     }
 
     /**
-     * 活动列表
+     * 日报列表
      */
     public void requestDailyList() {
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-
+        new CheckWorkServices(getActivity()).dailyQueryService(personId,new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                        }
+                        if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                            dataList = (List<Map<String, Object>>) msg.obj;
+                            if (dataList != null && dataList.size() > 0){
+                                adapter.resetList(dataList);
+                                adapter.notifyDataSetChanged();
+                            }
+                        } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                            String errMsg = (String) msg.obj;
+                            ToastUtils.showShort(getActivity(), errMsg);
+                        } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                            String errMsg = (String) msg.obj;
+                            ToastUtils.showShort(getActivity(), errMsg);
+                        }
+                    }
+                });
     }
 }
