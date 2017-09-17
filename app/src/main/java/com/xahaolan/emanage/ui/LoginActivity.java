@@ -1,5 +1,7 @@
 package com.xahaolan.emanage.ui;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -38,18 +40,24 @@ public class LoginActivity extends BaseActivity {
     public void setTitleAttribute() {
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void initView() {
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         swipeLayout.setEnabled(false); //禁止下拉刷新
         setSwipRefresh(swipeLayout, null);
         account_et = (EditText) findViewById(R.id.login_account);
+        account_et.setBackground(MyUtils.getShape(MyConstant.COLOR_ALPHA,5f,1,MyConstant.COLOR_GRAY_BG));
         pass_et = (EditText) findViewById(R.id.login_password);
+        pass_et.setBackground(MyUtils.getShape(MyConstant.COLOR_ALPHA,5f,1,MyConstant.COLOR_GRAY_BG));
         btn_text = (TextView) findViewById(R.id.login_btn);
+        btn_text.setBackground(MyUtils.getShape(MyConstant.COLOR_ORANGE,5f,1,MyConstant.COLOR_GRAY_BG));
         btn_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login();
+                MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
+                finish();
+//                login();
             }
         });
     }

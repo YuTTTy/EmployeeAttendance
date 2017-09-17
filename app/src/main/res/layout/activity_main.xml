@@ -9,11 +9,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/main_body"
+        <RelativeLayout
+            android:id="@+id/main_title_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="50dp"></FrameLayout>
+            android:layout_height="wrap_content"
+            android:background="@color/titleBg"
+            android:padding="@dimen/usually_spacing_big">
+
+            <ImageView
+                android:layout_width="@dimen/usually_image_hight"
+                android:layout_height="@dimen/usually_image_hight"
+                android:src="@drawable/main_title_icon" />
+        </RelativeLayout>
 
         <android.support.v4.app.FragmentTabHost
             android:id="@+id/main_tabhost"
@@ -21,6 +28,13 @@
             android:layout_height="55dp"
             android:layout_alignParentBottom="true"
             android:background="@color/alpha"></android.support.v4.app.FragmentTabHost>
+
+        <FrameLayout
+            android:id="@+id/main_body"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/main_body"
+            android:layout_below="@+id/main_title_layout"></FrameLayout>
 
     </RelativeLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

@@ -20,6 +20,7 @@ import com.xahaolan.emanage.ui.task.TaskActivity;
 import com.xahaolan.emanage.ui.trail.WorkTrailActivity;
 import com.xahaolan.emanage.ui.visit.VisitActivity;
 import com.xahaolan.emanage.utils.mine.MyUtils;
+import com.xahaolan.emanage.view.comments.LineGridView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class EngineeFragment extends Fragment {
     private static final String TAG = EngineeFragment.class.getSimpleName();
     private SwipeRefreshLayout swipeLayout;
     private Activity activity;
-    private GridView grid_view;
+    private LineGridView grid_view;
     private MainItemAdapter adapter;
 
     private List<Map<String,Object>> list;
@@ -62,7 +63,7 @@ public class EngineeFragment extends Fragment {
         swipeLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_refresh_layout);
         swipeLayout.setEnabled(false); //禁止下拉刷新
         setSwipRefresh(swipeLayout, null);
-        grid_view = (GridView) getActivity().findViewById(R.id.enginee_gridview);
+        grid_view = (LineGridView) getActivity().findViewById(R.id.enginee_gridview);
         setItemClick();
     }
     public void setItemClick(){
@@ -100,7 +101,6 @@ public class EngineeFragment extends Fragment {
     }
 
     public void initData() {
-        list = new ArrayList<>();
         adapter = new MainItemAdapter(getActivity());
         grid_view.setAdapter(adapter);
     }
@@ -108,6 +108,7 @@ public class EngineeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        list = new ArrayList<>();
         setAdapterData();
     }
 

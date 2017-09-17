@@ -76,13 +76,15 @@ public class MyConstant {
     public static final String COLOR_TEXT_ASSIST = "#CFCFCF";//
     public static final String COLOR_GRAY_TEXT = "#878787";//
     public static final String COLOR_BASE_LINE = "#ECECEC";//
-    public static final String COLOR_GREEN_TEXT = "#99cc33";//
+    public static final String COLOR_GREEN_TEXT = "#1afa29";//
     public static final String COLOR_WHITE = "#ffffff";//
     public static final String COLOR_BASE_BG = "#F8F8FA";//
     public static final String COLOR_ACTIVITY_BG = "#fbfbfe";//
     public static final String COLOR_GRAY_BG = "#CFCFCF";//
     public static final String COLOR_RED = "#ff6666";//
     public static final String COLOR_BLUE = "#6ab7ff";//
+    public static final String COLOR_ALPHA = "#00ffffff";//
+    public static final String COLOR_ORANGE = "#FF8000";//
 
     /* 考勤 */
     public static final int APPLY_DOCUMENT_LEAVE_APPLY = 1;  //请假申请

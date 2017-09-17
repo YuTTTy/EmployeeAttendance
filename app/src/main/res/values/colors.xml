@@ -6,7 +6,7 @@
 
     <!--基础色彩-->
     <color name="baseBg">#F8F8FA</color><!--用于客户端背景颜色-->
-    <color name="titleBg">#99cc33</color><!--标题栏背景颜色-->
+    <color name="titleBg">#6ab7ff</color><!--标题栏背景颜色-->
     <color name="baseTextMain">#485259</color><!--用于主要文字，标题，内容-->
     <color name="baseTextSub">#878787</color><!--用于次级文字，标题，内容-->
     <color name="baseTextAssist">#CFCFCF</color><!--用于主要文字文字辅助美容，提示文字内容，标签内容-->
@@ -24,6 +24,7 @@
     <color name="blue_black">#000055</color>
     <color name="white">#ffffff</color>
     <color name="red">#ff6b4d</color>
+    <color name="orange">#FF8000</color>
     <color name="yellow">#cccc33</color>
     <color name="blue">#99ccff</color>
     <color name="green">#99cc33</color>

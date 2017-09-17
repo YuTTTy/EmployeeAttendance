@@ -57,6 +57,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initData() {
+        tabHost.setCurrentTab(3);
         MyUtils.closeAllActivity(context);
     }
 

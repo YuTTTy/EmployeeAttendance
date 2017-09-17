@@ -15,7 +15,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="80dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/ic_launcher"
+            android:visibility="invisible"
+            />
 
         <EditText
             android:id="@+id/login_account"
@@ -26,7 +28,7 @@
             android:layout_marginTop="80dp"
             android:background="@null"
             android:hint="用户名"
-            android:padding="@dimen/usually_spacing_small"
+            android:padding="@dimen/usually_spacing_middle"
             android:textColor="@color/baseTextMain"
             android:textSize="@dimen/text_main_content" />
 
@@ -38,7 +40,7 @@
             android:layout_marginRight="50dp"
             android:background="@null"
             android:hint="密码"
-            android:padding="@dimen/usually_spacing_small"
+            android:padding="@dimen/usually_spacing_middle"
             android:textColor="@color/baseTextMain"
             android:textSize="@dimen/text_main_content" />
 
@@ -46,13 +48,11 @@
             android:id="@+id/login_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginTop="20dp"
+            android:layout_margin="50dp"
             android:gravity="center"
-            android:padding="@dimen/usually_spacing_small"
+            android:padding="@dimen/usually_spacing_middle"
             android:text="登录"
-            android:textColor="@color/baseTextMain"
-            android:textSize="@dimen/text_main_content" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_button" />
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>
