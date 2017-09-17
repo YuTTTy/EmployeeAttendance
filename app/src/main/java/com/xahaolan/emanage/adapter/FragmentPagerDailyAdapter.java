@@ -58,7 +58,7 @@ public class FragmentPagerDailyAdapter extends FragmentStatePagerAdapter {
     public static TabDailyFragment InstanceFragment(int position) {
         TabDailyFragment fragment = new TabDailyFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("ProgressType", position);
+        bundle.putInt("dailyType", position);
         fragment.setArguments(bundle);
         return fragment;
     }

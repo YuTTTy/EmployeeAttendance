@@ -113,20 +113,20 @@ public class LoginServices extends BaseService {
         params.put("password", password);
         //        getVerificationParams(params, 1);//获取验证参数
         Map<String,String> mHeaders = getHeader();
-        GsonRequest<RepBase<String>> request = null;
+        GsonRequest<RepBase<List<Map<String,Object>>>> request = null;
         try {
-            request = new GsonRequest<>(context,Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<String>>() {
+            request = new GsonRequest<>(context,Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<List<Map<String,Object>>>>() {
             },
-                    new Response.Listener<RepBase<String>>() {
+                    new Response.Listener<RepBase<List<Map<String,Object>>>>() {
                         @Override
-                        public void onResponse(RepBase<String> response) {
+                        public void onResponse(RepBase<List<Map<String,Object>>> response) {
                             if (response == null || response.getSuccess() == null) {
                                 Log.e(TAG, "login null" + response);
                                 return;
                             }
                             Message message = new Message();
                             if (response.getSuccess()) {
-                                String responseData = response.getObj();
+                                List<Map<String,Object>> responseData = response.getObj();
                                 message.what = MyConstant.REQUEST_SUCCESS;
                                 message.obj = responseData;
                                 Log.e(TAG, "login success");

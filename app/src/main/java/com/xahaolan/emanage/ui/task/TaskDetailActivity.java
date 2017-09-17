@@ -1,6 +1,8 @@
 package com.xahaolan.emanage.ui.task;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -8,6 +10,12 @@ import android.widget.TextView;
 
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.base.BaseActivity;
+import com.xahaolan.emanage.base.MyConstant;
+import com.xahaolan.emanage.http.services.TaskService;
+import com.xahaolan.emanage.utils.common.ToastUtils;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by helinjie on 2017/9/9.
@@ -70,10 +78,65 @@ public class TaskDetailActivity extends BaseActivity {
         requestTaskDetail();
     }
 
+    /**
+     *      task detail
+     */
     public void requestTaskDetail() {
-
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+//        new TaskService(context).addTaskDetailService(createId, executorId, new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+//                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+//                }
+//                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+//                    dataList = (List<Map<String, Object>>) msg.obj;
+//                    if (dataList != null && dataList.size() > 0) {
+//                        adapter.resetList(dataList);
+//                        adapter.notifyDataSetChanged();
+//                    }
+//                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                }
+//            }
+//        });
     }
-    public void requestFinishTask() {
 
+    /**
+     *       finish task
+     */
+    public void requestFinishTask() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+//        new TaskService(context).addTaskFinishService(createId, executorId, new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+//                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+//                }
+//                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+//                    dataList = (List<Map<String, Object>>) msg.obj;
+//                    if (dataList != null && dataList.size() > 0) {
+//                        adapter.resetList(dataList);
+//                        adapter.notifyDataSetChanged();
+//                    }
+//                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                }
+//            }
+//        });
     }
 }

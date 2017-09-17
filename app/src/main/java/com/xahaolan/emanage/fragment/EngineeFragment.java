@@ -100,7 +100,6 @@ public class EngineeFragment extends Fragment {
     }
 
     public void initData() {
-        list = new ArrayList<>();
         adapter = new MainItemAdapter(getActivity());
         grid_view.setAdapter(adapter);
     }
@@ -108,6 +107,7 @@ public class EngineeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        list = new ArrayList<>();
         setAdapterData();
     }
 

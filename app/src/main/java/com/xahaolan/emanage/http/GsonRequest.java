@@ -48,7 +48,7 @@ public class GsonRequest<T> extends Request<T> {
     /**
      * Content type for request.
      */
-    private static final String PROTOCOL_CONTENT_TYPE = String.format("application/json; charset=%s", PROTOCOL_CHARSET);
+    private static final String PROTOCOL_CONTENT_TYPE = String.format("application/x-www-form-urlencoded; charset=%s", PROTOCOL_CHARSET);
     private final Response.Listener<T> listener;
 
     public GsonRequest(Context context, int method, String url, Map<String, Object> params, TypeToken<T> typeToken, Response.Listener<T> listener, Response.ErrorListener errorListener) throws JSONException {
@@ -169,8 +169,10 @@ public class GsonRequest<T> extends Request<T> {
         /* save session id */
         Map<String, String> responseHeaders = networkResponse.headers;
         String rawCookies = responseHeaders.get("Set-Cookie");
-        //Constant是一个自建的类，存储常用的全局变量
-        SPUtils.put(context, MyConstant.SHARED_SAVE, MyConstant.SESSION_ID, rawCookies.substring(0, rawCookies.indexOf(";")));
+        if (rawCookies != null && !rawCookies.equals("")){
+            //Constant是一个自建的类，存储常用的全局变量
+            SPUtils.put(context, MyConstant.SHARED_SAVE, MyConstant.SESSION_ID, rawCookies.substring(0, rawCookies.indexOf(";")));
+        }
 
         /* parse response */
         try {

@@ -2,7 +2,10 @@ package com.xahaolan.emanage.ui.checkwork.apply;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -11,19 +14,28 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.base.BaseActivity;
+import com.xahaolan.emanage.base.MyApplication;
 import com.xahaolan.emanage.base.MyConstant;
+import com.xahaolan.emanage.http.services.CheckWorkServices;
+import com.xahaolan.emanage.ui.MainActivity;
+import com.xahaolan.emanage.utils.common.ToastUtils;
+import com.xahaolan.emanage.utils.mine.MyUtils;
+
+import java.util.List;
+import java.util.Map;
 
 /**
- * Created by helinjie on 2017/9/3.   申请单
+ * Created by helinjie on 2017/9/3.   申请单(请假、外出登记、出差、加班登记)
  */
 
 public class DocumentActivity extends BaseActivity {
     private static final String TAG = DocumentActivity.class.getSimpleName();
     private SwipeRefreshLayout swipeLayout;
     private Intent intent;
-    private int applyType;
+    private int applyType;  //1.请假申请  2.外出登记  3.出差申请  4.加班登记
 
     /* 始发地 */
     private LinearLayout start_position_layout;
@@ -67,6 +79,15 @@ public class DocumentActivity extends BaseActivity {
     private EditText examine_et;
     /* submit */
     private FrameLayout submit_layout;
+
+    private int personId;//  员工id
+    private String personName;//  员工姓名
+    private String startDate;// 开始日期（2017-09-11）
+    private String endDate;//  结束日期（2017-09-12）
+    private String origin;//      始发地
+    private String destination;//  目的地
+    private String vehicle;//  交通工具
+    private String reason;//  原因
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,13 +240,13 @@ public class DocumentActivity extends BaseActivity {
             /* submit */
             case R.id.apply_document_submit_layout:
                 if (applyType == MyConstant.APPLY_DOCUMENT_LEAVE_APPLY) {
-
+                    requestApplyLeave();
                 } else if (applyType == MyConstant.APPLY_DOCUMENT_OUT_REGISTER) {
-
+                    requestApplyOutRegister();
                 } else if (applyType == MyConstant.APPLY_DOCUMENT_OUT_APPLY) {
-
+                    requestApplyOut();
                 } else if (applyType == MyConstant.APPLY_DOCUMENT_WORK_REGISTER) {
-
+                    requestApplyWork();
                 }
                 break;
         }
@@ -237,7 +258,122 @@ public class DocumentActivity extends BaseActivity {
 
     }
 
-    public void requestSubmit() {
+    /**
+     * 请假申请
+     */
+    public void requestApplyLeave() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new CheckWorkServices(context).leaveOrderAddService(personId, personName, startDate,
+                endDate, reason, new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                        }
+                        if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                            finish();
+                        } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                            String errMsg = (String) msg.obj;
+                            ToastUtils.showShort(context, errMsg);
+                        } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                            String errMsg = (String) msg.obj;
+                            ToastUtils.showShort(context, errMsg);
+                        }
+                    }
+                });
+    }
 
+    /**
+     * 外出登记申请
+     */
+    public void requestApplyOutRegister() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new CheckWorkServices(context).outGoingAddService(personId, personName, startDate,
+                endDate, reason, new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                        }
+                        if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                            finish();
+                        } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                            String errMsg = (String) msg.obj;
+                            ToastUtils.showShort(context, errMsg);
+                        } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                            String errMsg = (String) msg.obj;
+                            ToastUtils.showShort(context, errMsg);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 出差申请
+     */
+    public void requestApplyOut() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new CheckWorkServices(context).bussinessTripAddService(personId, personName, origin, destination,
+                startDate, endDate, vehicle, reason, new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                        }
+                        if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                            finish();
+                        } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                            String errMsg = (String) msg.obj;
+                            ToastUtils.showShort(context, errMsg);
+                        } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                            String errMsg = (String) msg.obj;
+                            ToastUtils.showShort(context, errMsg);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 加班登记
+     */
+    public void requestApplyWork() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new CheckWorkServices(context).workAddService(personId, startDate,
+                endDate, reason, new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                        }
+                        if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                            finish();
+                        } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                            String errMsg = (String) msg.obj;
+                            ToastUtils.showShort(context, errMsg);
+                        } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                            String errMsg = (String) msg.obj;
+                            ToastUtils.showShort(context, errMsg);
+                        }
+                    }
+                });
+    }
+
+    public View getPhotoItemView(String imageUrl){
+        View photo_view = LayoutInflater.from(context).inflate(R.layout.item_view_image,null);
+        ImageView photo_image = (ImageView) photo_view.findViewById(R.id.item_view_photo_image);
+        Glide.with(context).load(imageUrl).into(photo_image);
+        return photo_view;
     }
 }

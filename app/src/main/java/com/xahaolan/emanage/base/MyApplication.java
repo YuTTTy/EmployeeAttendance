@@ -3,6 +3,8 @@ package com.xahaolan.emanage.base;
 import android.app.Application;
 import android.content.Context;
 
+import java.util.Map;
+
 /**
  * Created by Administrator on 2016/6/17.
  */
@@ -37,10 +39,19 @@ public class MyApplication extends Application {
 
     /*是否首次进入主页*/
     private static Boolean firstMain = true;
+    private static Map<String,Object> loginData;
     private static String session; //
 
     public void clearMemory(){
 
+    }
+
+    public static Map<String, Object> getLoginData() {
+        return loginData;
+    }
+
+    public static void setLoginData(Map<String, Object> loginData) {
+        MyApplication.loginData = loginData;
     }
 
     public static Boolean getFirstMain() {
