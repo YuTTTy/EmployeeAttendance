@@ -1,5 +1,6 @@
 package com.xahaolan.emanage.ui.task;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,6 +25,7 @@ import java.util.Map;
 public class TaskDetailActivity extends BaseActivity {
     private static final String TAG = TaskDetailActivity.class.getSimpleName();
     private SwipeRefreshLayout swipeLayout;
+    private Intent intent;
 
     private TextView send_text;
     private TextView execute_text;
@@ -32,6 +34,7 @@ public class TaskDetailActivity extends BaseActivity {
     private LinearLayout items_layout;
     private TextView btn_text;
 
+    private Map<String,Object> detailData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,12 +73,26 @@ public class TaskDetailActivity extends BaseActivity {
 
     @Override
     public void initData() {
+        intent = getIntent();
+        detailData = (Map<String, Object>) intent.getSerializableExtra("detailData");
+        if (detailData.get("createName") != null){
+            send_text.setText(detailData.get("createName")+"");
+        }
+        if (detailData.get("executorName") != null){
+            execute_text.setText(detailData.get("executorName")+"");
+        }
+        if (detailData.get("endDate") != null){
+            time_text.setText(detailData.get("endDate")+"");
+        }
+        if (detailData.get("content") != null){
+            content_text.setText(detailData.get("content")+"");
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        requestTaskDetail();
+//        requestTaskDetail();
     }
 
     /**

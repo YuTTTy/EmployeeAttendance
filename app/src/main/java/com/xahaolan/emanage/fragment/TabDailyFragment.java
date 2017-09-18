@@ -16,11 +16,9 @@ import android.widget.ListView;
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.adapter.TabDailyAdapter;
 import com.xahaolan.emanage.base.BaseActivity;
-import com.xahaolan.emanage.base.MyApplication;
 import com.xahaolan.emanage.base.MyConstant;
-import com.xahaolan.emanage.http.services.CheckWorkServices;
 import com.xahaolan.emanage.http.services.DailyServices;
-import com.xahaolan.emanage.ui.daily.InitiateDailyActivity;
+import com.xahaolan.emanage.ui.daily.SendDailyActivity;
 import com.xahaolan.emanage.utils.common.LogUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.AppUtils;
@@ -96,7 +94,7 @@ public class TabDailyFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Map<String, Object> itemData = (Map<String, Object>) parent.getAdapter().getItem(position);
                 if (itemData != null) {
-                    MyUtils.jump(getActivity(), InitiateDailyActivity.class, new Bundle(), false, null);
+//                    MyUtils.jump(getActivity(), DailyDetailActivity.class, new Bundle(), false, null);
                 }
             }
         });

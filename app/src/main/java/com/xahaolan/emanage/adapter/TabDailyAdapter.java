@@ -62,7 +62,21 @@ public class TabDailyAdapter extends BaseAdapter {
 
         Map<String, Object> data = list.get(position);
         if (data != null) {
+           if (data.get("employeename") != null){
+               holder.name_text.setText(data.get("employeename")+"");
+           }
+           if (data.get("departmentname") != null){
+               holder.department_text.setText(data.get("departmentname")+"");
+           }
+           if (data.get("state") != null){
 
+           }
+           if (data.get("conclusion") != null){
+               holder.content_text.setText(data.get("conclusion")+"");
+           }
+           if (data.get("date") != null){
+               holder.time_text.setText(data.get("date")+"");
+           }
         }
         return convertView;
     }

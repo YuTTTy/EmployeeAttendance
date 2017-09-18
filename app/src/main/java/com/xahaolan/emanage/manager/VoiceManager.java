@@ -72,6 +72,7 @@ public class VoiceManager {
             mMediaRecorder.setMaxDuration(MAX_LENGTH);
             mMediaRecorder.prepare();
             mMediaRecorder.start();
+            LogUtils.e(TAG," start voice ");
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(TAG, "录音 failed ,IOException : " + e.getMessage());
@@ -138,15 +139,14 @@ public class VoiceManager {
     /**
      * 播放录音
      *
-     * @param fileUrl
      * @return
      */
-    public void playAudio(Context context, String fileUrl) {
-        if (fileUrl == null || fileUrl.equals("")) {
+    public void playAudio(Context context) {
+        if (filePath == null || filePath.equals("")) {
             LogUtils.e(TAG, "语音网络路径url为空");
             return;
         }
-        Uri uri = Uri.parse(fileUrl);
+        Uri uri = Uri.parse(filePath);
         mPlayer = MediaPlayer.create(context, uri);
 //        try {
 //            mPlayer.prepare();

@@ -102,11 +102,10 @@
                 android:textSize="@dimen/text_main_content" />
 
             <LinearLayout
+                android:padding="@dimen/usually_spacing_middle"
                 android:id="@+id/initiate_daily_voice_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/usually_spacing_small"
-                android:background="@color/white"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -115,13 +114,19 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/icon_voice" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:visibility="gone"
+                    android:layout_marginLeft="@dimen/usually_spacing_middle"
+                    android:layout_marginRight="100dp"
+                    android:id="@+id/initiate_daily_voice_length"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_launcher_round" />
+                    android:background="@color/blue"
+                    />
             </LinearLayout>
 
             <LinearLayout
+                android:padding="@dimen/usually_spacing_middle"
                 android:id="@+id/initiate_daily_photos_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -134,6 +139,7 @@
                     android:src="@drawable/icon_photo" />
 
                 <LinearLayout
+                    android:layout_marginLeft="@dimen/usually_spacing_middle"
                     android:id="@+id/initiate_daily_photos_items_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

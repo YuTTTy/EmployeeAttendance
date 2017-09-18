@@ -45,6 +45,7 @@ public class DocumentActivity extends BaseActivity {
     private VoiceManager voiceManager;
     private PhotoCamerManager photoCamerUtil;
     private int applyType;  //1.请假申请  2.外出登记  3.出差申请  4.加班登记
+    private int audioType = 0;// 0.未播放  1.正在播放
 
     /* 始发地 */
     private LinearLayout start_position_layout;
@@ -145,6 +146,7 @@ public class DocumentActivity extends BaseActivity {
         voice_icon = (ImageView) findViewById(R.id.apply_document_voice_icon);
         voice_icon.setOnClickListener(this);
         voice_text = (TextView) findViewById(R.id.apply_document_voice_length);
+        voice_text.setOnClickListener(this);
         voice_icon.setOnTouchListener(new View.OnTouchListener() {
             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
@@ -159,6 +161,7 @@ public class DocumentActivity extends BaseActivity {
                     case MotionEvent.ACTION_UP:
                         voiceManager.stopRecord();
                         voice_text.setBackground(MyUtils.getShape(MyConstant.COLOR_BLUE, 5f, 1, MyConstant.COLOR_BLUE));
+                        voice_text.setVisibility(View.VISIBLE);
                         break;
                 }
                 return false;
@@ -261,9 +264,15 @@ public class DocumentActivity extends BaseActivity {
             case R.id.apply_document_traffic_tool_layout:
 
                 break;
-            /* voice */
-            case R.id.apply_document_voice_layout:
-
+            /* play audio */
+            case R.id.apply_document_voice_length:
+                if (audioType == 0) {
+                    audioType = 1;
+                    voiceManager.playAudio(context);
+                } else if (audioType == 1) {
+                    audioType = 0;
+                    voiceManager.stopAudio();
+                }
                 break;
             /* photos */
             case R.id.apply_document_photos_icon:

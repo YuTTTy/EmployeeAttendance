@@ -11,6 +11,7 @@
         android:orientation="vertical">
 
         <ListView
+            android:background="@color/baseBg"
             android:id="@+id/fragment_daily_list_listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

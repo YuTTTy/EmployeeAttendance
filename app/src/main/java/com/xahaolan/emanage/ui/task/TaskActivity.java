@@ -23,6 +23,7 @@ import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.AppUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,8 +43,8 @@ public class TaskActivity extends BaseActivity {
 
     private ListView list_view;
     private TaskAdapter adapter;
-    private int createId;  //发布人id
-    private int executorId;//执行人id
+    private int createId = 0;  //发布人id
+    private int executorId = 0;//执行人id
     private List<Map<String, Object>> dataList;
     private int page = 1;
     private Boolean hasNextPage = false;
@@ -57,25 +58,27 @@ public class TaskActivity extends BaseActivity {
 
     @Override
     public void setTitleAttribute() {
-        setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "", R.color.baseTextMain, "任务", R.color.baseTextMain, "", R.color.baseTextMain, R.drawable.ic_launcher_round);
+        setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "", R.color.baseTextMain, "任务", R.color.baseTextMain, "", R.color.baseTextMain, R.drawable.add);
     }
 
     @Override
     public void initView() {
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        /*下拉刷新*/
-        BaseActivity.setSwipRefresh(swipeLayout, new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (msg.what == MyConstant.HANDLER_REFRESH_SUCCESS) {
-                    page = 1;
-                    adapter = new TaskAdapter(context);
-                    list_view.setAdapter(adapter);
-                    requestTaskList();
-                }
-            }
-        });
+        swipeLayout.setEnabled(false); //禁止下拉刷新
+        setSwipRefresh(swipeLayout, null);
+//        /*下拉刷新*/
+//        BaseActivity.setSwipRefresh(swipeLayout, new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if (msg.what == MyConstant.HANDLER_REFRESH_SUCCESS) {
+//                    page = 1;
+//                    adapter = new TaskAdapter(context);
+//                    list_view.setAdapter(adapter);
+//                    requestTaskList();
+//                }
+//            }
+//        });
         title_layout = (LinearLayout) findViewById(R.id.task_list_title_layout);
         title_text = (TextView) findViewById(R.id.task_list_title_name);
         change_text = (TextView) findViewById(R.id.task_list_change_name);
@@ -110,7 +113,12 @@ public class TaskActivity extends BaseActivity {
         list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MyUtils.jump(context, TaskDetailActivity.class, new Bundle(), false, null);
+                Map<String, Object> data = (Map<String, Object>) parent.getAdapter().getItem(position);
+                if (data != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("detailData", (Serializable) data);
+                    MyUtils.jump(context, TaskDetailActivity.class, bundle, false, null);
+                }
             }
         });
         foot = LayoutInflater.from(context).inflate(R.layout.new_fresh_item, null);
@@ -140,6 +148,10 @@ public class TaskActivity extends BaseActivity {
     public void initData() {
         adapter = new TaskAdapter(context);
         list_view.setAdapter(adapter);
+        title_text.setText("已发布的任务");
+        change_text.setText("收到的任务");
+        executorId = AppUtils.getPersonId();
+        state = 1;
     }
 
     @Override
@@ -160,10 +172,15 @@ public class TaskActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    dataList = (List<Map<String, Object>>) msg.obj;
-                    if (dataList != null && dataList.size() > 0) {
-                        adapter.resetList(dataList);
-                        adapter.notifyDataSetChanged();
+                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null) {
+                        if (response.get("resultList") != null) {
+                            dataList = (List<Map<String, Object>>) response.get("resultList");
+                            if (dataList != null && dataList.size() > 0) {
+                                adapter.resetList(dataList);
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
                     }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;

@@ -31,7 +31,7 @@ public class DailyListActivity extends BaseActivity {
 
     @Override
     public void setTitleAttribute() {
-        setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "", R.color.baseTextMain, "日报", R.color.baseTextMain, "", R.color.baseTextMain, R.drawable.ic_launcher_round);
+        setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "", R.color.baseTextMain, "日报", R.color.baseTextMain, "", R.color.baseTextMain, R.drawable.add);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class DailyListActivity extends BaseActivity {
         right_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyUtils.jump(context,InitiateDailyActivity.class,new Bundle(),false,null);
+                MyUtils.jump(context,SendDailyActivity.class,new Bundle(),false,null);
             }
         });
     }

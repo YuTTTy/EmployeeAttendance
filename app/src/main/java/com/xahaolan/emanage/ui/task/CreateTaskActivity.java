@@ -1,5 +1,7 @@
 package com.xahaolan.emanage.ui.task;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,7 +17,10 @@ import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.http.services.CheckWorkServices;
 import com.xahaolan.emanage.http.services.TaskService;
+import com.xahaolan.emanage.manager.PhotoCamerManager;
 import com.xahaolan.emanage.utils.common.ToastUtils;
+import com.xahaolan.emanage.utils.mine.AppUtils;
+import com.xahaolan.emanage.utils.mine.MyUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -27,6 +32,7 @@ import java.util.Map;
 public class CreateTaskActivity extends BaseActivity {
     private static final String TAG = CreateTaskActivity.class.getSimpleName();
     private SwipeRefreshLayout swipeLayout;
+    private PhotoCamerManager photoCamerUtil;
 
     private EditText content_et;
     private LinearLayout execute_layout;
@@ -39,7 +45,7 @@ public class CreateTaskActivity extends BaseActivity {
 
     private int createId;//   发布人id
      private String createName;//  发布人姓名
-     private int executorId;//  执行人id
+     private int executorId = 0;//  执行人id
      private String content;//     任务内容
      private String endDate;//     截止日期
     @Override
@@ -80,7 +86,15 @@ public class CreateTaskActivity extends BaseActivity {
         photo_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                photoCamerUtil.takePhotoCamer(1, new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        if (msg.what == MyConstant.HANDLER_SUCCESS) {
 
+                        }
+                    }
+                });
             }
         });
         btn_text.setOnClickListener(new View.OnClickListener() {
@@ -93,15 +107,31 @@ public class CreateTaskActivity extends BaseActivity {
 
     @Override
     public void initData() {
+        photoCamerUtil = new PhotoCamerManager((Activity) context, context);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        getParams();
         requestCreateTask();
+    }
+    public void getParams(){
+        createId = AppUtils.getPersonId();
+        createName = AppUtils.getPersonName();
+        content = content_et.getText().toString();
+        endDate = time_text.getText().toString();
     }
 
     public void requestCreateTask() {
+        if (content == null || content.equals("")){
+            ToastUtils.showShort(context,"请输入任务详情");
+            return;
+        }
+        if (endDate == null || endDate.equals("")){
+            ToastUtils.showShort(context,"请设置截止时间");
+            return;
+        }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
@@ -125,5 +155,11 @@ public class CreateTaskActivity extends BaseActivity {
                 }
             }
         });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        MyUtils.hideKeyboard((Activity) context);
+        photoCamerUtil.activityResult(requestCode, resultCode, data);
     }
 }

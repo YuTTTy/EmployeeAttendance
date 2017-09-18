@@ -122,20 +122,20 @@ public class TaskService extends BaseService {
         }
         //        getVerificationParams(params, 1);//获取验证参数
         Map<String,String> mHeaders = getHeader();
-        GsonRequest<RepBase<List<Map<String,Object>>>> request = null;
+        GsonRequest<RepBase<Map<String,Object>>> request = null;
         try {
-            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<List<Map<String,Object>>>>() {
+            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<Map<String,Object>>>() {
             },
-                    new Response.Listener<RepBase<List<Map<String,Object>>>>() {
+                    new Response.Listener<RepBase<Map<String,Object>>>() {
                         @Override
-                        public void onResponse(RepBase<List<Map<String,Object>>> response) {
+                        public void onResponse(RepBase<Map<String,Object>> response) {
                             if (response == null || response.getSuccess() == null) {
                                 Log.e(TAG, "任务列表查询 null" + response);
                                 return;
                             }
                             Message message = new Message();
                             if (response.getSuccess()) {
-                                List<Map<String,Object>> responseData = response.getObj();
+                                Map<String,Object> responseData = response.getObj();
                                 message.what = MyConstant.REQUEST_SUCCESS;
                                 message.obj = responseData;
                                 Log.e(TAG, "任务列表查询 success");

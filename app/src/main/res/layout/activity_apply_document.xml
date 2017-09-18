@@ -344,8 +344,11 @@
                             android:src="@drawable/icon_voice" />
 
                         <TextView
+                            android:visibility="gone"
+                            android:layout_marginLeft="@dimen/usually_spacing_middle"
+                            android:layout_marginRight="100dp"
                             android:id="@+id/apply_document_voice_length"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@color/blue"
                             />
