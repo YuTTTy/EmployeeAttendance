@@ -66,7 +66,7 @@ public class TaskDetailActivity extends BaseActivity {
         btn_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestFinishTask();
+//                requestFinishTask();
             }
         });
     }

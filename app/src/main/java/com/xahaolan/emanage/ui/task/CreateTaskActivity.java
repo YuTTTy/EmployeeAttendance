@@ -117,8 +117,8 @@ public class CreateTaskActivity extends BaseActivity {
         requestCreateTask();
     }
     public void getParams(){
-        createId = AppUtils.getPersonId();
-        createName = AppUtils.getPersonName();
+        createId = AppUtils.getPersonId(context);
+        createName = AppUtils.getPersonName(context);
         content = content_et.getText().toString();
         endDate = time_text.getText().toString();
     }

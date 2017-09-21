@@ -8,6 +8,7 @@
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/baseBg"
         android:orientation="vertical">
 
         <include
@@ -15,12 +16,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></include>
 
-        <ListView
-            android:id="@+id/clock_detail_listview"
+        <LinearLayout
+            android:id="@+id/clock_detail_items_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@null"
-            android:listSelector="@android:color/transparent"
-            android:scrollbars="none"></ListView>
+            android:layout_marginTop="@dimen/usually_spacing_middle"
+            android:background="@color/white"
+            android:orientation="vertical"></LinearLayout>
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

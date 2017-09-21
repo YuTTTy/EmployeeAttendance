@@ -19,7 +19,8 @@
             android:id="@+id/clock_record_listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@null"
+            android:dividerHeight="@dimen/usually_line_middle"
+            android:divider="@color/baseLine"
             android:listSelector="@android:color/transparent"
             android:scrollbars="none"></ListView>
     </LinearLayout>

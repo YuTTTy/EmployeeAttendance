@@ -56,7 +56,7 @@ public class ClockRecordActivity extends BaseActivity {
         list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Map<String,Object> data = (Map<String, Object>) parent.getAdapter().getItem(position);
+                Map<String, Object> data = (Map<String, Object>) parent.getAdapter().getItem(position);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("clockDetail", (Serializable) data);
                 MyUtils.jump(context, ClockDetailActivity.class, bundle, false, null);
@@ -69,7 +69,7 @@ public class ClockRecordActivity extends BaseActivity {
         dataList = new ArrayList<>();
         adapter = new ClockRecordAdapter(context);
         list_view.setAdapter(adapter);
-        personId = AppUtils.getPersonId();
+        personId = AppUtils.getPersonId(context);
     }
 
     @Override
@@ -94,10 +94,16 @@ public class ClockRecordActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    dataList = (List<Map<String, Object>>) msg.obj;
-                    if (dataList != null && dataList.size() > 0) {
-                        adapter.resetList(dataList);
-                        adapter.notifyDataSetChanged();
+                    Map<String, Object> dataResponse = (Map<String, Object>) msg.obj;
+                    if (dataResponse != null) {
+                        if (dataResponse.get("resultList") != null) {
+                            dataList = (List<Map<String, Object>>) dataResponse.get("resultList");
+                            if (dataList != null && dataList.size() > 0) {
+                                regroupList();
+                                adapter.resetList(dataList);
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
                     }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
@@ -108,5 +114,15 @@ public class ClockRecordActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    public void regroupList() {
+        List<Map<String, Object>> reList = new ArrayList<>();
+        for (Map<String, Object> data : dataList) {
+            if (data.get("createTime")!= null){
+                String createTime = (String) data.get("createTime");
+
+            }
+        }
     }
 }

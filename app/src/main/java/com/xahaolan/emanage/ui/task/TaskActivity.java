@@ -100,12 +100,12 @@ public class TaskActivity extends BaseActivity {
                 if (state == 1) {
                     title_text.setText("收到的任务");
                     change_text.setText("已发布的任务");
-                    createId = AppUtils.getPersonId();
+                    createId = AppUtils.getPersonId(context);
                     state = 2;
                 } else if (state == 2) {
                     title_text.setText("已发布的任务");
                     change_text.setText("收到的任务");
-                    executorId = AppUtils.getPersonId();
+                    executorId = AppUtils.getPersonId(context);
                     state = 1;
                 }
             }
@@ -150,7 +150,7 @@ public class TaskActivity extends BaseActivity {
         list_view.setAdapter(adapter);
         title_text.setText("已发布的任务");
         change_text.setText("收到的任务");
-        executorId = AppUtils.getPersonId();
+        executorId = AppUtils.getPersonId(context);
         state = 1;
     }
 

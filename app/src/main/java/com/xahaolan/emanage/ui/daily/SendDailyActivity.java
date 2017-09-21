@@ -154,12 +154,12 @@ public class SendDailyActivity extends BaseActivity {
     }
 
     public void getParams() {
-        employeeid = AppUtils.getPersonId();
+        employeeid = AppUtils.getPersonId(context);
         date = DateUtil.getCurrentDateStr(MyConstant.DATE_FORMAT_YMDHMS);
         conclusion = today_et.getText().toString();//   本日工作
         plan = tomorrow_et.getText().toString();//   明日计划
         question = summarize_et.getText().toString();
-        createuser = AppUtils.getPersonName();//  创建用户姓名
+        createuser = AppUtils.getPersonName(context);//  创建用户姓名
     }
 
     public void requestSubmit() {

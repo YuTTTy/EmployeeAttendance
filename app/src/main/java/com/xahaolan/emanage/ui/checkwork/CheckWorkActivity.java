@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,7 +17,6 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
-import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
 import com.amap.api.services.core.AMapException;
@@ -32,7 +30,6 @@ import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyApplication;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.http.services.CheckWorkServices;
-import com.xahaolan.emanage.http.services.LoginServices;
 import com.xahaolan.emanage.manager.MapManage;
 import com.xahaolan.emanage.ui.MainActivity;
 import com.xahaolan.emanage.ui.checkwork.apply.DocumentActivity;
@@ -243,8 +240,8 @@ public class CheckWorkActivity extends BaseActivity implements LocationSource, A
     }
 
     public void getSubmitData() {
-        personId = AppUtils.getPersonId();
-        personName = AppUtils.getPersonName();
+        personId = AppUtils.getPersonId(context);
+        personName = AppUtils.getPersonName(context);
         createdate = DateUtil.getCurrentDateStr(MyConstant.DATE_FORMAT_YMD);
         createTime = DateUtil.getCurrentDateStr(MyConstant.DATE_FORMAT_HMS);
     }
@@ -265,12 +262,11 @@ public class CheckWorkActivity extends BaseActivity implements LocationSource, A
                             swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                         }
                         if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                            List<Map<String, Object>> dataList = (List<Map<String, Object>>) msg.obj;
-                            if (dataList != null && dataList.size() > 0) {
-                                Map<String, Object> data = dataList.get(0);
-                                MyApplication.setLoginData(data);
-                                MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
-                                finish();
+                            map_layout.setVisibility(View.GONE);
+                            if (signflag == 0){
+                                ToastUtils.showShort(context,"签到成功");
+                            }else if (signflag == 1){
+                                ToastUtils.showShort(context,"签退成功");
                             }
                         } else if (msg.what == MyConstant.REQUEST_FIELD) {
                             String errMsg = (String) msg.obj;

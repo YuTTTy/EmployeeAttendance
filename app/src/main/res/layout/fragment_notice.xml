@@ -9,5 +9,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/login_out_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/usually_spacing_big"
+            android:background="@color/blue"
+            android:gravity="center"
+            android:padding="@dimen/usually_spacing_middle"
+            android:text="退出登录"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_title" />
     </RelativeLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

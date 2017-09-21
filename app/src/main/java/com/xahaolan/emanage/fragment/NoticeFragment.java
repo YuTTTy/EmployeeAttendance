@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.xahaolan.emanage.R;
 
@@ -22,6 +23,7 @@ public class NoticeFragment extends Fragment {
     private SwipeRefreshLayout swipeLayout;
     private Activity activity;
 
+    private TextView login_out_text;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class NoticeFragment extends Fragment {
         swipeLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_refresh_layout);
         swipeLayout.setEnabled(false); //禁止下拉刷新
         setSwipRefresh(swipeLayout, null);
+        login_out_text = (TextView) getActivity().findViewById(R.id.login_out_text);
     }
 
     public void initData() {

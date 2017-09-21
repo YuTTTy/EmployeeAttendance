@@ -1,5 +1,6 @@
 package com.xahaolan.emanage.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -122,7 +123,7 @@ public class TabDailyFragment extends BaseFragment {
     }
 
     public void initData() {
-        personId = AppUtils.getPersonId();
+        personId = AppUtils.getPersonId(getActivity());
         adapter = new TabDailyAdapter(getActivity());
         list_view.setAdapter(adapter);
     }

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="@dimen/usually_spacing_middle">
 
     <TextView
         android:id="@+id/item_clock_detail_text"
@@ -16,26 +17,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/item_clock_detail_text"
-        android:layout_marginTop="@dimen/usually_spacing_small"
-        android:src="@drawable/ic_launcher_round" />
+        android:layout_marginTop="@dimen/usually_spacing_middle"
+        android:src="@drawable/icon_loction" />
 
     <TextView
         android:id="@+id/item_clock_detail_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/item_clock_detail_text"
+        android:layout_marginLeft="@dimen/usually_spacing_middle"
+        android:layout_marginTop="@dimen/usually_spacing_middle"
         android:layout_toRightOf="@+id/item_clock_detail_icon"
-        android:text="address"
-        android:layout_marginLeft="@dimen/usually_spacing_small"
         android:textColor="@color/baseTextMain"
         android:textSize="@dimen/text_assist_content" />
+
     <TextView
         android:id="@+id/item_clock_detail_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/item_clock_detail_text"
-        android:text="time"
         android:layout_alignParentRight="true"
+        android:layout_below="@+id/item_clock_detail_text"
+        android:layout_marginRight="@dimen/usually_spacing_middle"
+        android:layout_marginTop="@dimen/usually_spacing_middle"
         android:textColor="@color/baseTextMain"
         android:textSize="@dimen/text_assist_content" />
 </RelativeLayout>

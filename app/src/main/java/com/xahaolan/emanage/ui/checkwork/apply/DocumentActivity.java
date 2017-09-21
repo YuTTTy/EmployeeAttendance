@@ -375,8 +375,8 @@ public class DocumentActivity extends BaseActivity {
         } else if (applyType == MyConstant.APPLY_DOCUMENT_WORK_REGISTER) {
 
         }
-        personId = AppUtils.getPersonId();
-        personName = AppUtils.getPersonName();
+        personId = AppUtils.getPersonId(context);
+        personName = AppUtils.getPersonName(context);
         startDate = start_time_et.getText().toString();
         endDate = end_time_et.getText().toString();
         origin = start_position_et.getText().toString();//      始发地

@@ -44,12 +44,30 @@ public class ClockRecordAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = LayoutInflater.from(context).inflate(R.layout.item_clock_record_time, null);
-        convertView = LayoutInflater.from(context).inflate(R.layout.item_clock_record_view, null);
+        ViewHolder holder = null;
+        if (convertView == null) {
+//            convertView = LayoutInflater.from(context).inflate(R.layout.item_clock_record_time, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_clock_record_view, null);
+            holder = new ViewHolder();
+            holder.head_image = (ImageView) convertView.findViewById(R.id.item_clock_record_view_head);
+            holder.name_text = (TextView) convertView.findViewById(R.id.item_clock_record_view_name);
+            holder.in_time_text = (TextView) convertView.findViewById(R.id.item_clock_record_view_arrive_time);
+            holder.out_time_text = (TextView) convertView.findViewById(R.id.item_clock_record_view_out_time);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
         Map<String, Object> data = list.get(position);
         if (data != null) {
-
+            if (data.get("createTime") != null) {
+                String createTime = (String) data.get("createTime");
+                holder.in_time_text.setText(createTime.substring(11,16));
+            }
+            if (data.get("createdate") != null) {
+                String createData = (String) data.get("createdate");
+                holder.out_time_text.setText(createData.substring(11,16));
+            }
         }
         return convertView;
     }
@@ -63,5 +81,12 @@ public class ClockRecordAdapter extends BaseAdapter {
     public void appendList(List<Map<String, Object>> list) {
         if (this.list == null) this.list = new ArrayList<>();
         this.list.addAll(list);
+    }
+
+    private class ViewHolder {
+        private ImageView head_image;
+        private TextView name_text;
+        private TextView in_time_text;
+        private TextView out_time_text;
     }
 }

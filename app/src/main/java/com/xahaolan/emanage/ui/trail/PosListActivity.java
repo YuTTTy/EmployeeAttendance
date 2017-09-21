@@ -50,7 +50,9 @@ public class PosListActivity extends BaseActivity {
         locList = (List<Map<String, Object>>) intent.getSerializableExtra("LogList");
         adapter = new PosListAdapter(context);
         list_view.setAdapter(adapter);
-        adapter.resetList(locList);
-        adapter.notifyDataSetChanged();
+        if (locList != null && locList.size() > 0){
+            adapter.resetList(locList);
+            adapter.notifyDataSetChanged();
+        }
     }
 }
