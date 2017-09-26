@@ -46,7 +46,8 @@ public class TaskActivity extends BaseActivity {
     private int createId = 0;  //发布人id
     private int executorId = 0;//执行人id
     private List<Map<String, Object>> dataList;
-    private int page = 1;
+    private int page = 1;  //当前页
+    private int rows = 20;   //每页显示记录数
     private Boolean hasNextPage = false;
     private View foot;//页脚
 
@@ -64,21 +65,19 @@ public class TaskActivity extends BaseActivity {
     @Override
     public void initView() {
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        swipeLayout.setEnabled(false); //禁止下拉刷新
-        setSwipRefresh(swipeLayout, null);
-//        /*下拉刷新*/
-//        BaseActivity.setSwipRefresh(swipeLayout, new Handler() {
-//            @Override
-//            public void handleMessage(Message msg) {
-//                super.handleMessage(msg);
-//                if (msg.what == MyConstant.HANDLER_REFRESH_SUCCESS) {
-//                    page = 1;
-//                    adapter = new TaskAdapter(context);
-//                    list_view.setAdapter(adapter);
-//                    requestTaskList();
-//                }
-//            }
-//        });
+        /*下拉刷新*/
+        BaseActivity.setSwipRefresh(swipeLayout, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == MyConstant.HANDLER_REFRESH_SUCCESS) {
+                    page = 1;
+                    adapter = new TaskAdapter(context);
+                    list_view.setAdapter(adapter);
+                    requestTaskList();
+                }
+            }
+        });
         title_layout = (LinearLayout) findViewById(R.id.task_list_title_layout);
         title_text = (TextView) findViewById(R.id.task_list_title_name);
         change_text = (TextView) findViewById(R.id.task_list_change_name);
@@ -176,8 +175,17 @@ public class TaskActivity extends BaseActivity {
                     if (response != null) {
                         if (response.get("resultList") != null) {
                             dataList = (List<Map<String, Object>>) response.get("resultList");
+//                            if (lastPage == 0 || currentPage == lastPage) {
+//                                hasNextPage = false;
+//                            } else {
+//                                hasNextPage = true;
+//                            }
                             if (dataList != null && dataList.size() > 0) {
-                                adapter.resetList(dataList);
+//                            if (page == 1) {
+//                                activityAdapter.resetList(activityList);
+//                            } else {
+//                                activityAdapter.appendList(activityList);
+//                            }
                                 adapter.notifyDataSetChanged();
                             }
                         }

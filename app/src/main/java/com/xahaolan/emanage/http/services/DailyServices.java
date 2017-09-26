@@ -53,14 +53,16 @@ public class DailyServices extends BaseService {
     /**
      *                    日报查询
      *
-     * @param employeeid   员工id
+     * @param employeeid   员工id ，不传代表查询日报
      * @param handler
      */
     public void dailyQueryService(int employeeid,final Handler handler) {
         LogUtils.e(TAG, "==============================   日报查询 request   =======================================");
         String urlStr = MyConstant.BASE_URL + "/app/dailyreportAPPAction!findAll.action";
         Map<String, Object> params = new HashMap<>();
-        params.put("employeeid", employeeid);
+        if (employeeid != 0){
+            params.put("employeeid", employeeid);
+        }
         //        getVerificationParams(params, 1);//获取验证参数
         Map<String,String> mHeaders = getHeader();
         GsonRequest<RepBase<List<Map<String,Object>>>> request = null;

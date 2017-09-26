@@ -179,7 +179,7 @@ public class DocumentDetailActivity extends BaseActivity {
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        new CheckWorkServices(context).bussinessTripFindAllService(id, new Handler() {
+        new CheckWorkServices(context).bussinessDetailService(id, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);

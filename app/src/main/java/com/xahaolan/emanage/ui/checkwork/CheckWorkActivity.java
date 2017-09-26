@@ -63,7 +63,7 @@ public class CheckWorkActivity extends BaseActivity implements LocationSource, A
 
     private Integer[] imageArr = {R.drawable.apply_leave, R.drawable.apply_out_register, R.drawable.apply_out,
             R.drawable.apply_work_hard, R.drawable.apply_clock_card, R.drawable.check_apply, R.drawable.check_examine};
-    private String[] strArr = {"请假申请", "外出登记", "出差申请", "加班登记", "打卡记录", "查看我的申请", "查看我的登记"};
+    private String[] strArr = {"请假申请", "外出登记", "出差申请", "加班登记", "打卡记录", "查看我的申请", "查看我的审批"};
 
     private MapManage mapManage;
     private MapView map_view;
@@ -231,8 +231,9 @@ public class CheckWorkActivity extends BaseActivity implements LocationSource, A
                         break;
                     //查看我的审批
                     case 6:
+                        ToastUtils.showShort(context,"研发中，敬请期待....");
                         bundle.putInt("CheckType", MyConstant.CHECK_MINE_EXAMINE);
-                        MyUtils.jump(context, CheckApplyActivity.class, bundle, false, null);
+//                        MyUtils.jump(context, CheckApplyActivity.class, bundle, false, null);
                         break;
                 }
             }

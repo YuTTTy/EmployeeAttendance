@@ -41,11 +41,12 @@ public class TabDailyFragment extends BaseFragment {
 
     private boolean isPrepared; //标志位，标志已经初始化完成
     private View rootView;
-    private int dailyType; //
-    private int personId;
+    private int dailyType = 0; //0.全部 1.我的  2.日报  3.周报
+    private int personId = 0;
     private List<Map<String,Object>> dataList;
-    private int page = 1;
-    private Boolean hasNextPage = false;
+    private int page = 1;  //当前页
+    private int rows = 20;   //每页显示记录数
+    private Boolean hasNextPage;
     private View foot;//页脚
 
     @Nullable
@@ -74,7 +75,7 @@ public class TabDailyFragment extends BaseFragment {
         initData();
     }
 
-    public void initView(View contentView) {
+    public void initView(final View contentView) {
         swipeLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.swipe_refresh_layout);
         /*下拉刷新*/
         BaseActivity.setSwipRefresh(swipeLayout, new Handler() {
@@ -83,9 +84,15 @@ public class TabDailyFragment extends BaseFragment {
                 super.handleMessage(msg);
                 if (msg.what == MyConstant.HANDLER_REFRESH_SUCCESS) {
                     page = 1;
-                    adapter = new TabDailyAdapter(getActivity());
-                    list_view.setAdapter(adapter);
-                    requestDailyList();
+                    if (dailyType == 0 || dailyType == 2){
+                        personId = 0;
+                        requestDailyList();
+                    }else if (dailyType == 1){
+                        personId = AppUtils.getPersonId(getActivity());
+                        requestDailyList();
+                    }else {
+                        ToastUtils.showShort(getActivity(),"暂无周报");
+                    }
                 }
             }
         });
@@ -107,7 +114,15 @@ public class TabDailyFragment extends BaseFragment {
                     if (view.getLastVisiblePosition() == view.getCount() - 1) {
                         if (hasNextPage) {
                             page++;
-                            requestDailyList();
+                            if (dailyType == 0 || dailyType == 2){
+                                personId = 0;
+                                requestDailyList();
+                            }else if (dailyType == 1){
+                                personId = AppUtils.getPersonId(getActivity());
+                                requestDailyList();
+                            }else {
+//                                ToastUtils.showShort(getActivity(),"暂无周报");
+                            }
                         } else if (list_view.getFooterViewsCount() <= 0) {
                             list_view.addFooterView(foot);
                         }
@@ -123,7 +138,6 @@ public class TabDailyFragment extends BaseFragment {
     }
 
     public void initData() {
-        personId = AppUtils.getPersonId(getActivity());
         adapter = new TabDailyAdapter(getActivity());
         list_view.setAdapter(adapter);
     }
@@ -139,7 +153,15 @@ public class TabDailyFragment extends BaseFragment {
         if (!isPrepared || !isVisible) {
             return;
         }
-        requestDailyList();
+        if (dailyType == 0 || dailyType == 2){
+            personId = 0;
+            requestDailyList();
+        }else if (dailyType == 1){
+            personId = AppUtils.getPersonId(getActivity());
+            requestDailyList();
+        }else {
+            ToastUtils.showShort(getActivity(),"暂无周报");
+        }
     }
 
     /**
@@ -158,8 +180,17 @@ public class TabDailyFragment extends BaseFragment {
                         }
                         if (msg.what == MyConstant.REQUEST_SUCCESS) {
                             dataList = (List<Map<String, Object>>) msg.obj;
+//                            if (lastPage == 0 || currentPage == lastPage) {
+//                                hasNextPage = false;
+//                            } else {
+//                                hasNextPage = true;
+//                            }
                             if (dataList != null && dataList.size() > 0){
+                            if (page == 1) {
                                 adapter.resetList(dataList);
+                            } else {
+                                adapter.appendList(dataList);
+                            }
                                 adapter.notifyDataSetChanged();
                             }
                         } else if (msg.what == MyConstant.REQUEST_FIELD) {

@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.View;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -192,5 +193,23 @@ public class BitmapUtils {
         InputStream inputStream = context.getResources().openRawResource(resInt);
         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
         return bitmap;
+    }
+    /**
+     * 照片转byte二进制
+     * @param imagepath 需要转byte的照片路径
+     * @return 已经转成的byte
+     * @throws Exception
+     */
+    public static byte[] readStream(String imagepath) throws Exception {
+        FileInputStream fs = new FileInputStream(imagepath);
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len = 0;
+        while (-1 != (len = fs.read(buffer))) {
+            outStream.write(buffer, 0, len);
+        }
+        outStream.close();
+        fs.close();
+        return outStream.toByteArray();
     }
 }

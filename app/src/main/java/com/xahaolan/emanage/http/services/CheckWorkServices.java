@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by helinjie on 2017/9/15.
+ * Created by helinjie on 2017/9/15.     考勤
  */
 
 public class CheckWorkServices extends BaseService {
@@ -162,10 +162,12 @@ public class CheckWorkServices extends BaseService {
      * @param endDate   结束时间
      * @param vehicle   交通工具
      * @param reason    出差事由
-     * @param handler
+     * @param suorceFile    出差事由
+     * @param handler   二进制文件列表
      */
     public void bussinessTripAddService(int personId,String personName,String origin,String destination,
-                                     String startDate,String endDate,String vehicle,String reason,final Handler handler) {
+                                     String startDate,String endDate,String vehicle,String reason,
+                                      String[] suorceFile, final Handler handler) {
         LogUtils.e(TAG, "==============================   出差登记表添加 request   =======================================");
         String urlStr = MyConstant.BASE_URL + "/app/businessTrip!add.action";
         Map<String, Object> params = new HashMap<>();
@@ -177,6 +179,7 @@ public class CheckWorkServices extends BaseService {
         params.put("endDate", endDate);
         params.put("vehicle", vehicle);
         params.put("reason", reason);
+        params.put("suorceFile", suorceFile);
         //        getVerificationParams(params, 1);//获取验证参数
         Map<String,String> mHeaders = getHeader();
         GsonRequest<RepBase<List<Map<String,Object>>>> request = null;
@@ -252,7 +255,49 @@ public class CheckWorkServices extends BaseService {
         }
         requesQueue.add(request);
     }
-
+    /**
+     *                  出差登记表详情查询
+     *
+     * @param id    员工id
+     * @param handler
+     */
+    public void bussinessDetailService(int id,final Handler handler) {
+        LogUtils.e(TAG, "==============================   出差登记表详情查询 request   =======================================");
+        String urlStr = MyConstant.BASE_URL + "";
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        //        getVerificationParams(params, 1);//获取验证参数
+        Map<String,String> mHeaders = getHeader();
+        GsonRequest<RepBase<Map<String,Object>>> request = null;
+        try {
+            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<Map<String,Object>>>() {
+            },
+                    new Response.Listener<RepBase<Map<String,Object>>>() {
+                        @Override
+                        public void onResponse(RepBase<Map<String,Object>> response) {
+                            if (response == null || response.getSuccess() == null) {
+                                Log.e(TAG, "出差登记表详情查询 null" + response);
+                                return;
+                            }
+                            Message message = new Message();
+                            if (response.getSuccess()) {
+                                Map<String,Object> responseData = response.getObj();
+                                message.what = MyConstant.REQUEST_SUCCESS;
+                                message.obj = responseData;
+                                Log.e(TAG, "出差登记表详情查询 success");
+                            } else {
+                                message.what = MyConstant.REQUEST_FIELD;
+                                message.obj = response.getMsg();
+                                Log.e(TAG, "出差登记表详情查询 field");
+                            }
+                            handler.sendMessage(message);
+                        }
+                    }, new EZErrListener<>(context, handler));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        requesQueue.add(request);
+    }
     /**
      *                    外出登记查询
      *
@@ -471,9 +516,9 @@ public class CheckWorkServices extends BaseService {
                             }
                             Message message = new Message();
                             if (response.getSuccess()) {
-                                List<Map<String,Object>> responseData = response.getObj();
+                                List<Map<String,Object>> responseList = response.getObj();
                                 message.what = MyConstant.REQUEST_SUCCESS;
-                                message.obj = responseData;
+                                message.obj = responseList;
                                 Log.e(TAG, "请假单查询 success");
                             } else {
                                 message.what = MyConstant.REQUEST_FIELD;
