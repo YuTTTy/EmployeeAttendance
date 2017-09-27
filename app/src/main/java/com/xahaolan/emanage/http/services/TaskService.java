@@ -59,10 +59,11 @@ public class TaskService extends BaseService {
      * @param executorId  执行人id
      * @param content     任务内容
      * @param endDate     截止日期
+     * @param sourceFile
      * @param handler
      */
     public void addTaskAddService(int createId,String createName,int executorId,
-                                  String content,String endDate,final Handler handler) {
+                                  String content,String endDate,String[] sourceFile,final Handler handler) {
         LogUtils.e(TAG, "==============================   任务添加 request   =======================================");
         String urlStr = MyConstant.BASE_URL + "/app/task!add.action";
         Map<String, Object> params = new HashMap<>();
@@ -71,6 +72,7 @@ public class TaskService extends BaseService {
         params.put("executorId", executorId);
         params.put("content", content);
         params.put("endDate", endDate);
+        params.put("sourceFile", sourceFile);
         //        getVerificationParams(params, 1);//获取验证参数
         Map<String,String> mHeaders = getHeader();
         GsonRequest<RepBase<List<Map<String,Object>>>> request = null;

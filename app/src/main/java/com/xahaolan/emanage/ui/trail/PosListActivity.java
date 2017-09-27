@@ -14,6 +14,8 @@ import com.xahaolan.emanage.adapter.TaskAdapter;
 import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.http.services.CheckServices;
+import com.xahaolan.emanage.http.services.TrailServices;
+import com.xahaolan.emanage.utils.common.DateUtil;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ public class PosListActivity extends BaseActivity {
     private ListView list_view;
     private PosListAdapter adapter;
     private List<Map<String,Object>> locList;
+    private int personId;
     private int page = 1;  //当前页
     private int rows = 20;   //每页显示记录数
     private Boolean hasNextPage = false;
@@ -101,41 +104,28 @@ public class PosListActivity extends BaseActivity {
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-//        new CheckServices(context).myApplyService(personid, page, rows, new Handler() {
-//            @Override
-//            public void handleMessage(Message msg) {
-//                super.handleMessage(msg);
-//                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-//                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-//                }
-//                if (msg.what == MyConstant.REQUEST_SUCCESS) {
-//                    Map<String, Object> dataResponse = (Map<String, Object>) msg.obj;
-//                    if (dataResponse != null) {
-//                        if (dataResponse.get("resultList") != null) {
-//                            locList = (List<Map<String, Object>>) dataResponse.get("resultList");
-////                            if (lastPage == 0 || currentPage == lastPage) {
-////                                hasNextPage = false;
-////                            } else {
-////                                hasNextPage = true;
-////                            }
-//                            if (locList != null && locList.size() > 0) {
-////                            if (page == 1) {
-////                                activityAdapter.resetList(activityList);
-////                            } else {
-////                                activityAdapter.appendList(activityList);
-////                            }
-//                                adapter.notifyDataSetChanged();
-//                            }
-//                        }
-//                    }
-//                } else if (msg.what == MyConstant.REQUEST_FIELD) {
-//                    String errMsg = (String) msg.obj;
-//                    ToastUtils.showShort(context, errMsg);
-//                } else if (msg.what == MyConstant.REQUEST_ERROR) {
-//                    String errMsg = (String) msg.obj;
-//                    ToastUtils.showShort(context, errMsg);
-//                }
-//            }
-//        });
+        new TrailServices(context).queryUserLocService(personId, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    locList = (List<Map<String, Object>>) msg.obj;
+                    if (locList != null && locList.size() >= 0){
+//                        latitude = (Double) locData.get("lat");
+//                        longtitude = (Double) locData.get("lon");
+//                        locAddress = (String) locData.get("address");
+                    }
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
     }
 }

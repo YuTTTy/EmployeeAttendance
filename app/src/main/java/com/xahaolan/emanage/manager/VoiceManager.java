@@ -105,7 +105,7 @@ public class VoiceManager {
     /**
      * 停止录音
      */
-    public void stopRecord() {
+    public void stopRecord(Handler handler) {
         if (mMediaRecorder != null) {
             //added by ouyang start
             try {
@@ -116,6 +116,11 @@ public class VoiceManager {
                 mMediaRecorder.setPreviewDisplay(null);
                 mMediaRecorder.stop();
                 LogUtils.e(TAG, "录音结束");
+
+                Message message = new Message();
+                message.what = 123;
+                message.obj = filePath;
+                handler.sendMessage(message);
             } catch (IllegalStateException e) {
                 // TODO: handle exception
                 LogUtils.e("Exception", Log.getStackTraceString(e));
@@ -169,98 +174,5 @@ public class VoiceManager {
         } else {
             Log.e(TAG, "mPlayer 为空");
         }
-    }
-
-    Boolean isCheck = true;
-    Double frontVocLevel = 0.0;
-    int testNum = 1;
-    Boolean isAllSame = true;
-
-    /**
-     * 检测录音权限是否开启
-     * @param testNum
-     * @param handler
-     */
-    public void testVoice(int testNum, final Handler handler) {
-        this.testNum = testNum;
-        isCheck = true;
-        isAllSame = true;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (isCheck) {
-                    try {
-                        Thread.sleep(100);
-                        getNum(handler);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
-    }
-
-    public void getNum(Handler handler) {
-        double ratio = 0;
-        double dbValue = 0;// 分贝
-        if (testNum <= 10) {
-            if (mMediaRecorder != null) {
-                ratio = (double) mMediaRecorder.getMaxAmplitude() / BASE;
-            }
-            if (ratio > 1)
-                dbValue = 20 * Math.log10(ratio);
-
-            Log.e(TAG, "检测分贝值 ：" + dbValue);
-            if (frontVocLevel != dbValue) {
-                isAllSame = false;
-            } else {
-                frontVocLevel = dbValue;
-            }
-            testNum++;
-        } else {
-            isCheck = false;
-            Message message = new Message();
-            if (isAllSame) {
-                message.what = MyConstant.HANDLER_PERMISSION_CLOSE;
-                Log.e(TAG, "返回值全相等，未获取录音权限");
-            } else {
-                message.what = MyConstant.HANDLER_PERMISSION_OPEN;
-                Log.e(TAG, "返回值正常");
-            }
-            stopRecord();
-            handler.sendMessage(message);
-        }
-    }
-
-    /**
-     * init  dbvalue
-     */
-    public static AudioRecord initDbvalue() {
-        AudioRecord mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                SAMPLE_RATE_IN_HZ, AudioFormat.CHANNEL_IN_DEFAULT,
-                AudioFormat.ENCODING_PCM_16BIT, BUFFER_SIZE);
-        return mAudioRecord;
-    }
-
-    /**
-     * 获取分贝值
-     *
-     * @return
-     */
-    public static int getDbValue(AudioRecord mAudioRecord) {
-        mAudioRecord.startRecording();
-        short[] buffer = new short[BUFFER_SIZE];
-        //r是实际读取的数据长度，一般而言r会小于buffersize
-        int r = mAudioRecord.read(buffer, 0, BUFFER_SIZE);
-        long v = 0;
-        // 将 buffer 内容取出，进行平方和运算
-        for (int i = 0; i < buffer.length; i++) {
-            v += buffer[i] * buffer[i];
-        }
-        // 平方和除以数据总长度，得到音量大小。
-        double mean = v / (double) r;
-        double volume = 10 * Math.log10(mean);
-//        Log.e(TAG, "分贝值:" + volume);
-        return new Double((Double) volume).intValue();
     }
 }

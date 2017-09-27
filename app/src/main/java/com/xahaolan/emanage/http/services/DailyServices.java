@@ -152,10 +152,12 @@ public class DailyServices extends BaseService {
      * @param weather   天气情况
      * @param state   状态 0，草稿1.已提交
      * @param createuser   创建用户姓名
+     * @param sourceFile
      * @param handler
      */
     public void dailyNewService(int department,int employeeid,int projectid,String date,String conclusion,
-                                String question,String plan,String weather,int state,String createuser,final Handler handler) {
+                                String question,String plan,String weather,int state,String createuser,
+                                String[] sourceFile,final Handler handler) {
         LogUtils.e(TAG, "==============================   新增日报 request   =======================================");
         String urlStr = MyConstant.BASE_URL + "/app/dailyreportAPPAction!add.action";
         Map<String, Object> params = new HashMap<>();
@@ -169,6 +171,7 @@ public class DailyServices extends BaseService {
         params.put("weather", weather);
         params.put("state", state);
         params.put("createuser", createuser);
+        params.put("sourceFile", sourceFile);
         //        getVerificationParams(params, 1);//获取验证参数
         Map<String,String> mHeaders = getHeader();
         GsonRequest<RepBase<String>> request = null;

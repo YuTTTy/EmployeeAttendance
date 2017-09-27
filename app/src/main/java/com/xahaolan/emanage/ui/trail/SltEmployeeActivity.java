@@ -1,5 +1,6 @@
 package com.xahaolan.emanage.ui.trail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,14 +33,15 @@ import java.util.Map;
 public class SltEmployeeActivity extends BaseActivity {
     private static final String TAG = SltEmployeeActivity.class.getSimpleName();
     private SwipeRefreshLayout swipeLayout;
+    private Intent intent;
 
     private SideBar side_bar;
     private TextView dialog_text;
     private ListView list_view;
     private EmployeeAdapter adapter;
     private List<Map<String, Object>> dataList;
-    private int personId;
-    private int personid; //申请人id
+    private int personId;   //申请人id
+    private int departmentid;
     private int page = 1;  //当前页
     private int rows = 20;   //每页显示记录数
     private Boolean hasNextPage;
@@ -123,7 +125,8 @@ public class SltEmployeeActivity extends BaseActivity {
 
     @Override
     public void initData() {
-
+        intent = getIntent();
+        departmentid = intent.getIntExtra("departmentid",0);
     }
 
     @Override
@@ -141,7 +144,7 @@ public class SltEmployeeActivity extends BaseActivity {
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        new TrailServices(context).employeeListService(new Handler() {
+        new TrailServices(context).employeeListService(departmentid,new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);

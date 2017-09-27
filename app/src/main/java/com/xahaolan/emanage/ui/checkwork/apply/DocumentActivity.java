@@ -27,10 +27,12 @@ import com.xahaolan.emanage.http.services.CheckWorkServices;
 import com.xahaolan.emanage.manager.PhotoCamerManager;
 import com.xahaolan.emanage.manager.VoiceManager;
 import com.xahaolan.emanage.ui.MainActivity;
+import com.xahaolan.emanage.utils.common.BitmapUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.AppUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -99,6 +101,9 @@ public class DocumentActivity extends BaseActivity {
     private String destination;//  目的地
     private String vehicle;//  交通工具
     private String reason;//  原因
+    private String voiceFile;
+    private String[] sourceFile;
+    private List<String> sourceList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,7 +164,20 @@ public class DocumentActivity extends BaseActivity {
 
                         break;
                     case MotionEvent.ACTION_UP:
-                        voiceManager.stopRecord();
+                        voiceManager.stopRecord(new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                super.handleMessage(msg);
+                                if (msg.what == 123){
+                                    String voicePath = (String) msg.obj;
+                                    try {
+                                        voiceFile = String.valueOf(BitmapUtils.readStream(voicePath));
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
                         voice_text.setBackground(MyUtils.getShape(MyConstant.COLOR_BLUE, 5f, 1, MyConstant.COLOR_BLUE));
                         voice_text.setVisibility(View.VISIBLE);
                         break;
@@ -179,6 +197,7 @@ public class DocumentActivity extends BaseActivity {
 
     @Override
     public void initData() {
+        sourceList = new ArrayList<>();
         voiceManager = new VoiceManager();
         photoCamerUtil = new PhotoCamerManager((Activity) context, context);
         intent = getIntent();
@@ -281,7 +300,15 @@ public class DocumentActivity extends BaseActivity {
                     public void handleMessage(Message msg) {
                         super.handleMessage(msg);
                         if (msg.what == MyConstant.HANDLER_SUCCESS) {
-
+                            String imagePath = (String) msg.obj;
+                            try {
+                                sourceList.add(String.valueOf(BitmapUtils.readStream(imagePath)));
+                                for (int i=0;i < sourceList.size(); i ++){
+                                    photos_layout.addView(addPhotoItemView(sourceList.get(i)));
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 });
@@ -389,11 +416,31 @@ public class DocumentActivity extends BaseActivity {
      * 请假申请
      */
     public void requestApplyLeave() {
+        if (sourceList == null || sourceList.size() <=0){
+            ToastUtils.showShort(context,"请上传图片");
+            return;
+        }
+        if (voiceFile == null || voiceFile.equals("")){
+            sourceFile = new String[sourceList.size()];
+            for (int i = 0;i < sourceList.size();i++){
+                sourceFile[i] = sourceList.get(i);
+            }
+        }else {
+            sourceFile = new String[sourceList.size()+1];
+            for (int i = 0;i < sourceList.size()+1;i++){
+                if (i == 0){
+                    sourceFile[i] = voiceFile;
+                }else {
+                    sourceFile[i+1] = sourceList.get(i);
+
+                }
+            }
+        }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
         new CheckWorkServices(context).leaveOrderAddService(personId, personName, startDate,
-                endDate, reason, new Handler() {
+                endDate, reason, sourceFile,new Handler() {
                     @Override
                     public void handleMessage(Message msg) {
                         super.handleMessage(msg);
@@ -417,11 +464,31 @@ public class DocumentActivity extends BaseActivity {
      * 外出登记申请
      */
     public void requestApplyOutRegister() {
+        if (sourceList == null || sourceList.size() <=0){
+            ToastUtils.showShort(context,"请上传图片");
+            return;
+        }
+        if (voiceFile == null || voiceFile.equals("")){
+            sourceFile = new String[sourceList.size()];
+            for (int i = 0;i < sourceList.size();i++){
+                sourceFile[i] = sourceList.get(i);
+            }
+        }else {
+            sourceFile = new String[sourceList.size()+1];
+            for (int i = 0;i < sourceList.size()+1;i++){
+                if (i == 0){
+                    sourceFile[i] = voiceFile;
+                }else {
+                    sourceFile[i+1] = sourceList.get(i);
+
+                }
+            }
+        }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
         new CheckWorkServices(context).outGoingAddService(personId, personName, startDate,
-                endDate, reason, new Handler() {
+                endDate, reason, sourceFile,new Handler() {
                     @Override
                     public void handleMessage(Message msg) {
                         super.handleMessage(msg);
@@ -445,11 +512,31 @@ public class DocumentActivity extends BaseActivity {
      * 出差申请
      */
     public void requestApplyOut() {
+        if (sourceList == null || sourceList.size() <=0){
+            ToastUtils.showShort(context,"请上传图片");
+            return;
+        }
+        if (voiceFile == null || voiceFile.equals("")){
+            sourceFile = new String[sourceList.size()];
+            for (int i = 0;i < sourceList.size();i++){
+                sourceFile[i] = sourceList.get(i);
+            }
+        }else {
+            sourceFile = new String[sourceList.size()+1];
+            for (int i = 0;i < sourceList.size()+1;i++){
+                if (i == 0){
+                    sourceFile[i] = voiceFile;
+                }else {
+                    sourceFile[i+1] = sourceList.get(i);
+
+                }
+            }
+        }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
         new CheckWorkServices(context).bussinessTripAddService(personId, personName, origin, destination,
-                startDate, endDate, vehicle, reason, new Handler() {
+                startDate, endDate, vehicle, reason,sourceFile,new Handler() {
                     @Override
                     public void handleMessage(Message msg) {
                         super.handleMessage(msg);
@@ -473,11 +560,31 @@ public class DocumentActivity extends BaseActivity {
      * 加班登记
      */
     public void requestApplyWork() {
+        if (sourceList == null || sourceList.size() <=0){
+            ToastUtils.showShort(context,"请上传图片");
+            return;
+        }
+        if (voiceFile == null || voiceFile.equals("")){
+            sourceFile = new String[sourceList.size()];
+            for (int i = 0;i < sourceList.size();i++){
+                sourceFile[i] = sourceList.get(i);
+            }
+        }else {
+            sourceFile = new String[sourceList.size()+1];
+            for (int i = 0;i < sourceList.size()+1;i++){
+                if (i == 0){
+                    sourceFile[i] = voiceFile;
+                }else {
+                    sourceFile[i+1] = sourceList.get(i);
+
+                }
+            }
+        }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
         new CheckWorkServices(context).workAddService(personId, startDate,
-                endDate, reason, new Handler() {
+                endDate, reason,sourceFile, new Handler() {
                     @Override
                     public void handleMessage(Message msg) {
                         super.handleMessage(msg);
@@ -497,7 +604,7 @@ public class DocumentActivity extends BaseActivity {
                 });
     }
 
-    public View getPhotoItemView(String imageUrl) {
+    public View addPhotoItemView(String imageUrl) {
         View photo_view = LayoutInflater.from(context).inflate(R.layout.item_view_image, null);
         ImageView photo_image = (ImageView) photo_view.findViewById(R.id.item_view_photo_image);
         Glide.with(context).load(imageUrl).into(photo_image);

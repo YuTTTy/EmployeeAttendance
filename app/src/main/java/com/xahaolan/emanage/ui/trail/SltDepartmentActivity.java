@@ -1,6 +1,8 @@
 package com.xahaolan.emanage.ui.trail;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +11,14 @@ import android.widget.TextView;
 
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.base.BaseActivity;
+import com.xahaolan.emanage.base.MyConstant;
+import com.xahaolan.emanage.http.services.TrailServices;
+import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by helinjie on 2017/9/10.
@@ -20,7 +29,14 @@ public class SltDepartmentActivity extends BaseActivity {
     private SwipeRefreshLayout swipeLayout;
 
     private LinearLayout items_layout;
-    private String[] nameArr = {"销售部","技术部","工程部","采购部","财务部"};
+    //    private String[] nameArr = {"销售部","技术部","工程部","采购部","财务部"};
+    private List<Map<String, Object>> dataList;
+
+    private int personid; //申请人id
+    private int page = 1;  //当前页
+    private int rows = 20;   //每页显示记录数
+    private Boolean hasNextPage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,25 +58,61 @@ public class SltDepartmentActivity extends BaseActivity {
 
     @Override
     public void initData() {
-        for (int i = 0; i < nameArr.length;i++){
-            items_layout.addView(addItemView(nameArr[i]));
-        }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        dataList = new ArrayList<>();
+        requestDepartment();
     }
 
-    public View addItemView(String nameStr){
-        View itemView = LayoutInflater.from(context).inflate(R.layout.item_view_slt_employee,null);
+    /**
+     * 部门列表
+     */
+    public void requestDepartment() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new TrailServices(context).departmentListService(new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    dataList = (List<Map<String, Object>>) msg.obj;
+                    if (dataList != null && dataList.size() > 0) {
+                        for (int i = 0; i < dataList.size();i++){
+                            items_layout.addView(addItemView(dataList.get(i)));
+                        }
+                    }
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
+    }
+
+    public View addItemView(final Map<String,Object> data) {
+        View itemView = LayoutInflater.from(context).inflate(R.layout.item_view_slt_employee, null);
         TextView name_text = (TextView) itemView.findViewById(R.id.item_view_employee_name);
-        name_text.setText(nameStr);
+        name_text.setText(data.get("name")+"");
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyUtils.jump(context,SltEmployeeActivity.class,new Bundle(),false,null);
+                if (data.get("departmentid") != null){
+                    int departmentId = new Double((Double) data.get("departmentid")).intValue();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("departmentid",departmentId);
+                    MyUtils.jump(context, SltEmployeeActivity.class, bundle, false, null);
+                }
             }
         });
         return itemView;

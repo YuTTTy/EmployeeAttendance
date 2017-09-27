@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -15,16 +16,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.http.services.DailyServices;
 import com.xahaolan.emanage.manager.PhotoCamerManager;
 import com.xahaolan.emanage.manager.VoiceManager;
+import com.xahaolan.emanage.utils.common.BitmapUtils;
 import com.xahaolan.emanage.utils.common.DateUtil;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.AppUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by helinjie on 2017/9/5.   发起日报
@@ -56,6 +62,9 @@ public class SendDailyActivity extends BaseActivity {
     private String weather = "";//   天气情况
     private int state = 0;//   状态 0，草稿1.已提交
     private String createuser = "";//  创建用户姓名
+    private String voiceFile;
+    private String[] sourceFile;
+    private List<String> sourceList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +106,20 @@ public class SendDailyActivity extends BaseActivity {
 
                         break;
                     case MotionEvent.ACTION_UP:
-                        voiceManager.stopRecord();
+                        voiceManager.stopRecord(new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                super.handleMessage(msg);
+                                if (msg.what == 123){
+                                    String voicePath = (String) msg.obj;
+                                    try {
+                                        voiceFile = String.valueOf(BitmapUtils.readStream(voicePath));
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
                         voice_text.setBackground(MyUtils.getShape(MyConstant.COLOR_BLUE, 5f, 1, MyConstant.COLOR_BLUE));
                         voice_text.setVisibility(View.VISIBLE);
                         break;
@@ -109,6 +131,7 @@ public class SendDailyActivity extends BaseActivity {
 
     @Override
     public void initData() {
+        sourceList = new ArrayList<>();
         voiceManager = new VoiceManager();
         photoCamerUtil = new PhotoCamerManager((Activity) context, context);
 
@@ -135,7 +158,15 @@ public class SendDailyActivity extends BaseActivity {
                     public void handleMessage(Message msg) {
                         super.handleMessage(msg);
                         if (msg.what == MyConstant.HANDLER_SUCCESS) {
-
+                            String imagePath = (String) msg.obj;
+                            try {
+                                sourceList.add(String.valueOf(BitmapUtils.readStream(imagePath)));
+                                for (int i=0;i < sourceList.size(); i ++){
+                                    photos_layout.addView(addPhotoItemView(sourceList.get(i)));
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 });
@@ -171,11 +202,32 @@ public class SendDailyActivity extends BaseActivity {
             ToastUtils.showShort(context,"请输入明日计划");
             return;
         }
+        if (sourceList == null || sourceList.size() <=0){
+            ToastUtils.showShort(context,"请上传图片");
+            return;
+        }
+
+        if (voiceFile == null || voiceFile.equals("")){
+            sourceFile = new String[sourceList.size()];
+            for (int i = 0;i < sourceList.size();i++){
+                sourceFile[i] = sourceList.get(i);
+            }
+        }else {
+            sourceFile = new String[sourceList.size()+1];
+            for (int i = 0;i < sourceList.size()+1;i++){
+                if (i == 0){
+                    sourceFile[i] = voiceFile;
+                }else {
+                    sourceFile[i+1] = sourceList.get(i);
+
+                }
+            }
+        }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
         new DailyServices(context).dailyNewService(department, employeeid, projectid, date, conclusion,
-                question, plan, weather, state, createuser, new Handler() {
+                question, plan, weather, state, createuser,sourceFile, new Handler() {
                     @Override
                     public void handleMessage(Message msg) {
                         super.handleMessage(msg);
@@ -193,6 +245,12 @@ public class SendDailyActivity extends BaseActivity {
                         }
                     }
                 });
+    }
+    public View addPhotoItemView(String imageUrl) {
+        View photo_view = LayoutInflater.from(context).inflate(R.layout.item_view_image, null);
+        ImageView photo_image = (ImageView) photo_view.findViewById(R.id.item_view_photo_image);
+        Glide.with(context).load(imageUrl).into(photo_image);
+        return photo_view;
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

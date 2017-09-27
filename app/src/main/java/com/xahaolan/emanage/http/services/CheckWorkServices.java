@@ -162,12 +162,12 @@ public class CheckWorkServices extends BaseService {
      * @param endDate   结束时间
      * @param vehicle   交通工具
      * @param reason    出差事由
-     * @param suorceFile    出差事由
+     * @param sourceFile    出差事由
      * @param handler   二进制文件列表
      */
     public void bussinessTripAddService(int personId,String personName,String origin,String destination,
                                      String startDate,String endDate,String vehicle,String reason,
-                                      String[] suorceFile, final Handler handler) {
+                                      String[] sourceFile, final Handler handler) {
         LogUtils.e(TAG, "==============================   出差登记表添加 request   =======================================");
         String urlStr = MyConstant.BASE_URL + "/app/businessTrip!add.action";
         Map<String, Object> params = new HashMap<>();
@@ -179,7 +179,7 @@ public class CheckWorkServices extends BaseService {
         params.put("endDate", endDate);
         params.put("vehicle", vehicle);
         params.put("reason", reason);
-        params.put("suorceFile", suorceFile);
+        params.put("sourceFile", sourceFile);
         //        getVerificationParams(params, 1);//获取验证参数
         Map<String,String> mHeaders = getHeader();
         GsonRequest<RepBase<List<Map<String,Object>>>> request = null;
@@ -263,7 +263,7 @@ public class CheckWorkServices extends BaseService {
      */
     public void bussinessDetailService(int id,final Handler handler) {
         LogUtils.e(TAG, "==============================   出差登记表详情查询 request   =======================================");
-        String urlStr = MyConstant.BASE_URL + "";
+        String urlStr = MyConstant.BASE_URL + "/app/businessTrip!findbyID.action";
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
         //        getVerificationParams(params, 1);//获取验证参数
@@ -393,9 +393,11 @@ public class CheckWorkServices extends BaseService {
      * @param starttime  开始时间（09:12:12）
      * @param endtime  结束时间（14:23:34）
      * @param reason   外出原因
+     * @param sourceFile
      * @param handler
      */
-    public void outGoingAddService(int personid,String date,String starttime,String endtime,String reason,final Handler handler) {
+    public void outGoingAddService(int personid,String date,String starttime,String endtime,
+                                   String reason,String[] sourceFile,final Handler handler) {
         LogUtils.e(TAG, "==============================   外出登记添加 request   =======================================");
         String urlStr = MyConstant.BASE_URL + "/app/outgoingAPPAction!add.action";
         Map<String, Object> params = new HashMap<>();
@@ -404,6 +406,7 @@ public class CheckWorkServices extends BaseService {
         params.put("starttime", starttime);
         params.put("endtime", endtime);
         params.put("reason", reason);
+        params.put("sourceFile", sourceFile);
         //        getVerificationParams(params, 1);//获取验证参数
         Map<String,String> mHeaders = getHeader();
         GsonRequest<RepBase<String>> request = null;
@@ -585,10 +588,11 @@ public class CheckWorkServices extends BaseService {
      * @param startDate   开始日期（2017-09-11）
      * @param endDate   结束日期（2017-09-12）
      * @param reason   请假原因
+     * @param sourceFile
      * @param handler
      */
     public void leaveOrderAddService(int personId,String personName,String startDate,
-                                 String endDate,String reason,final Handler handler) {
+                                 String endDate,String reason,String[] sourceFile,final Handler handler) {
         LogUtils.e(TAG, "==============================   请假单创建 request   =======================================");
         String urlStr = MyConstant.BASE_URL + "/app/leaveOrderAPPAction!add.action";
         Map<String, Object> params = new HashMap<>();
@@ -597,6 +601,7 @@ public class CheckWorkServices extends BaseService {
         params.put("startDate", startDate);
         params.put("endDate", endDate);
         params.put("reason", reason);
+        params.put("sourceFile", sourceFile);
         //        getVerificationParams(params, 1);//获取验证参数
         Map<String,String> mHeaders = getHeader();
         GsonRequest<RepBase<String>> request = null;
@@ -779,10 +784,11 @@ public class CheckWorkServices extends BaseService {
      * @param startDate   开始日期（2017-09-11）
      * @param endDate   结束日期（2017-09-12）
      * @param reason   加班原因
+     * @param sourceFile
      * @param handler
      */
-    public void workAddService(int personId,String startDate,
-                                      String endDate,String reason,final Handler handler) {
+    public void workAddService(int personId,String startDate,String endDate,String reason,
+                               String[] sourceFile,final Handler handler) {
         LogUtils.e(TAG, "==============================   加班信息新增 request   =======================================");
         String urlStr = MyConstant.BASE_URL + "/app/workAPPAction!add.action";
         Map<String, Object> params = new HashMap<>();
@@ -790,6 +796,7 @@ public class CheckWorkServices extends BaseService {
         params.put("startDate", startDate);
         params.put("endDate", endDate);
         params.put("reason", reason);
+        params.put("sourceFile", sourceFile);
         //        getVerificationParams(params, 1);//获取验证参数
         Map<String,String> mHeaders = getHeader();
         GsonRequest<RepBase<String>> request = null;
