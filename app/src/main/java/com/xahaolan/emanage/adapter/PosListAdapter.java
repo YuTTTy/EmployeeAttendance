@@ -53,13 +53,18 @@ public class PosListAdapter extends BaseAdapter {
             holder.department_text = (TextView) convertView.findViewById(R.id.item_pos_list_department);
             holder.position_text = (TextView) convertView.findViewById(R.id.item_pos_list_position);
             convertView.setTag(holder);
-        }else {
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         Map<String, Object> data = list.get(position);
         if (data != null) {
-
+            if (data.get("personName") != null) {
+                holder.name_text.setText(data.get("personName") + "");
+            }
+            if (data.get("label") != null) {
+                holder.position_text.setText(data.get("label") + "");
+            }
         }
         return convertView;
     }

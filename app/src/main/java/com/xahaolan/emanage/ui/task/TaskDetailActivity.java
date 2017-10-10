@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by helinjie on 2017/9/9.
+ * Created by               task detail
  */
 
 public class TaskDetailActivity extends BaseActivity {
@@ -34,6 +34,7 @@ public class TaskDetailActivity extends BaseActivity {
     private LinearLayout items_layout;
     private TextView btn_text;
 
+    private int taskId;
     private Map<String,Object> detailData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,7 @@ public class TaskDetailActivity extends BaseActivity {
         btn_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                requestFinishTask();
+                requestFinishTask();
             }
         });
     }
@@ -74,7 +75,74 @@ public class TaskDetailActivity extends BaseActivity {
     @Override
     public void initData() {
         intent = getIntent();
-        detailData = (Map<String, Object>) intent.getSerializableExtra("detailData");
+        taskId = intent.getIntExtra("taskId",0);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        requestTaskDetail();
+    }
+
+    /**
+     *      task detail
+     */
+    public void requestTaskDetail() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new TaskService(context).taskDetailService(taskId, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    detailData = (Map<String, Object>) msg.obj;
+                    if (detailData != null){
+                        setViewData();
+                    }
+
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
+    }
+
+    /**
+     *       finish task
+     */
+    public void requestFinishTask() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new TaskService(context).finishTaskService(taskId, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    finish();
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
+    }
+    public void setViewData(){
         if (detailData.get("createName") != null){
             send_text.setText(detailData.get("createName")+"");
         }
@@ -87,73 +155,5 @@ public class TaskDetailActivity extends BaseActivity {
         if (detailData.get("content") != null){
             content_text.setText(detailData.get("content")+"");
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        requestTaskDetail();
-    }
-
-    /**
-     *      task detail
-     */
-    public void requestTaskDetail() {
-        if (swipeLayout != null) {
-            swipeLayout.setRefreshing(true);
-        }
-//        new TaskService(context).addTaskDetailService(createId, executorId, new Handler() {
-//            @Override
-//            public void handleMessage(Message msg) {
-//                super.handleMessage(msg);
-//                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-//                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-//                }
-//                if (msg.what == MyConstant.REQUEST_SUCCESS) {
-//                    dataList = (List<Map<String, Object>>) msg.obj;
-//                    if (dataList != null && dataList.size() > 0) {
-//                        adapter.resetList(dataList);
-//                        adapter.notifyDataSetChanged();
-//                    }
-//                } else if (msg.what == MyConstant.REQUEST_FIELD) {
-//                    String errMsg = (String) msg.obj;
-//                    ToastUtils.showShort(context, errMsg);
-//                } else if (msg.what == MyConstant.REQUEST_ERROR) {
-//                    String errMsg = (String) msg.obj;
-//                    ToastUtils.showShort(context, errMsg);
-//                }
-//            }
-//        });
-    }
-
-    /**
-     *       finish task
-     */
-    public void requestFinishTask() {
-        if (swipeLayout != null) {
-            swipeLayout.setRefreshing(true);
-        }
-//        new TaskService(context).addTaskFinishService(createId, executorId, new Handler() {
-//            @Override
-//            public void handleMessage(Message msg) {
-//                super.handleMessage(msg);
-//                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-//                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-//                }
-//                if (msg.what == MyConstant.REQUEST_SUCCESS) {
-//                    dataList = (List<Map<String, Object>>) msg.obj;
-//                    if (dataList != null && dataList.size() > 0) {
-//                        adapter.resetList(dataList);
-//                        adapter.notifyDataSetChanged();
-//                    }
-//                } else if (msg.what == MyConstant.REQUEST_FIELD) {
-//                    String errMsg = (String) msg.obj;
-//                    ToastUtils.showShort(context, errMsg);
-//                } else if (msg.what == MyConstant.REQUEST_ERROR) {
-//                    String errMsg = (String) msg.obj;
-//                    ToastUtils.showShort(context, errMsg);
-//                }
-//            }
-//        });
     }
 }

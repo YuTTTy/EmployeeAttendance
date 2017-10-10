@@ -70,7 +70,7 @@ public class LoginServices extends BaseService {
         Map<String,String> mHeaders = getHeader();
         GsonRequest<RepBase<String>> request = null;
         try {
-            request = new GsonRequest<>(context,Request.Method.POST, urlStr, params, new TypeToken<RepBase<String>>() {
+            request = new GsonRequest<>(context,Request.Method.POST, urlStr,mHeaders,params, new TypeToken<RepBase<String>>() {
             },
                     new Response.Listener<RepBase<String>>() {
                         @Override

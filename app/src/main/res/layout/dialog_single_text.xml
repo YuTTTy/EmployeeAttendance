@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:id="@+id/dialog_single_text_layout"
-        android:layout_width="100dp"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:background="@color/baseBg"
         android:orientation="vertical"></LinearLayout>

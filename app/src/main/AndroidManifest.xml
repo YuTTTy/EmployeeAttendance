@@ -29,6 +29,10 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 
+    <!-- 定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application
         android:name=".base.MyApplication"
         android:allowBackup="true"
@@ -49,6 +53,8 @@
             android:value="db06270a7d664098edb32506385f38fa" />
         <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService"></service>
+
+        <service android:name=".manager.polling.PollingService"></service>
 
         <activity
             android:name=".ui.MainActivity"
@@ -100,6 +106,7 @@
         <activity
             android:name=".ui.trail.WorkTrailActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="stateAlwaysHidden"></activity>
         <activity
             android:name=".ui.trail.PosListActivity"
@@ -125,6 +132,7 @@
         <activity
             android:name=".ui.task.CreateTaskActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="stateAlwaysHidden"></activity>
         <!-- 客户拜访 -->
         <activity

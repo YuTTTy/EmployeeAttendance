@@ -27,6 +27,7 @@
             android:padding="@dimen/usually_spacing_middle">
 
             <ImageView
+                android:src="@drawable/icon_employee"
                 android:id="@+id/apply_detail_title_head"
                 android:layout_width="@dimen/usually_image_width"
                 android:layout_height="@dimen/usually_image_hight" />
@@ -37,7 +38,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/usually_spacing_middle"
-                android:text="name"
+                android:text="未知"
                 android:textColor="@color/baseTextMain"
                 android:textSize="@dimen/text_main_content" />
 

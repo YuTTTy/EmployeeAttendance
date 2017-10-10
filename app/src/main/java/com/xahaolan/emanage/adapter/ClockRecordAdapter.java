@@ -51,6 +51,7 @@ public class ClockRecordAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.head_image = (ImageView) convertView.findViewById(R.id.item_clock_record_view_head);
             holder.name_text = (TextView) convertView.findViewById(R.id.item_clock_record_view_name);
+            holder.time_text = (TextView) convertView.findViewById(R.id.item_clock_record_view_time);
             holder.in_time_text = (TextView) convertView.findViewById(R.id.item_clock_record_view_arrive_time);
             holder.out_time_text = (TextView) convertView.findViewById(R.id.item_clock_record_view_out_time);
             convertView.setTag(holder);
@@ -62,6 +63,7 @@ public class ClockRecordAdapter extends BaseAdapter {
         if (data != null) {
             if (data.get("createTime") != null) {
                 String createTime = (String) data.get("createTime");
+                holder.time_text.setText(createTime.substring(0,11));
                 holder.in_time_text.setText(createTime.substring(11,16));
             }
             if (data.get("createdate") != null) {
@@ -86,6 +88,7 @@ public class ClockRecordAdapter extends BaseAdapter {
     private class ViewHolder {
         private ImageView head_image;
         private TextView name_text;
+        private TextView time_text;
         private TextView in_time_text;
         private TextView out_time_text;
     }

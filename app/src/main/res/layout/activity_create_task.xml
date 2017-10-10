@@ -22,7 +22,7 @@
             android:layout_marginTop="@dimen/usually_spacing_small"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:padding="@dimen/usually_spacing_middle">
+            android:padding="@dimen/usually_spacing_fifteen">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -56,22 +56,21 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:padding="@dimen/usually_spacing_middle">
+            android:padding="@dimen/usually_spacing_fifteen">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="执行人 : "
+                android:text="执行人   : "
                 android:textColor="@color/baseTextMain"
                 android:textSize="@dimen/text_main_content" />
 
             <TextView
                 android:id="@+id/create_task_execute_name"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="请选择"
-                android:textColor="@color/baseTextAssist"
+                android:textColor="@color/baseTextMain"
+                android:textColorHint="@color/baseTextAssist"
                 android:textSize="@dimen/text_main_content" />
 
             <ImageView
@@ -93,7 +92,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:padding="@dimen/usually_spacing_middle">
+            android:padding="@dimen/usually_spacing_fifteen">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -107,8 +106,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="请选择截止日期"
-                android:textColor="@color/baseTextAssist"
+                android:textColor="@color/baseTextMain"
                 android:textSize="@dimen/text_main_content" />
 
             <ImageView
@@ -130,7 +128,7 @@
             android:layout_weight="3"
             android:background="@color/white"
             android:orientation="vertical"
-            android:padding="@dimen/usually_spacing_middle">
+            android:padding="@dimen/usually_spacing_fifteen">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -143,14 +141,14 @@
                 android:id="@+id/create_task_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/usually_spacing_middle"
+                android:layout_marginTop="@dimen/usually_spacing_big"
                 android:src="@drawable/icon_photo" />
 
             <LinearLayout
                 android:id="@+id/create_task_photos_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/usually_spacing_middle"
+                android:layout_marginTop="@dimen/usually_spacing_big"
                 android:orientation="horizontal"></LinearLayout>
         </LinearLayout>
 

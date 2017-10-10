@@ -18,7 +18,6 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.LatLng;
-import com.amap.api.maps.model.Marker;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.geocoder.GeocodeResult;
@@ -27,16 +26,13 @@ import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.base.BaseActivity;
-import com.xahaolan.emanage.base.MyApplication;
 import com.xahaolan.emanage.base.MyConstant;
-import com.xahaolan.emanage.http.services.CheckWorkServices;
 import com.xahaolan.emanage.http.services.TrailServices;
 import com.xahaolan.emanage.manager.MapManage;
-import com.xahaolan.emanage.ui.MainActivity;
 import com.xahaolan.emanage.utils.common.DateUtil;
 import com.xahaolan.emanage.utils.common.LogUtils;
-import com.xahaolan.emanage.utils.common.StringUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
+import com.xahaolan.emanage.utils.mine.AppUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
 
 import java.io.Serializable;
@@ -48,7 +44,7 @@ import java.util.Map;
  * Created by helinjie on 2017/9/3.    工作轨迹
  */
 
-public class WorkTrailActivity extends BaseActivity implements LocationSource, AMapLocationListener,GeocodeSearch.OnGeocodeSearchListener {
+public class WorkTrailActivity extends BaseActivity implements LocationSource, AMapLocationListener, GeocodeSearch.OnGeocodeSearchListener {
     private static final String TAG = WorkTrailActivity.class.getSimpleName();
     private SwipeRefreshLayout swipeLayout;
     private Intent intent;
@@ -67,10 +63,11 @@ public class WorkTrailActivity extends BaseActivity implements LocationSource, A
     private GeocodeSearch geocoderSearch;
     private Double latitude; //经度
     private Double longtitude; //纬度
-    private  String locAddress;
+    private String locAddress;
     private int personId;
     private List<Map<String, Object>> locList; //
     private List<String> timeList;
+    private String[] timeArr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +100,9 @@ public class WorkTrailActivity extends BaseActivity implements LocationSource, A
         right_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyUtils.jump(context, SltDepartmentActivity.class, new Bundle(), false, null);
+                Bundle bundle = new Bundle();
+                bundle.putInt("sltType",1);
+                MyUtils.jump(context, SltDepartmentActivity.class, bundle, false, null);
             }
         });
     }
@@ -111,11 +110,7 @@ public class WorkTrailActivity extends BaseActivity implements LocationSource, A
     @Override
     public void initData() {
         time_text.setText(DateUtil.getCurrentDateStr(MyConstant.DATE_FORMAT_YMD) + " " + DateUtil.getWeekNumber(System.currentTimeMillis()));
-        intent = getIntent();
-        personId = intent.getIntExtra("personId",0);
-        if (personId != 0){
-            requestGetPersonNewLoc();
-        }
+        personId = AppUtils.getPersonId(context);
     }
 
     public void initMap(Bundle savedInstanceState) {
@@ -123,7 +118,7 @@ public class WorkTrailActivity extends BaseActivity implements LocationSource, A
         mapManage.createMapView(savedInstanceState);
         aMap = mapManage.initAmap();
         mapManage.setUiSettings();
-        mapManage.changeZoom(14);
+        mapManage.changeZoom(10);
     }
 
     public void initLocation() {
@@ -153,7 +148,7 @@ public class WorkTrailActivity extends BaseActivity implements LocationSource, A
                 break;
             /* 工作轨迹 */
             case R.id.work_trail_trail_text:
-                drawPersonTracePlot();
+                requestGetPersonTracePlot();
                 break;
             /* 立即定位 */
             case R.id.work_trail_location_text:
@@ -169,79 +164,16 @@ public class WorkTrailActivity extends BaseActivity implements LocationSource, A
     protected void onResume() {
         super.onResume();
         map_view.onResume();
-        requestGetPersonTracePlot();
     }
 
-    /**
-     * 获取用户当天轨迹图
-     */
-    public void requestGetPersonTracePlot() {
-        if (swipeLayout != null) {
-            swipeLayout.setRefreshing(true);
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        int employeeId = intent.getIntExtra("employeeId", 0);
+        if (employeeId != 0) {
+            personId = employeeId;
         }
-        new TrailServices(context).queryUserRouteService(personId, new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-                }
-                if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    locList = (List<Map<String, Object>>) msg.obj;
-                    if (locList != null && locList.size() > 0) {
-                    }
-                } else if (msg.what == MyConstant.REQUEST_FIELD) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                } else if (msg.what == MyConstant.REQUEST_ERROR) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                }
-            }
-        });
-    }
-
-    public void addMarker(Double markerLat,Double markerLng,String title,String content){
-        mapManage.addMarker(markerLat, markerLng, title, content, true);
-        mapManage.setMarkerClickListener(new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (msg.what == 222) {
-                    Marker marker = (Marker) msg.obj;
-                    Toast.makeText(context, "marker点击生效", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-        mapManage.setMarkerDragListener(new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (msg.what == 111){
-                    Toast.makeText(context, "当marker开始被拖动时回调此方法", Toast.LENGTH_LONG).show();
-                }else if(msg.what == 222){
-                    Toast.makeText(context, "在marker拖动完成后回调此方法, 这个marker的位置可以通过getPosition()方法返回", Toast.LENGTH_LONG).show();
-                }else if (msg.what == 333){
-                    Toast.makeText(context, "在marker拖动过程中回调此方法, 这个marker的位置可以通过getPosition()方法返回。", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
-    /**
-     * 绘制轨迹
-     */
-    public void drawPersonTracePlot() {
-        if (locList == null || locList.size() <= 0){
-            ToastUtils.showShort(context,"未生成轨迹路线亲");
-            return;
-        }
-        List<LatLng> latLngs = new ArrayList<LatLng>();
-        for (Map<String, Object> locData : locList) {
-            Double latitude = (Double) locData.get("lat");
-            Double longtitude = (Double) locData.get("lon");
-            latLngs.add(new LatLng(latitude, longtitude));
-        }
-        mapManage.setPolyLine(latLngs, 10);
+        requestGetPersonNewLoc();
     }
 
     /**
@@ -259,16 +191,107 @@ public class WorkTrailActivity extends BaseActivity implements LocationSource, A
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    Map<String,Object> locData = (Map<String, Object>) msg.obj;
-                    if (locData != null){
-                        latitude = (Double) locData.get("lat");
-                        longtitude = (Double) locData.get("lon");
-                        locAddress = (String) locData.get("address");
-                        addMarker(latitude,longtitude,DateUtil.getCurrentDateStr(MyConstant.DATE_FORMAT_YMD_HM),locAddress);
+                    Map<String, Object> locData = (Map<String, Object>) msg.obj;
+                    if (locData != null) {
+                        if (locData.get("resultList") != null) {
+                            List<Map<String, Object>> resultList = (List<Map<String, Object>>) locData.get("resultList");
+                            if (resultList != null && resultList.size() > 0) {
+                                Map<String, Object> lastData = compareTime(resultList);
+                                if (lastData == null || lastData.get("longitude") == null || lastData.get("latitude") == null || lastData.get("label") == null) {
+                                    ToastUtils.showShort(context, "无法获取用户最新位置");
+                                    return;
+                                }
+                                longtitude = Double.parseDouble(lastData.get("longitude") + "");
+                                latitude = Double.parseDouble(lastData.get("latitude") + "");
+                                locAddress = (String) lastData.get("label");
+                                addMarker(latitude, longtitude, DateUtil.getCurrentDateStr(MyConstant.DATE_FORMAT_YMD_HM), locAddress);
+                            }
+                        }
+                    } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                        String errMsg = (String) msg.obj;
+                        ToastUtils.showShort(context, errMsg);
+                        if (errMsg.equals("session过期")) {
+                            BaseActivity.loginOut(context);
+                        }
+                    } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                        String errMsg = (String) msg.obj;
+                        ToastUtils.showShort(context, errMsg);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 比对时间（获取最后一次位置数据）
+     *
+     * @param compareList
+     * @return
+     */
+    public Map<String, Object> compareTime(List<Map<String, Object>> compareList) {
+        String tempTime = "";
+        timeArr = new String[compareList.size()];
+        for (int a = 0; a < compareList.size(); a++) {
+            Map<String, Object> compareData = compareList.get(a);
+            if (compareData.get("createdate") != null) {
+                String reTimeStr = (String) compareData.get("createdate");
+                timeArr[a] = reTimeStr;
+            }
+        }
+        for (int i = 0; i < timeArr.length; i++) {
+            for (int j = i; j < timeArr.length; j++) {
+                if (DateUtil.getLongTime(timeArr[i]) < DateUtil.getLongTime(timeArr[j])) {
+                    tempTime = timeArr[i];
+                    timeArr[i] = timeArr[j];
+                    timeArr[j] = tempTime;
+                }
+            }
+        }
+        for (int a = 0; a < compareList.size(); a++) {
+            Map<String, Object> compareData = compareList.get(a);
+            if (compareData.get("createdate") != null) {
+                String reTimeStr = (String) compareData.get("createdate");
+                if (reTimeStr.equals(timeArr[0])) {
+                    return compareData;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取用户当天轨迹图
+     */
+
+    public void requestGetPersonTracePlot() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new TrailServices(context).queryUserRouteService(personId, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null){
+                        if (response.get("resultList") != null){
+                            locList = (List<Map<String, Object>>) response.get("resultList");
+                            if (locList != null && locList.size() > 0) {
+                                drawPersonTracePlot();
+                            }else {
+                                ToastUtils.showShort(context, "未生成轨迹路线亲");
+                            }
+                        }
                     }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")) {
+                        BaseActivity.loginOut(context);
+                    }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
@@ -290,7 +313,7 @@ public class WorkTrailActivity extends BaseActivity implements LocationSource, A
                 latitude = amapLocation.getLatitude();
                 LogUtils.e(TAG, "经度 ：" + longtitude + ",纬度 ：" + latitude);
 
-                getAddress(new LatLonPoint(latitude,longtitude));
+                getAddress(new LatLonPoint(latitude, longtitude));
             } else {
                 String errText = "定位失败," + amapLocation.getErrorCode() + ": " + amapLocation.getErrorInfo();
                 Toast.makeText(this, errText, Toast.LENGTH_LONG).show();
@@ -334,6 +357,7 @@ public class WorkTrailActivity extends BaseActivity implements LocationSource, A
         }
         mlocationClient = null;
     }
+
     /**
      * 响应逆地理编码
      */
@@ -360,16 +384,17 @@ public class WorkTrailActivity extends BaseActivity implements LocationSource, A
                     && result.getRegeocodeAddress().getFormatAddress() != null) {
                 locAddress = result.getRegeocodeAddress().getFormatAddress();
                 /* add marker */
-                addMarker(latitude,longtitude,DateUtil.getCurrentDateStr(MyConstant.DATE_FORMAT_YMD_HM),locAddress);
-                LogUtils.e(TAG,"当前定位地址 ：" + locAddress);
+//                addMarker(latitude, longtitude, DateUtil.getCurrentDateStr(MyConstant.DATE_FORMAT_YMD_HM), locAddress);
+                LogUtils.e(TAG, "当前定位地址 ：" + locAddress);
             } else {
                 ToastUtils.showShort(context, "对不起，没有搜索到相关数据！");
             }
         } else {
-            ToastUtils.showShort(context, rCode+"");
-            LogUtils.e(TAG,"逆地理编码error : " + rCode);
+            ToastUtils.showShort(context, rCode + "");
+            LogUtils.e(TAG, "逆地理编码error : " + rCode);
         }
     }
+
     /**
      * 方法必须重写
      */
@@ -378,6 +403,63 @@ public class WorkTrailActivity extends BaseActivity implements LocationSource, A
         super.onPause();
         map_view.onPause();
         deactivate();
+    }
+
+    /**
+     * add  marker
+     *
+     * @param markerLat
+     * @param markerLng
+     * @param title
+     * @param content
+     */
+    public void addMarker(Double markerLat, Double markerLng, String title, String content) {
+        aMap.clear();
+        mapManage.addMarker(markerLat, markerLng, title, content, true);
+        /* 改变地图的中心点 */
+        mapManage.setMapCenter(markerLat, markerLng);
+//        mapManage.setMarkerClickListener(new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if (msg.what == 222) {
+//                    Marker marker = (Marker) msg.obj;
+//                    Toast.makeText(context, "marker点击生效", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
+//        mapManage.setMarkerDragListener(new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if (msg.what == 111) {
+//                    Toast.makeText(context, "当marker开始被拖动时回调此方法", Toast.LENGTH_LONG).show();
+//                } else if (msg.what == 222) {
+//                    Toast.makeText(context, "在marker拖动完成后回调此方法, 这个marker的位置可以通过getPosition()方法返回", Toast.LENGTH_LONG).show();
+//                } else if (msg.what == 333) {
+//                    Toast.makeText(context, "在marker拖动过程中回调此方法, 这个marker的位置可以通过getPosition()方法返回。", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
+    }
+
+    /**
+     * 绘制轨迹
+     */
+    public void drawPersonTracePlot() {
+        aMap.clear();
+        List<LatLng> latLngs = new ArrayList<LatLng>();
+        for (int i = 0; i < locList.size();i++) {
+            Map<String,Object> locData = locList.get(i);
+            Double latitude = Double.parseDouble(locData.get("latitude")+"");
+            Double longtitude = Double.parseDouble(locData.get("longitude")+"");
+            latLngs.add(new LatLng(latitude, longtitude));
+            if (i == 0){
+                /* 改变地图的中心点 */
+                mapManage.setMapCenter(latitude,longtitude);
+            }
+        }
+        mapManage.setPolyLine(latLngs, 10);
     }
 
     /**
@@ -400,5 +482,4 @@ public class WorkTrailActivity extends BaseActivity implements LocationSource, A
             mlocationClient.onDestroy();
         }
     }
-
 }

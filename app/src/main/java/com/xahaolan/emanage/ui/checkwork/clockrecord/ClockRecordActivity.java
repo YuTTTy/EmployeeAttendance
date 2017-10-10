@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -35,6 +36,9 @@ public class ClockRecordActivity extends BaseActivity {
     private ClockRecordAdapter adapter;
     private List<Map<String, Object>> dataList;
     private int personId;
+    private int page = 1;  //当前页
+    private int rows = 20;   //每页显示记录数
+    private Boolean hasNextPage = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,26 @@ public class ClockRecordActivity extends BaseActivity {
                 MyUtils.jump(context, ClockDetailActivity.class, bundle, false, null);
             }
         });
+        list_view.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    if (view.getLastVisiblePosition() == view.getCount() - 1) {
+                        if (hasNextPage) {
+                            page++;
+                           requestRecordList();
+                        } else if (list_view.getFooterViewsCount() <= 0) {
+                            ToastUtils.showShort(context,"没有更多了");
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
     }
 
     @Override
@@ -86,7 +110,7 @@ public class ClockRecordActivity extends BaseActivity {
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        new CheckWorkServices(context).addClockQueryService(personId, new Handler() {
+        new CheckWorkServices(context).addClockQueryService(personId,page,rows, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -94,20 +118,33 @@ public class ClockRecordActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    Map<String, Object> dataResponse = (Map<String, Object>) msg.obj;
-                    if (dataResponse != null) {
-                        if (dataResponse.get("resultList") != null) {
-                            dataList = (List<Map<String, Object>>) dataResponse.get("resultList");
-                            if (dataList != null && dataList.size() > 0) {
-                                regroupList();
-                                adapter.resetList(dataList);
-                                adapter.notifyDataSetChanged();
+                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null) {
+                        List<Map<String, Object>> footerList = (List<Map<String, Object>>) response.get("footer");
+                        dataList = (List<Map<String, Object>>) response.get("rows");
+                        if (dataList != null && dataList.size() >= 0) {
+                            if (response.get("total") != null){
+                                int total = new Double((Double)response.get("total")).intValue();
+                                if (total >= 20){
+                                    hasNextPage = true;
+                                }else {
+                                    hasNextPage=false;
+                                }
+                                if (page == 1){
+                                    adapter.resetList(dataList);
+                                }else {
+                                    adapter.appendList(dataList);
+                                }
                             }
+                            adapter.notifyDataSetChanged();
                         }
                     }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")){
+                        BaseActivity.loginOut(context);
+                    }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);

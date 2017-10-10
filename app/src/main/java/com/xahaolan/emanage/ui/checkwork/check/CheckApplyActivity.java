@@ -7,6 +7,8 @@ import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,8 +20,10 @@ import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.dialog.DialogSingleText;
 import com.xahaolan.emanage.http.services.CheckServices;
 import com.xahaolan.emanage.http.services.CheckWorkServices;
+import com.xahaolan.emanage.ui.checkwork.apply.DocumentDetailActivity;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.AppUtils;
+import com.xahaolan.emanage.utils.mine.MyUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +49,12 @@ public class CheckApplyActivity extends BaseActivity {
     private String[] strArr = {"全部", "请假", "外出", "出差", "加班"};
 
     private int checkType;//1.查看我的申请 2.查看我的审批
+    private int type = -1; //-1.全部 ，0.(请假单)，1（外出登记），2（出差申请），3（加班）
+    private int examineType = 1; //1.待审批  2.已审批
     private int personid; //申请人id
     private int page = 1;  //当前页
     private int rows = 20;   //每页显示记录数
-    private Boolean hasNextPage;
+    private Boolean hasNextPage = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +82,11 @@ public class CheckApplyActivity extends BaseActivity {
                     if (checkType == MyConstant.CHECK_MINE_APPLY) {
                         requestApply();
                     } else {
-                        requestExamine();
+                        if (examineType == 1) {
+                            requestExamine();
+                        } else {
+                            requestAlExamine();
+                        }
                     }
                 }
             }
@@ -100,7 +110,11 @@ public class CheckApplyActivity extends BaseActivity {
                             if (checkType == MyConstant.CHECK_MINE_APPLY) {
                                 requestApply();
                             } else if (checkType == MyConstant.CHECK_MINE_EXAMINE) {
-                                requestExamine();
+                                if (examineType == 1) {
+                                    requestExamine();
+                                } else {
+                                    requestAlExamine();
+                                }
                             }
                         } else if (list_view.getFooterViewsCount() <= 0) {
                             ToastUtils.showShort(context, "没有更多了");
@@ -114,11 +128,32 @@ public class CheckApplyActivity extends BaseActivity {
 
             }
         });
-
+        list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Map<String,Object> data = (Map<String, Object>) parent.getAdapter().getItem(position);
+                if (data == null){
+                    return;
+                }
+                if (data.get("type") == null){
+                    return;
+                }
+                if (data.get("id") == null){
+                    return;
+                }
+                int personId = new Double((Double)data.get("id")).intValue();
+                int type = new Double((Double)data.get("type")).intValue();
+                Bundle bundle = new Bundle();
+                bundle.putInt("id",personId);
+                bundle.putInt("ApplyType",type);
+                MyUtils.jump(context, DocumentDetailActivity.class,bundle,false,null);
+            }
+        });
     }
 
     @Override
     public void initData() {
+//        personid = 49;
         personid = AppUtils.getPersonId(context);
         dataList = new ArrayList<>();
         intent = getIntent();
@@ -140,11 +175,13 @@ public class CheckApplyActivity extends BaseActivity {
         switch (v.getId()) {
             /* 待审批 */
             case R.id.check_apply_wait_text:
-
+                examineType = 1;
+                requestExamine();
                 break;
             /* 已审批 */
             case R.id.check_apply_already_text:
-
+                examineType = 2;
+                requestAlExamine();
                 break;
             /* 查看类型 */
             case R.id.check_apply_slt_layout:
@@ -153,24 +190,28 @@ public class CheckApplyActivity extends BaseActivity {
                     public void handleMessage(Message msg) {
                         super.handleMessage(msg);
                         if (msg.what == MyConstant.HANDLER_SUCCESS) {
-                            int position = (int) msg.obj;
+                            type = (int) msg.obj - 1;
+                            if (type == -1) {
+                                slt_text.setText("全部");
+                            } else if (type == 0) {
+                                slt_text.setText("请假");
+                            } else if (type == 1) {
+                                slt_text.setText("外出");
+                            } else if (type == 2) {
+                                slt_text.setText("出差");
+                            } else if (type == 3) {
+                                slt_text.setText("加班");
+                            }
+
                             page = 1;
-                            switch (position) {
-                                case 0: //全部
-                                    requestApply();
-                                    break;
-                                case 1: //请假
-                                    requestLeave();
-                                    break;
-                                case 2: //外出
-                                    requestOut();
-                                    break;
-                                case 3: //出差
-                                    reqeustOutWork();
-                                    break;
-                                case 4: //加班
-                                    requestWork();
-                                    break;
+                            if (checkType == MyConstant.CHECK_MINE_APPLY) {
+                                requestApply();
+                            } else if (checkType == MyConstant.CHECK_MINE_EXAMINE) {
+                                if (examineType == 1) {
+                                    requestExamine();
+                                } else {
+                                    requestAlExamine();
+                                }
                             }
                         }
                     }
@@ -185,7 +226,11 @@ public class CheckApplyActivity extends BaseActivity {
         if (checkType == MyConstant.CHECK_MINE_APPLY) {
             requestApply();
         } else if (checkType == MyConstant.CHECK_MINE_EXAMINE) {
-            requestExamine();
+            if (examineType == 1) {
+                requestExamine();
+            } else {
+                requestAlExamine();
+            }
         }
     }
 
@@ -204,21 +249,24 @@ public class CheckApplyActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    Map<String, Object> dataResponse = (Map<String, Object>) msg.obj;
-                    if (dataResponse != null) {
-                        if (dataResponse.get("resultList") != null) {
-                            dataList = (List<Map<String, Object>>) dataResponse.get("resultList");
-//                            if (lastPage == 0 || currentPage == lastPage) {
-//                                hasNextPage = false;
-//                            } else {
-//                                hasNextPage = true;
-//                            }
-                            if (dataList != null && dataList.size() > 0) {
-//                            if (page == 1) {
-//                                activityAdapter.resetList(activityList);
-//                            } else {
-//                                activityAdapter.appendList(activityList);
-//                            }
+                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null) {
+                        if (response.get("rows") != null) {
+                            dataList = (List<Map<String, Object>>) response.get("rows");
+                            if (dataList != null && dataList.size() >= 0) {
+                                if (response.get("total") != null){
+                                    int total = new Double((Double)response.get("total")).intValue();
+                                    if (total >= 20){
+                                        hasNextPage = true;
+                                    }else {
+                                        hasNextPage=false;
+                                    }
+                                    if (page == 1){
+                                        adapter.resetList(regroupList());
+                                    }else {
+                                        adapter.appendList(regroupList());
+                                    }
+                                }
                                 adapter.notifyDataSetChanged();
                             }
                         }
@@ -226,48 +274,9 @@ public class CheckApplyActivity extends BaseActivity {
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
-                } else if (msg.what == MyConstant.REQUEST_ERROR) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                }
-            }
-        });
-    }
-
-    /**
-     * 我的请假列表
-     */
-    public void requestLeave() {
-        if (swipeLayout != null) {
-            swipeLayout.setRefreshing(true);
-        }
-        new CheckWorkServices(context).leaveOrderQueryService(personid, new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-                }
-                if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    dataList = (List<Map<String, Object>>) msg.obj;
-                    if (dataList != null && dataList.size() >= 0) {
-//                            if (lastPage == 0 || currentPage == lastPage) {
-//                                hasNextPage = false;
-//                            } else {
-//                                hasNextPage = true;
-//                            }
-                        if (dataList != null && dataList.size() > 0) {
-//                            if (page == 1) {
-//                                activityAdapter.resetList(activityList);
-//                            } else {
-//                                activityAdapter.appendList(activityList);
-//                            }
-                            adapter.notifyDataSetChanged();
-                        }
+                    if (errMsg.equals("session过期")) {
+                        BaseActivity.loginOut(context);
                     }
-                } else if (msg.what == MyConstant.REQUEST_FIELD) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
@@ -277,135 +286,277 @@ public class CheckApplyActivity extends BaseActivity {
     }
 
     /**
-     * 外出列表
-     */
-    public void requestOut() {
-        if (swipeLayout != null) {
-            swipeLayout.setRefreshing(true);
-        }
-        new CheckWorkServices(context).outGoingQueryService(personid, new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-                }
-                if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    dataList = (List<Map<String, Object>>) msg.obj;
-                    if (dataList != null && dataList.size() >= 0) {
-//                            if (lastPage == 0 || currentPage == lastPage) {
-//                                hasNextPage = false;
-//                            } else {
-//                                hasNextPage = true;
-//                            }
-                        if (dataList != null && dataList.size() > 0) {
-//                            if (page == 1) {
-//                                activityAdapter.resetList(activityList);
-//                            } else {
-//                                activityAdapter.appendList(activityList);
-//                            }
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                } else if (msg.what == MyConstant.REQUEST_FIELD) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                } else if (msg.what == MyConstant.REQUEST_ERROR) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                }
-            }
-        });
-    }
-
-    /**
-     * 出差列表
-     */
-    public void reqeustOutWork() {
-        if (swipeLayout != null) {
-            swipeLayout.setRefreshing(true);
-        }
-        new CheckWorkServices(context).bussinessTripFindAllService(personid, new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-                }
-                if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    dataList = (List<Map<String, Object>>) msg.obj;
-                    if (dataList != null && dataList.size() >= 0) {
-//                            if (lastPage == 0 || currentPage == lastPage) {
-//                                hasNextPage = false;
-//                            } else {
-//                                hasNextPage = true;
-//                            }
-                        if (dataList != null && dataList.size() > 0) {
-//                            if (page == 1) {
-//                                activityAdapter.resetList(activityList);
-//                            } else {
-//                                activityAdapter.appendList(activityList);
-//                            }
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                } else if (msg.what == MyConstant.REQUEST_FIELD) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                } else if (msg.what == MyConstant.REQUEST_ERROR) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                }
-            }
-        });
-    }
-
-    /**
-     * 加班列表
-     */
-    public void requestWork() {
-        if (swipeLayout != null) {
-            swipeLayout.setRefreshing(true);
-        }
-        new CheckWorkServices(context).workQueryService(personid, new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-                }
-                if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    dataList = (List<Map<String, Object>>) msg.obj;
-                    if (dataList != null && dataList.size() >= 0) {
-//                            if (lastPage == 0 || currentPage == lastPage) {
-//                                hasNextPage = false;
-//                            } else {
-//                                hasNextPage = true;
-//                            }
-                        if (dataList != null && dataList.size() > 0) {
-//                            if (page == 1) {
-//                                activityAdapter.resetList(activityList);
-//                            } else {
-//                                activityAdapter.appendList(activityList);
-//                            }
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                } else if (msg.what == MyConstant.REQUEST_FIELD) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                } else if (msg.what == MyConstant.REQUEST_ERROR) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                }
-            }
-        });
-    }
-
-    /**
-     * 我的审批列表
+     * 我的待审批列表
      */
     public void requestExamine() {
-
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new CheckServices(context).examineService(personid, page, rows, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null) {
+                        if (response.get("rows") != null) {
+                            dataList = (List<Map<String, Object>>) response.get("rows");
+                            if (dataList != null && dataList.size() >= 0) {
+                                if (response.get("total") != null){
+                                    int total = new Double((Double)response.get("total")).intValue();
+                                    if (total >= 20){
+                                        hasNextPage = true;
+                                    }else {
+                                        hasNextPage=false;
+                                    }
+                                    if (page == 1){
+                                        adapter.resetList(regroupList());
+                                    }else {
+                                        adapter.appendList(regroupList());
+                                    }
+                                }
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    if (errMsg.equals("session过期")) {
+                        ToastUtils.showShort(context, errMsg);
+                        BaseActivity.loginOut(context);
+                    } else if (errMsg.equals("")) {
+                        dataList.clear();
+                        adapter.resetList(dataList);
+                        adapter.notifyDataSetChanged();
+                    }
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
     }
+
+    /**
+     * 我的已审批列表
+     */
+    public void requestAlExamine() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new CheckServices(context).alExamineService(personid, page, rows, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null) {
+                        if (response.get("rows") != null) {
+                            dataList = (List<Map<String, Object>>) response.get("rows");
+                            if (dataList != null && dataList.size() >= 0) {
+                                if (response.get("total") != null){
+                                    int total = new Double((Double)response.get("total")).intValue();
+                                    if (total >= 20){
+                                        adapter.resetList(regroupList());
+                                    }else {
+                                        adapter.resetList(regroupList());
+                                    }
+                                    if (page == 1){
+                                        adapter.resetList(regroupList());
+                                    }else {
+                                        adapter.appendList(regroupList());
+                                    }
+                                }
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")) {
+                        BaseActivity.loginOut(context);
+                    }
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
+    }
+
+    /**
+     * 区分全部、请假、外出、出差、加班
+     *
+     * @return
+     */
+    public List<Map<String, Object>> regroupList() {
+        List<Map<String, Object>> regroupList = new ArrayList<>();
+        for (Map<String, Object> data : dataList) {
+            if (data.get("type") != null) {
+                int reType = new Double((Double) data.get("type")).intValue();
+                if (type == -1) {
+                    regroupList.add(data);
+                } else if (type == reType) {
+                    regroupList.add(data);
+                }
+            }
+        }
+        return regroupList;
+    }
+//    /**
+//     * 请假列表
+//     */
+//    public void requestLeave() {
+//        if (swipeLayout != null) {
+//            swipeLayout.setRefreshing(true);
+//        }
+//        new CheckWorkServices(context).leaveOrderQueryService(personid, page, rows, new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+//                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+//                }
+//                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+//                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+//                    if (response != null) {
+//                        dataList = (List<Map<String, Object>>) response.get("rows");
+//                        if (dataList != null && dataList.size() >= 0) {
+//                            adapter.resetList(dataList);
+//                            adapter.notifyDataSetChanged();
+//                        }
+//                    }
+//                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                    if (errMsg.equals("session过期")) {
+//                        BaseActivity.loginOut(context);
+//                    }
+//                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                }
+//            }
+//        });
+//    }
+//
+//    /**
+//     * 外出列表
+//     */
+//    public void requestOut() {
+//        if (swipeLayout != null) {
+//            swipeLayout.setRefreshing(true);
+//        }
+//        new CheckWorkServices(context).outGoingQueryService(personid, page, rows, new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+//                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+//                }
+//                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+//                    dataList = (List<Map<String, Object>>) msg.obj;
+//                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+//                    if (response != null) {
+//                        dataList = (List<Map<String, Object>>) response.get("rows");
+//                        if (dataList != null && dataList.size() >= 0) {
+//                            adapter.resetList(dataList);
+//                            adapter.notifyDataSetChanged();
+//                        }
+//                    }
+//                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                    if (errMsg.equals("session过期")) {
+//                        BaseActivity.loginOut(context);
+//                    }
+//                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                }
+//            }
+//        });
+//    }
+//
+//    /**
+//     * 出差列表
+//     */
+//    public void reqeustOutWork() {
+//        if (swipeLayout != null) {
+//            swipeLayout.setRefreshing(true);
+//        }
+//        new CheckWorkServices(context).bussinessTripFindAllService(personid, page, rows, new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+//                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+//                }
+//                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+//                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+//                    if (response != null) {
+//                        dataList = (List<Map<String, Object>>) response.get("rows");
+//                        if (dataList != null && dataList.size() >= 0) {
+//                            adapter.resetList(dataList);
+//                            adapter.notifyDataSetChanged();
+//                        }
+//                    }
+//                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                    if (errMsg.equals("session过期")) {
+//                        BaseActivity.loginOut(context);
+//                    }
+//                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                }
+//            }
+//        });
+//    }
+//
+//    /**
+//     * 加班列表
+//     */
+//    public void requestWork() {
+//        if (swipeLayout != null) {
+//            swipeLayout.setRefreshing(true);
+//        }
+//        new CheckWorkServices(context).workQueryService(personid, page, rows, new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+//                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+//                }
+//                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+//                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+//                    if (response != null) {
+//                        dataList = (List<Map<String, Object>>) response.get("rows");
+//                        if (dataList != null && dataList.size() >= 0) {
+//                            adapter.resetList(dataList);
+//                            adapter.notifyDataSetChanged();
+//                        }
+//                    }
+//                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                    if (errMsg.equals("session过期")) {
+//                        BaseActivity.loginOut(context);
+//                    }
+//                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                }
+//            }
+//        });
+//    }
+
 }

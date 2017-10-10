@@ -14,6 +14,7 @@
     <dimen name="usually_width_spacing">10dp</dimen>
     <dimen name="usually_height_spacing">10dp</dimen>
     <dimen name="usually_spacing_big">20dp</dimen>
+    <dimen name="usually_spacing_fifteen">15dp</dimen>
     <dimen name="usually_spacing_middle">10dp</dimen>
     <dimen name="usually_spacing_small">5dp</dimen>
     <dimen name="usually_line">1dp</dimen>

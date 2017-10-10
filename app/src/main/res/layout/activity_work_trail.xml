@@ -18,38 +18,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <com.amap.api.maps.MapView
-                android:id="@+id/clock_card_baidumap"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <RelativeLayout
-                android:id="@+id/work_trail_time_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/usually_spacing_middle"
-                android:background="@color/white"
-                android:padding="@dimen/usually_spacing_middle">
-
-                <TextView
-                    android:id="@+id/work_trail_time_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:textColor="@color/textRedSecond"
-                    android:textSize="@dimen/text_main_content" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/usually_spacing_small"
-                    android:layout_toRightOf="@+id/work_trail_time_text"
-                    android:src="@drawable/ico_down_gray" />
-            </RelativeLayout>
-
             <LinearLayout
+                android:id="@+id/clock_card_btn_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -103,6 +73,38 @@
                     android:textColor="@color/baseTextMain"
                     android:textSize="@dimen/text_main_content" />
             </LinearLayout>
+
+            <com.amap.api.maps.MapView
+                android:layout_above="@+id/clock_card_btn_layout"
+                android:id="@+id/clock_card_baidumap"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <RelativeLayout
+                android:id="@+id/work_trail_time_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/usually_spacing_middle"
+                android:background="@color/white"
+                android:padding="@dimen/usually_spacing_middle">
+
+                <TextView
+                    android:id="@+id/work_trail_time_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textColor="@color/textRedSecond"
+                    android:textSize="@dimen/text_main_content" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/usually_spacing_small"
+                    android:layout_toRightOf="@+id/work_trail_time_text"
+                    android:src="@drawable/ico_down_gray" />
+            </RelativeLayout>
+
         </RelativeLayout>
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

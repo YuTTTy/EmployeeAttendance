@@ -115,13 +115,14 @@
                     android:src="@drawable/icon_voice" />
 
                 <TextView
-                    android:visibility="gone"
-                    android:layout_marginLeft="@dimen/usually_spacing_middle"
+                    android:layout_marginLeft="@dimen/usually_spacing_big"
                     android:layout_marginRight="100dp"
                     android:id="@+id/initiate_daily_voice_length"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/blue"
+                    android:textColor="@color/baseTextSub"
+                    android:textSize="15dp"
+                    android:padding="@dimen/usually_spacing_small"
                     />
             </LinearLayout>
 
@@ -155,7 +156,7 @@
             android:layout_weight="1"
             android:background="@color/white"
             android:orientation="vertical"
-            android:padding="@dimen/usually_spacing_middle">
+            android:padding="2dp">
 
             <TextView
                 android:id="@+id/initiate_daily_btn"

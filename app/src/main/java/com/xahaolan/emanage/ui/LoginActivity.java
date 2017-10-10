@@ -151,6 +151,8 @@ public class LoginActivity extends BaseActivity {
                         SPUtils.put(context, MyConstant.SHARED_SAVE, MyConstant.IS_ALREADY_LOGIN, true);
                         MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
                         finish();
+                    }else {
+                        ToastUtils.showShort(context,"未获取用户数据，请稍后再试");
                     }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;

@@ -68,8 +68,6 @@ public class MapManage {
         UiSettings mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
         //缩放按钮
         mUiSettings.setZoomControlsEnabled(true);
-        //是否允许显示缩放按钮
-        mUiSettings.setZoomControlsEnabled(true);
         //设置缩放按钮的位置
         mUiSettings.setZoomPosition(AMapOptions.LOGO_POSITION_BOTTOM_RIGHT);
         //获取缩放按钮的位置
@@ -130,6 +128,19 @@ public class MapManage {
     public void changeMapCenter(double latitude, double longitude) {
         //参数依次是：视角调整区域的中心点坐标、希望调整到的缩放级别、俯仰角0°~45°（垂直与地图时为0）、偏航角 0~360° (正北方为0)
         CameraUpdate mCameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(new LatLng(latitude, longitude), 18, 30, 0));
+    }
+
+    /**
+     * 可视化区域，将指定位置指定到屏幕中心位置
+     *
+     * @param latitude
+     * @param longitude
+     */
+    public void setMapCenter(double latitude, double longitude) {
+        CameraUpdate cameraUpdate = CameraUpdateFactory
+                .newCameraPosition(new CameraPosition(new LatLng(latitude,
+                        longitude), 18, 0, 30));
+        aMap.moveCamera(cameraUpdate);
     }
 
     /**

@@ -17,6 +17,7 @@ import com.xahaolan.emanage.http.services.CheckServices;
 import com.xahaolan.emanage.http.services.TrailServices;
 import com.xahaolan.emanage.utils.common.DateUtil;
 import com.xahaolan.emanage.utils.common.ToastUtils;
+import com.xahaolan.emanage.utils.mine.AppUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,12 +95,18 @@ public class PosListActivity extends BaseActivity {
         locList = (List<Map<String, Object>>) intent.getSerializableExtra("LogList");
         adapter = new PosListAdapter(context);
         list_view.setAdapter(adapter);
-        if (locList != null && locList.size() > 0){
-            adapter.resetList(locList);
-            adapter.notifyDataSetChanged();
-        }
+        personId = AppUtils.getPersonId(context);
+        requestPosList();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    /**
+     * 获取用户最新位置
+     */
     public void requestPosList() {
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
@@ -112,15 +119,22 @@ public class PosListActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    locList = (List<Map<String, Object>>) msg.obj;
-                    if (locList != null && locList.size() >= 0){
-//                        latitude = (Double) locData.get("lat");
-//                        longtitude = (Double) locData.get("lon");
-//                        locAddress = (String) locData.get("address");
+                    Map<String,Object> response = (Map<String, Object>) msg.obj;
+                    if (response !=null){
+                        if (response.get("resultList") != null){
+                            locList = (List<Map<String, Object>>) response.get("resultList");
+                            if (locList != null && locList.size() >= 0){
+                                adapter.resetList(locList);
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
                     }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")){
+                        BaseActivity.loginOut(context);
+                    }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);

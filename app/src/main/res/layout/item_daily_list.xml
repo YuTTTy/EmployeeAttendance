@@ -76,7 +76,6 @@
             android:layout_toRightOf="@+id/item_daily_address_icon"
             android:layout_marginTop="@dimen/usually_spacing_small"
             android:layout_marginLeft="@dimen/usually_spacing_small"
-            android:text="address"
             android:textColor="@color/baseTextSub"
             android:textSize="@dimen/text_assist_content" />
 
@@ -86,7 +85,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/item_daily_address_icon"
             android:layout_marginTop="@dimen/usually_spacing_middle"
-            android:text="time"
             android:textColor="@color/baseTextSub"
             android:textSize="@dimen/text_assist_content" />
 

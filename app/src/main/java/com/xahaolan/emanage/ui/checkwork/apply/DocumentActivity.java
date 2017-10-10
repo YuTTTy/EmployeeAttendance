@@ -21,18 +21,21 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.base.BaseActivity;
-import com.xahaolan.emanage.base.MyApplication;
 import com.xahaolan.emanage.base.MyConstant;
+import com.xahaolan.emanage.http.FormRequest;
 import com.xahaolan.emanage.http.services.CheckWorkServices;
 import com.xahaolan.emanage.manager.PhotoCamerManager;
 import com.xahaolan.emanage.manager.VoiceManager;
-import com.xahaolan.emanage.ui.MainActivity;
 import com.xahaolan.emanage.utils.common.BitmapUtils;
+import com.xahaolan.emanage.utils.common.LogUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.AppUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
+import com.xahaolan.emanage.view.wheel.dialog.ChangeBirthDialog;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +47,7 @@ public class DocumentActivity extends BaseActivity {
     private static final String TAG = DocumentActivity.class.getSimpleName();
     private SwipeRefreshLayout swipeLayout;
     private Intent intent;
+    private ChangeBirthDialog timeDialog;
     private VoiceManager voiceManager;
     private PhotoCamerManager photoCamerUtil;
     private int applyType;  //1.请假申请  2.外出登记  3.出差申请  4.加班登记
@@ -57,13 +61,13 @@ public class DocumentActivity extends BaseActivity {
     private EditText end_position_et;
     /* 外出时间 */
     private LinearLayout out_time_layout;
-    private EditText out_time_et;
+    private TextView out_time_text;
     /* 开始时间 */
     private LinearLayout start_time_layout;
-    private EditText start_time_et;
+    private TextView start_time_text;
     /* 结束时间 */
     private LinearLayout end_time_layout;
-    private EditText end_time_et;
+    private TextView end_time_text;
     /* 加班时长 */
     private LinearLayout work_time_layout;
     private EditText work_time_et;
@@ -95,6 +99,7 @@ public class DocumentActivity extends BaseActivity {
 
     private int personId;//  员工id
     private String personName;//  员工姓名
+    private String outData;// 外出时间
     private String startDate;// 开始日期（2017-09-11）
     private String endDate;//  结束日期（2017-09-12）
     private String origin;//      始发地
@@ -125,13 +130,13 @@ public class DocumentActivity extends BaseActivity {
         end_position_layout = (LinearLayout) findViewById(R.id.apply_document_end_position_layout);
         end_position_et = (EditText) findViewById(R.id.apply_document_end_position_et);
         out_time_layout = (LinearLayout) findViewById(R.id.apply_document_out_time_layout);
-        out_time_et = (EditText) findViewById(R.id.apply_document_out_time_et);
+        out_time_text = (TextView) findViewById(R.id.apply_document_out_time_text);
         out_time_layout.setOnClickListener(this);
         start_time_layout = (LinearLayout) findViewById(R.id.apply_document_start_time_layout);
-        start_time_et = (EditText) findViewById(R.id.apply_document_start_time_et);
+        start_time_text = (TextView) findViewById(R.id.apply_document_start_time_text);
         start_time_layout.setOnClickListener(this);
         end_time_layout = (LinearLayout) findViewById(R.id.apply_document_end_time_layout);
-        end_time_et = (EditText) findViewById(R.id.apply_document_end_time_et);
+        end_time_text = (TextView) findViewById(R.id.apply_document_end_time_text);
         end_time_layout.setOnClickListener(this);
         work_time_layout = (LinearLayout) findViewById(R.id.apply_document_work_time_layout);
         work_time_et = (EditText) findViewById(R.id.apply_document_work_time_et);
@@ -149,9 +154,9 @@ public class DocumentActivity extends BaseActivity {
         reason_text = (TextView) findViewById(R.id.apply_document_reason_text);
         reason_et = (EditText) findViewById(R.id.apply_document_reason_et);
         voice_icon = (ImageView) findViewById(R.id.apply_document_voice_icon);
-        voice_icon.setOnClickListener(this);
         voice_text = (TextView) findViewById(R.id.apply_document_voice_length);
         voice_text.setOnClickListener(this);
+        voice_icon.setOnClickListener(this);
         voice_icon.setOnTouchListener(new View.OnTouchListener() {
             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
@@ -159,19 +164,21 @@ public class DocumentActivity extends BaseActivity {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         voiceManager.startRecord();
+                        voice_icon.setImageResource(R.drawable.icon_voice_press);
+                        voice_text.setText("录音中.....");
                         break;
                     case MotionEvent.ACTION_MOVE:
 
                         break;
                     case MotionEvent.ACTION_UP:
-                        voiceManager.stopRecord(new Handler(){
+                        voiceManager.stopRecord(new Handler() {
                             @Override
                             public void handleMessage(Message msg) {
                                 super.handleMessage(msg);
-                                if (msg.what == 123){
+                                if (msg.what == 123) {
                                     String voicePath = (String) msg.obj;
                                     try {
-                                        voiceFile = String.valueOf(BitmapUtils.readStream(voicePath));
+                                        voiceFile = voicePath;
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -180,6 +187,8 @@ public class DocumentActivity extends BaseActivity {
                         });
                         voice_text.setBackground(MyUtils.getShape(MyConstant.COLOR_BLUE, 5f, 1, MyConstant.COLOR_BLUE));
                         voice_text.setVisibility(View.VISIBLE);
+                        voice_text.setText("");
+                        voice_icon.setImageResource(R.drawable.icon_voice);
                         break;
                 }
                 return false;
@@ -197,6 +206,7 @@ public class DocumentActivity extends BaseActivity {
 
     @Override
     public void initData() {
+        timeDialog = new ChangeBirthDialog(context);
         sourceList = new ArrayList<>();
         voiceManager = new VoiceManager();
         photoCamerUtil = new PhotoCamerManager((Activity) context, context);
@@ -257,15 +267,45 @@ public class DocumentActivity extends BaseActivity {
         switch (v.getId()) {
             /* 外出时间 */
             case R.id.apply_document_out_time_layout:
-
+                ChangeBirthDialog timeDialog = new ChangeBirthDialog(context);
+                Calendar calendar = Calendar.getInstance();
+                timeDialog.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DATE));
+                timeDialog.show();
+                timeDialog.setBirthdayListener(new ChangeBirthDialog.OnBirthListener() {
+                    @Override
+                    public void onClick(String year, String month, String day) {
+                        String sltTimeStr = year + "-" + MyUtils.suppleSingular(Integer.parseInt(month)) + "-" + day;
+                        out_time_text.setText(sltTimeStr);
+                    }
+                });
                 break;
             /* 开始时间 */
             case R.id.apply_document_start_time_layout:
-
+                ChangeBirthDialog startTimeDialog = new ChangeBirthDialog(context);
+                Calendar startCalendar = Calendar.getInstance();
+                startTimeDialog.setDate(startCalendar.get(Calendar.YEAR), startCalendar.get(Calendar.MONTH) + 1, startCalendar.get(Calendar.DATE));
+                startTimeDialog.show();
+                startTimeDialog.setBirthdayListener(new ChangeBirthDialog.OnBirthListener() {
+                    @Override
+                    public void onClick(String year, String month, String day) {
+                        String sltTimeStr = year + "-" + MyUtils.suppleSingular(Integer.parseInt(month)) + "-" + day;
+                        start_time_text.setText(sltTimeStr);
+                    }
+                });
                 break;
             /* 结束时间 */
             case R.id.apply_document_end_time_layout:
-
+                ChangeBirthDialog endTimeDialog = new ChangeBirthDialog(context);
+                Calendar endCalendar = Calendar.getInstance();
+                endTimeDialog.setDate(endCalendar.get(Calendar.YEAR), endCalendar.get(Calendar.MONTH) + 1, endCalendar.get(Calendar.DATE));
+                endTimeDialog.show();
+                endTimeDialog.setBirthdayListener(new ChangeBirthDialog.OnBirthListener() {
+                    @Override
+                    public void onClick(String year, String month, String day) {
+                        String sltTimeStr = year + "-" + MyUtils.suppleSingular(Integer.parseInt(month)) + "-" + day;
+                        end_time_text.setText(sltTimeStr);
+                    }
+                });
                 break;
             /* 加班时长 */
             case R.id.apply_document_work_time_layout:
@@ -301,10 +341,12 @@ public class DocumentActivity extends BaseActivity {
                         super.handleMessage(msg);
                         if (msg.what == MyConstant.HANDLER_SUCCESS) {
                             String imagePath = (String) msg.obj;
+                            LogUtils.e(TAG,"拍照图片路径 ："+imagePath);
                             try {
-                                sourceList.add(String.valueOf(BitmapUtils.readStream(imagePath)));
-                                for (int i=0;i < sourceList.size(); i ++){
-                                    photos_layout.addView(addPhotoItemView(sourceList.get(i)));
+                                sourceList.add(imagePath);
+                                photo_items_layout.removeAllViews();
+                                for (int i = 0; i < sourceList.size(); i++) {
+                                    photo_items_layout.addView(addPhotoItemView(sourceList.get(i)));
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -316,15 +358,6 @@ public class DocumentActivity extends BaseActivity {
             /* submit */
             case R.id.apply_document_submit_layout:
                 getParamsData();
-                if (applyType == MyConstant.APPLY_DOCUMENT_LEAVE_APPLY) {
-                    requestApplyLeave();
-                } else if (applyType == MyConstant.APPLY_DOCUMENT_OUT_REGISTER) {
-                    requestApplyOutRegister();
-                } else if (applyType == MyConstant.APPLY_DOCUMENT_OUT_APPLY) {
-                    requestApplyOut();
-                } else if (applyType == MyConstant.APPLY_DOCUMENT_WORK_REGISTER) {
-                    requestApplyWork();
-                }
                 break;
         }
     }
@@ -338,40 +371,40 @@ public class DocumentActivity extends BaseActivity {
     public void getParamsData() {
         /* 请假申请 */
         if (applyType == MyConstant.APPLY_DOCUMENT_LEAVE_APPLY) {
-            if (start_time_et.getText().toString() == null || start_time_et.getText().toString().equals("")) {
+            if (start_time_text.getText().toString() == null || start_time_text.getText().toString().equals("")) {
                 ToastUtils.showShort(context, "请输入开始时间");
                 return;
             }
-            if (end_time_et.getText().toString() == null || end_time_et.getText().toString().equals("")) {
+            if (end_time_text.getText().toString() == null || end_time_text.getText().toString().equals("")) {
                 ToastUtils.showShort(context, "请输入结束时间");
                 return;
             }
-            if (leave_day_et.getText().toString() == null || leave_day_et.getText().toString().equals("")) {
-                ToastUtils.showShort(context, "请输入请假天数");
-                return;
-            }
-            if (reason_et.getText().toString() == null || reason_et.getText().toString().equals("")) {
-                ToastUtils.showShort(context, "请填写请假事由");
-                return;
-            }
+//            if (leave_day_et.getText().toString() == null || leave_day_et.getText().toString().equals("")) {
+//                ToastUtils.showShort(context, "请输入请假天数");
+//                return;
+//            }
+//            if (reason_et.getText().toString() == null || reason_et.getText().toString().equals("")) {
+//                ToastUtils.showShort(context, "请填写请假事由");
+//                return;
+//            }
             /* 外出登记 */
         } else if (applyType == MyConstant.APPLY_DOCUMENT_OUT_REGISTER) {
-            if (out_time_et.getText().toString() == null || out_time_et.getText().toString().equals("")) {
-                ToastUtils.showShort(context, "请输入外出时间");
-                return;
-            }
-            if (start_time_et.getText().toString() == null || start_time_et.getText().toString().equals("")) {
+//            if (out_time_text.getText().toString() == null || out_time_text.getText().toString().equals("")) {
+//                ToastUtils.showShort(context, "请输入外出时间");
+//                return;
+//            }
+            if (start_time_text.getText().toString() == null || start_time_text.getText().toString().equals("")) {
                 ToastUtils.showShort(context, "请输入开始时间");
                 return;
             }
-            if (end_time_et.getText().toString() == null || end_time_et.getText().toString().equals("")) {
+            if (end_time_text.getText().toString() == null || end_time_text.getText().toString().equals("")) {
                 ToastUtils.showShort(context, "请输入结束时间");
                 return;
             }
-            if (reason_et.getText().toString() == null || reason_et.getText().toString().equals("")) {
-                ToastUtils.showShort(context, "请填写外出事由");
-                return;
-            }
+//            if (reason_et.getText().toString() == null || reason_et.getText().toString().equals("")) {
+//                ToastUtils.showShort(context, "请填写外出事由");
+//                return;
+//            }
             /* 出差申请 */
         } else if (applyType == MyConstant.APPLY_DOCUMENT_OUT_APPLY) {
             if (start_position_et.getText().toString() == null || start_position_et.getText().toString().equals("")) {
@@ -382,239 +415,434 @@ public class DocumentActivity extends BaseActivity {
                 ToastUtils.showShort(context, "请输入目的地");
                 return;
             }
-            if (start_time_et.getText().toString() == null || start_time_et.getText().toString().equals("")) {
+            if (start_time_text.getText().toString() == null || start_time_text.getText().toString().equals("")) {
                 ToastUtils.showShort(context, "请输入开始时间");
                 return;
             }
-            if (end_time_et.getText().toString() == null || end_time_et.getText().toString().equals("")) {
+            if (end_time_text.getText().toString() == null || end_time_text.getText().toString().equals("")) {
                 ToastUtils.showShort(context, "请输入结束时间");
                 return;
             }
-            if (trafic_tool_et.getText().toString() == null || trafic_tool_et.getText().toString().equals("")) {
-                ToastUtils.showShort(context, "请选择交通工具");
-                return;
-            }
-            if (reason_et.getText().toString() == null || reason_et.getText().toString().equals("")) {
-                ToastUtils.showShort(context, "请填写出差事由");
-                return;
-            }
-/* 加班登记 */
+//            if (trafic_tool_et.getText().toString() == null || trafic_tool_et.getText().toString().equals("")) {
+//                ToastUtils.showShort(context, "请选择交通工具");
+//                return;
+//            }
+//            if (reason_et.getText().toString() == null || reason_et.getText().toString().equals("")) {
+//                ToastUtils.showShort(context, "请填写出差事由");
+//                return;
+//            }
+        /* 加班登记 */
         } else if (applyType == MyConstant.APPLY_DOCUMENT_WORK_REGISTER) {
-
+            if (start_time_text.getText().toString() == null || start_time_text.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请输入开始时间");
+                return;
+            }
+            if (end_time_text.getText().toString() == null || end_time_text.getText().toString().equals("")) {
+                ToastUtils.showShort(context, "请输入结束时间");
+                return;
+            }
+//            if (work_time_et.getText().toString() == null || work_time_et.getText().toString().equals("")) {
+//                ToastUtils.showShort(context, "请输入加班时长");
+//                return;
+//            }
+//            if (reason_et.getText().toString() == null || reason_et.getText().toString().equals("")) {
+//                ToastUtils.showShort(context, "请输入加班事由");
+//                return;
+//            }
         }
+//        if (sourceList == null || sourceList.size() <= 0){
+//            ToastUtils.showShort(context, "请上传图片");
+//            return;
+//        }
+//        if (voiceFile == null || voiceFile.equals("")){
+//            ToastUtils.showShort(context, "请录制语音");
+//            return;
+//        }
         personId = AppUtils.getPersonId(context);
         personName = AppUtils.getPersonName(context);
-        startDate = start_time_et.getText().toString();
-        endDate = end_time_et.getText().toString();
+        outData = out_time_text.getText().toString();
+        startDate = start_time_text.getText().toString();
+        endDate = end_time_text.getText().toString();
         origin = start_position_et.getText().toString();//      始发地
         destination = end_position_et.getText().toString();//  目的地
         vehicle = trafic_tool_et.getText().toString();//  交通工具
         reason = reason_et.getText().toString();
+
+        if (applyType == MyConstant.APPLY_DOCUMENT_LEAVE_APPLY) {
+            requestApplyLeave();
+        } else if (applyType == MyConstant.APPLY_DOCUMENT_OUT_REGISTER) {
+            requestApplyOutRegister();
+        } else if (applyType == MyConstant.APPLY_DOCUMENT_OUT_APPLY) {
+            requestApplyOut();
+        } else if (applyType == MyConstant.APPLY_DOCUMENT_WORK_REGISTER) {
+            requestApplyWork();
+        }
     }
 
     /**
      * 请假申请
      */
     public void requestApplyLeave() {
-        if (sourceList == null || sourceList.size() <=0){
-            ToastUtils.showShort(context,"请上传图片");
-            return;
+        Map<String,Object> paramsMap = new HashMap<>();
+        paramsMap.put("personId", personId);
+        paramsMap.put("personName", personName);
+        paramsMap.put("startDate", startDate);
+        paramsMap.put("endDate", endDate);
+        paramsMap.put("reason", reason);
+        Map<String,Object> fileMap = new HashMap<>();
+        if (sourceList != null && sourceList.size() > 0){
+            for (String sourcePath : sourceList){
+                fileMap.put("sourceFile",sourcePath);
+            }
         }
-        if (voiceFile == null || voiceFile.equals("")){
-            sourceFile = new String[sourceList.size()];
-            for (int i = 0;i < sourceList.size();i++){
-                sourceFile[i] = sourceList.get(i);
-            }
-        }else {
-            sourceFile = new String[sourceList.size()+1];
-            for (int i = 0;i < sourceList.size()+1;i++){
-                if (i == 0){
-                    sourceFile[i] = voiceFile;
-                }else {
-                    sourceFile[i+1] = sourceList.get(i);
-
-                }
-            }
+        if (voiceFile != null && !voiceFile.equals("")){
+            fileMap.put("sourceFile",voiceFile);
         }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        new CheckWorkServices(context).leaveOrderAddService(personId, personName, startDate,
-                endDate, reason, sourceFile,new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        super.handleMessage(msg);
-                        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+        LogUtils.e(TAG,"---------------- 创建任务request ----------------");
+        LogUtils.e(TAG,"创建任务 request url : "+MyConstant.BASE_URL + "/app/dailyreportAPPAction!add.action");
+        new FormRequest(context,MyConstant.BASE_URL + "/app/leaveOrderAPPAction!add.action",paramsMap,fileMap,new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
                             swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                         }
-                        if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                            finish();
-                        } else if (msg.what == MyConstant.REQUEST_FIELD) {
-                            String errMsg = (String) msg.obj;
-                            ToastUtils.showShort(context, errMsg);
-                        } else if (msg.what == MyConstant.REQUEST_ERROR) {
-                            String errMsg = (String) msg.obj;
-                            ToastUtils.showShort(context, errMsg);
-                        }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    finish();
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")) {
+                        BaseActivity.loginOut(context);
                     }
-                });
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
+
+//        preRequest();
+//        new CheckWorkServices(context).leaveOrderAddService(personId, personName, startDate,
+//                endDate, reason, sourceFile, new Handler() {
+//                    @Override
+//                    public void handleMessage(Message msg) {
+//                        super.handleMessage(msg);
+//                        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+//                            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+//                        }
+//                        if (msg.what == MyConstant.REQUEST_SUCCESS) {
+//                            finish();
+//                        } else if (msg.what == MyConstant.REQUEST_FIELD) {
+//                            String errMsg = (String) msg.obj;
+//                            ToastUtils.showShort(context, errMsg);
+//                            if (errMsg.equals("session过期")){
+//                                BaseActivity.loginOut(context);
+//                            }
+//                        } else if (msg.what == MyConstant.REQUEST_ERROR) {
+//                            String errMsg = (String) msg.obj;
+//                            ToastUtils.showShort(context, errMsg);
+//                        }
+//                    }
+//                });
     }
 
     /**
      * 外出登记申请
      */
     public void requestApplyOutRegister() {
-        if (sourceList == null || sourceList.size() <=0){
-            ToastUtils.showShort(context,"请上传图片");
-            return;
+        Map<String,Object> paramsMap = new HashMap<>();
+        paramsMap.put("personId", personId);
+        paramsMap.put("outData", outData);
+        paramsMap.put("startDate", startDate);
+        paramsMap.put("endDate", endDate);
+        paramsMap.put("reason", reason);
+        Map<String,Object> fileMap = new HashMap<>();
+        if (sourceList != null && sourceList.size() > 0){
+            for (String sourcePath : sourceList){
+                fileMap.put("sourceFile",sourcePath);
+            }
         }
-        if (voiceFile == null || voiceFile.equals("")){
-            sourceFile = new String[sourceList.size()];
-            for (int i = 0;i < sourceList.size();i++){
-                sourceFile[i] = sourceList.get(i);
-            }
-        }else {
-            sourceFile = new String[sourceList.size()+1];
-            for (int i = 0;i < sourceList.size()+1;i++){
-                if (i == 0){
-                    sourceFile[i] = voiceFile;
-                }else {
-                    sourceFile[i+1] = sourceList.get(i);
-
-                }
-            }
+        if (voiceFile != null && !voiceFile.equals("")){
+            fileMap.put("sourceFile",voiceFile);
         }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        new CheckWorkServices(context).outGoingAddService(personId, personName, startDate,
-                endDate, reason, sourceFile,new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        super.handleMessage(msg);
-                        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-                            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-                        }
-                        if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                            finish();
-                        } else if (msg.what == MyConstant.REQUEST_FIELD) {
-                            String errMsg = (String) msg.obj;
-                            ToastUtils.showShort(context, errMsg);
-                        } else if (msg.what == MyConstant.REQUEST_ERROR) {
-                            String errMsg = (String) msg.obj;
-                            ToastUtils.showShort(context, errMsg);
-                        }
+        LogUtils.e(TAG,"---------------- 外出登记申请 request ----------------");
+        LogUtils.e(TAG,"外出登记申请 request url : "+MyConstant.BASE_URL + "/app/outgoingAPPAction!add.action");
+        new FormRequest(context,MyConstant.BASE_URL + "/app/outgoingAPPAction!add.action",paramsMap,fileMap,new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    finish();
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")) {
+                        BaseActivity.loginOut(context);
                     }
-                });
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
+
+//        preRequest();
+//        new CheckWorkServices(context).outGoingAddService(personId, outData, startDate,
+//                endDate, reason, sourceFile, new Handler() {
+//                    @Override
+//                    public void handleMessage(Message msg) {
+//                        super.handleMessage(msg);
+//                        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+//                            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+//                        }
+//                        if (msg.what == MyConstant.REQUEST_SUCCESS) {
+//                            finish();
+//                        } else if (msg.what == MyConstant.REQUEST_FIELD) {
+//                            String errMsg = (String) msg.obj;
+//                            ToastUtils.showShort(context, errMsg);
+//                            if (errMsg.equals("session过期")){
+//                                BaseActivity.loginOut(context);
+//                            }
+//                        } else if (msg.what == MyConstant.REQUEST_ERROR) {
+//                            String errMsg = (String) msg.obj;
+//                            ToastUtils.showShort(context, errMsg);
+//                        }
+//                    }
+//                });
     }
 
     /**
      * 出差申请
      */
     public void requestApplyOut() {
-        if (sourceList == null || sourceList.size() <=0){
-            ToastUtils.showShort(context,"请上传图片");
-            return;
+        Map<String,Object> paramsMap = new HashMap<>();
+        paramsMap.put("personId", personId);
+        paramsMap.put("personName", personName);
+        paramsMap.put("origin", origin);
+        paramsMap.put("destination", destination);
+        paramsMap.put("startDate", startDate);
+        paramsMap.put("endDate", endDate);
+        paramsMap.put("vehicle", vehicle);
+        paramsMap.put("reason", reason);
+        Map<String,Object> fileMap = new HashMap<>();
+        if (sourceList != null && sourceList.size() > 0){
+            for (String sourcePath : sourceList){
+                fileMap.put("sourceFile",sourcePath);
+            }
         }
-        if (voiceFile == null || voiceFile.equals("")){
-            sourceFile = new String[sourceList.size()];
-            for (int i = 0;i < sourceList.size();i++){
-                sourceFile[i] = sourceList.get(i);
-            }
-        }else {
-            sourceFile = new String[sourceList.size()+1];
-            for (int i = 0;i < sourceList.size()+1;i++){
-                if (i == 0){
-                    sourceFile[i] = voiceFile;
-                }else {
-                    sourceFile[i+1] = sourceList.get(i);
-
-                }
-            }
+        if (voiceFile != null && !voiceFile.equals("")){
+            fileMap.put("sourceFile",voiceFile);
         }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        new CheckWorkServices(context).bussinessTripAddService(personId, personName, origin, destination,
-                startDate, endDate, vehicle, reason,sourceFile,new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        super.handleMessage(msg);
-                        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-                            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-                        }
-                        if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                            finish();
-                        } else if (msg.what == MyConstant.REQUEST_FIELD) {
-                            String errMsg = (String) msg.obj;
-                            ToastUtils.showShort(context, errMsg);
-                        } else if (msg.what == MyConstant.REQUEST_ERROR) {
-                            String errMsg = (String) msg.obj;
-                            ToastUtils.showShort(context, errMsg);
-                        }
+        LogUtils.e(TAG,"---------------- 出差申请 request ----------------");
+        LogUtils.e(TAG,"出差申请 request url : "+MyConstant.BASE_URL + "/app/businessTrip!add.action");
+        new FormRequest(context,MyConstant.BASE_URL + "/app/businessTrip!add.action",paramsMap,fileMap,new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    finish();
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")) {
+                        BaseActivity.loginOut(context);
                     }
-                });
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
+
+//        preRequest();
+//        new CheckWorkServices(context).bussinessTripAddService(personId, personName, origin, destination,
+//                startDate, endDate, vehicle, reason, sourceFile, new Handler() {
+//                    @Override
+//                    public void handleMessage(Message msg) {
+//                        super.handleMessage(msg);
+//                        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+//                            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+//                        }
+//                        if (msg.what == MyConstant.REQUEST_SUCCESS) {
+//                            finish();
+//                        } else if (msg.what == MyConstant.REQUEST_FIELD) {
+//                            String errMsg = (String) msg.obj;
+//                            ToastUtils.showShort(context, errMsg);
+//                            if (errMsg.equals("session过期")){
+//                                BaseActivity.loginOut(context);
+//                            }
+//                        } else if (msg.what == MyConstant.REQUEST_ERROR) {
+//                            String errMsg = (String) msg.obj;
+//                            ToastUtils.showShort(context, errMsg);
+//                        }
+//                    }
+//                });
     }
 
     /**
      * 加班登记
      */
     public void requestApplyWork() {
-        if (sourceList == null || sourceList.size() <=0){
-            ToastUtils.showShort(context,"请上传图片");
-            return;
+        Map<String,Object> paramsMap = new HashMap<>();
+        paramsMap.put("personId", personId);
+        paramsMap.put("startDate", startDate);
+        paramsMap.put("endDate", endDate);
+        paramsMap.put("reason", reason);
+        Map<String,Object> fileMap = new HashMap<>();
+        if (sourceList != null && sourceList.size() > 0){
+            for (String sourcePath : sourceList){
+                fileMap.put("sourceFile",sourcePath);
+            }
         }
-        if (voiceFile == null || voiceFile.equals("")){
-            sourceFile = new String[sourceList.size()];
-            for (int i = 0;i < sourceList.size();i++){
-                sourceFile[i] = sourceList.get(i);
-            }
-        }else {
-            sourceFile = new String[sourceList.size()+1];
-            for (int i = 0;i < sourceList.size()+1;i++){
-                if (i == 0){
-                    sourceFile[i] = voiceFile;
-                }else {
-                    sourceFile[i+1] = sourceList.get(i);
-
-                }
-            }
+        if (voiceFile != null && !voiceFile.equals("")){
+            fileMap.put("sourceFile",voiceFile);
         }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        new CheckWorkServices(context).workAddService(personId, startDate,
-                endDate, reason,sourceFile, new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        super.handleMessage(msg);
-                        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-                            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-                        }
-                        if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                            finish();
-                        } else if (msg.what == MyConstant.REQUEST_FIELD) {
-                            String errMsg = (String) msg.obj;
-                            ToastUtils.showShort(context, errMsg);
-                        } else if (msg.what == MyConstant.REQUEST_ERROR) {
-                            String errMsg = (String) msg.obj;
-                            ToastUtils.showShort(context, errMsg);
-                        }
+        LogUtils.e(TAG,"---------------- 加班登记 request ----------------");
+        LogUtils.e(TAG,"加班登记 request url : "+MyConstant.BASE_URL + "/app/workAPPAction!add.action");
+        new FormRequest(context,MyConstant.BASE_URL + "/app/workAPPAction!add.action",paramsMap,fileMap,new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    finish();
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")) {
+                        BaseActivity.loginOut(context);
                     }
-                });
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
+
+//        preRequest();
+//        new CheckWorkServices(context).workAddService(personId, startDate,
+//                endDate, reason, sourceFile, new Handler() {
+//                    @Override
+//                    public void handleMessage(Message msg) {
+//                        super.handleMessage(msg);
+//                        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+//                            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+//                        }
+//                        if (msg.what == MyConstant.REQUEST_SUCCESS) {
+//                            finish();
+//                        } else if (msg.what == MyConstant.REQUEST_FIELD) {
+//                            String errMsg = (String) msg.obj;
+//                            ToastUtils.showShort(context, errMsg);
+//                            if (errMsg.equals("session过期")){
+//                                BaseActivity.loginOut(context);
+//                            }
+//                        } else if (msg.what == MyConstant.REQUEST_ERROR) {
+//                            String errMsg = (String) msg.obj;
+//                            ToastUtils.showShort(context, errMsg);
+//                        }
+//                    }
+//                });
     }
 
+    /**
+     *             添加照片
+     *
+     * @param imageUrl
+     * @return
+     */
     public View addPhotoItemView(String imageUrl) {
         View photo_view = LayoutInflater.from(context).inflate(R.layout.item_view_image, null);
         ImageView photo_image = (ImageView) photo_view.findViewById(R.id.item_view_photo_image);
+        photo_image.setScaleType(ImageView.ScaleType.FIT_XY);
         Glide.with(context).load(imageUrl).into(photo_image);
         return photo_view;
     }
+
+//    /**
+//     *  资源文件
+//     */
+//    public void preRequest() {
+////        if (sourceList == null || sourceList.size() <= 0) {
+////            ToastUtils.showShort(context, "请上传图片");
+////            return;
+////        }
+//        if (voiceFile == null || voiceFile.equals("")) {
+//            sourceFile = new String[sourceList.size()];
+//            for (int i = 0; i < sourceList.size(); i++) {
+//                try {
+//                    String imageStr = BitmapUtils.readStream(sourceList.get(i));
+//                    LogUtils.e(TAG, "imageStr : " + imageStr);
+//                    sourceFile[i] = imageStr;
+//                    LogUtils.e(TAG, "sourceFile : " + sourceFile.toString());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        } else {
+//            sourceFile = new String[sourceList.size() + 1];
+//            for (int i = 0; i < sourceList.size() + 1; i++) {
+//                if (i == sourceList.size()) {
+//                    try {
+//                        sourceFile[i] = BitmapUtils.readStream(voiceFile);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    try {
+//                        sourceFile[i] = BitmapUtils.readStream(sourceList.get(i));
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                }
+//            }
+//        }
+//        if (swipeLayout != null) {
+//            swipeLayout.setRefreshing(true);
+//        }
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         MyUtils.hideKeyboard((Activity) context);
         photoCamerUtil.activityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        voiceManager.stopAudio();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

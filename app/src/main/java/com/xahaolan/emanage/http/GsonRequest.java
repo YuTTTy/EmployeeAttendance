@@ -35,7 +35,6 @@ public class GsonRequest<T> extends Request<T> {
     private Gson mGson = new Gson();
     private TypeToken<T> typeToken;
     private String spitUrl;//拼接路径
-
     /*请求头*/
     private Map<String, String> mHeader = new HashMap<>();
 
@@ -106,7 +105,7 @@ public class GsonRequest<T> extends Request<T> {
      */
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-//        LogUtils.e(TAG, "请求头Header:" + mHeader);
+        LogUtils.e(TAG, "请求头Header:" + mHeader);
         return mHeader == null ? super.getHeaders() : mHeader;
     }
 
@@ -124,9 +123,9 @@ public class GsonRequest<T> extends Request<T> {
     @Override
     public byte[] getBody() throws AuthFailureError {
         try {
-            String bodyParams = HttpUtils.appendParams("",params);
+            String bodyParams = HttpUtils.appendParams("", params);
             LogUtils.e(TAG, "params :" + bodyParams);
-            return bodyParams == null ? super.getBody() : bodyParams.getBytes(PROTOCOL_CHARSET);
+            return bodyParams == null || bodyParams.equals("") ? super.getBody() : bodyParams.getBytes(PROTOCOL_CHARSET);
         } catch (UnsupportedEncodingException e) {
             VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
                     params, PROTOCOL_CHARSET);
@@ -169,7 +168,7 @@ public class GsonRequest<T> extends Request<T> {
         /* save session id */
         Map<String, String> responseHeaders = networkResponse.headers;
         String rawCookies = responseHeaders.get("Set-Cookie");
-        if (rawCookies != null && !rawCookies.equals("")){
+        if (rawCookies != null && !rawCookies.equals("")) {
             //Constant是一个自建的类，存储常用的全局变量
             SPUtils.put(context, MyConstant.SHARED_SAVE, MyConstant.SESSION_ID, rawCookies.substring(0, rawCookies.indexOf(";")));
         }
@@ -178,7 +177,7 @@ public class GsonRequest<T> extends Request<T> {
         try {
             String jsonString = new String(networkResponse.data, "UTF-8");
 //            String jsonString = new String(networkResponse.data, HttpUtils.parseCharset(networkResponse.headers));
-            LogUtils.e(TAG, "请求成功返回数据:" + jsonString);
+            LogUtils.e(TAG, "请求成功返回数据:" + HttpUtils.decode(jsonString));
             T parsedGson = mGson.fromJson(jsonString, typeToken.getType());
             return Response.success(parsedGson, HttpHeaderParser.parseCacheHeaders(networkResponse));
         } catch (UnsupportedEncodingException e) {

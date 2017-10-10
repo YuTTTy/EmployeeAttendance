@@ -62,25 +62,25 @@ public class CheckServices extends BaseService {
         LogUtils.e(TAG, "==============================   我的申请列表 request   =======================================");
         String urlStr = MyConstant.BASE_URL + "/app/interface!applications.action";
         Map<String, Object> params = new HashMap<>();
-        params.put("employeeid", personid);
+        params.put("personid", personid);
         params.put("page", page);
         params.put("rows", rows);
         //        getVerificationParams(params, 1);//获取验证参数
         Map<String,String> mHeaders = getHeader();
-        GsonRequest<RepBase<List<Map<String,Object>>>> request = null;
+        GsonRequest<RepBase<Map<String,Object>>> request = null;
         try {
-            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<List<Map<String,Object>>>>() {
+            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<Map<String,Object>>>() {
             },
-                    new Response.Listener<RepBase<List<Map<String,Object>>>>() {
+                    new Response.Listener<RepBase<Map<String,Object>>>() {
                         @Override
-                        public void onResponse(RepBase<List<Map<String,Object>>> response) {
+                        public void onResponse(RepBase<Map<String,Object>> response) {
                             if (response == null || response.getSuccess() == null) {
                                 Log.e(TAG, "我的申请列表 null" + response);
                                 return;
                             }
                             Message message = new Message();
                             if (response.getSuccess()) {
-                                List<Map<String,Object>> responseData = response.getObj();
+                                Map<String,Object> responseData = response.getObj();
                                 message.what = MyConstant.REQUEST_SUCCESS;
                                 message.obj = responseData;
                                 Log.e(TAG, "我的申请列表 success");
@@ -98,43 +98,90 @@ public class CheckServices extends BaseService {
         requesQueue.add(request);
     }
     /**
-     *                    我的审批列表
+     *                    我的待审批列表
      *
-     * @param personid   申请人id
+     * @param approvalId   申请人id
      * @param page   当前页
      * @param rows   每页显示记录数
      * @param handler
      */
-    public void examineService(int personid,int page,int rows,final Handler handler) {
-        LogUtils.e(TAG, "==============================   我的审批列表 request   =======================================");
-        String urlStr = MyConstant.BASE_URL + "";
+    public void examineService(int approvalId,int page,int rows,final Handler handler) {
+        LogUtils.e(TAG, "==============================   我的待审批列表 request   =======================================");
+        String urlStr = MyConstant.BASE_URL + "/app/interface!approvaling.action";
         Map<String, Object> params = new HashMap<>();
-        params.put("employeeid", personid);
+        params.put("approvalId", approvalId);
         params.put("page", page);
         params.put("rows", rows);
         //        getVerificationParams(params, 1);//获取验证参数
         Map<String,String> mHeaders = getHeader();
-        GsonRequest<RepBase<List<Map<String,Object>>>> request = null;
+        GsonRequest<RepBase<Map<String,Object>>> request = null;
         try {
-            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<List<Map<String,Object>>>>() {
+            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<Map<String,Object>>>() {
             },
-                    new Response.Listener<RepBase<List<Map<String,Object>>>>() {
+                    new Response.Listener<RepBase<Map<String,Object>>>() {
                         @Override
-                        public void onResponse(RepBase<List<Map<String,Object>>> response) {
+                        public void onResponse(RepBase<Map<String,Object>> response) {
                             if (response == null || response.getSuccess() == null) {
-                                Log.e(TAG, "我的审批列表 null" + response);
+                                Log.e(TAG, "我的待审批列表 null" + response);
                                 return;
                             }
                             Message message = new Message();
                             if (response.getSuccess()) {
-                                List<Map<String,Object>> responseData = response.getObj();
+                                Map<String,Object> responseData = response.getObj();
                                 message.what = MyConstant.REQUEST_SUCCESS;
                                 message.obj = responseData;
-                                Log.e(TAG, "我的审批列表 success");
+                                Log.e(TAG, "我的待审批列表 success");
                             } else {
                                 message.what = MyConstant.REQUEST_FIELD;
                                 message.obj = response.getMsg();
-                                Log.e(TAG, "我的审批列表 field");
+                                Log.e(TAG, "我的待审批列表 field");
+                            }
+                            handler.sendMessage(message);
+                        }
+                    }, new EZErrListener<>(context, handler));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        requesQueue.add(request);
+    }
+    /**
+     *                    我的已审批列表
+     *
+     * @param approvalId   申请人id
+     * @param page   当前页
+     * @param rows   每页显示记录数
+     * @param handler
+     */
+    public void alExamineService(int approvalId,int page,int rows,final Handler handler) {
+        LogUtils.e(TAG, "==============================   我的已审批列表 request   =======================================");
+        String urlStr = MyConstant.BASE_URL + "/app/interface!approvaled.action";
+        Map<String, Object> params = new HashMap<>();
+        params.put("approvalId", approvalId);
+        params.put("page", page);
+        params.put("rows", rows);
+        //        getVerificationParams(params, 1);//获取验证参数
+        Map<String,String> mHeaders = getHeader();
+        GsonRequest<RepBase<Map<String,Object>>> request = null;
+        try {
+            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<Map<String,Object>>>() {
+            },
+                    new Response.Listener<RepBase<Map<String,Object>>>() {
+                        @Override
+                        public void onResponse(RepBase<Map<String,Object>> response) {
+                            if (response == null || response.getSuccess() == null) {
+                                Log.e(TAG, "我的已审批列表 null" + response);
+                                return;
+                            }
+                            Message message = new Message();
+                            if (response.getSuccess()) {
+                                Map<String,Object> responseData = (Map<String, Object>) response.getObj();
+                                message.what = MyConstant.REQUEST_SUCCESS;
+                                message.obj = responseData;
+                                Log.e(TAG, "我的已审批列表 success");
+                            } else {
+                                message.what = MyConstant.REQUEST_FIELD;
+                                message.obj = response.getMsg();
+                                Log.e(TAG, "我的已审批列表 field");
                             }
                             handler.sendMessage(message);
                         }

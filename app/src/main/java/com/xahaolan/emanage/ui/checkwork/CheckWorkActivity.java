@@ -231,9 +231,9 @@ public class CheckWorkActivity extends BaseActivity implements LocationSource, A
                         break;
                     //查看我的审批
                     case 6:
-                        ToastUtils.showShort(context,"研发中，敬请期待....");
+//                        ToastUtils.showShort(context,"研发中，敬请期待....");
                         bundle.putInt("CheckType", MyConstant.CHECK_MINE_EXAMINE);
-//                        MyUtils.jump(context, CheckApplyActivity.class, bundle, false, null);
+                        MyUtils.jump(context, CheckApplyActivity.class, bundle, false, null);
                         break;
                 }
             }
@@ -272,6 +272,9 @@ public class CheckWorkActivity extends BaseActivity implements LocationSource, A
                         } else if (msg.what == MyConstant.REQUEST_FIELD) {
                             String errMsg = (String) msg.obj;
                             ToastUtils.showShort(context, errMsg);
+                            if (errMsg.equals("session过期")){
+                                BaseActivity.loginOut(context);
+                            }
                         } else if (msg.what == MyConstant.REQUEST_ERROR) {
                             String errMsg = (String) msg.obj;
                             ToastUtils.showShort(context, errMsg);

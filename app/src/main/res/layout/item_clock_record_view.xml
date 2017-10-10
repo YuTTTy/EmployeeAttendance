@@ -21,6 +21,14 @@
         android:layout_toRightOf="@+id/item_clock_record_view_head"
         android:textColor="@color/baseTextMain"
         android:textSize="@dimen/text_main_content" />
+    <TextView
+        android:id="@+id/item_clock_record_view_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/baseTextMain"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/usually_spacing_big"
+        android:textSize="@dimen/text_main_content" />
 
     <TextView
         android:id="@+id/item_clock_record_view_arrive_text"

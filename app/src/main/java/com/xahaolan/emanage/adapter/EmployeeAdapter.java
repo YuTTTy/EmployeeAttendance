@@ -52,13 +52,18 @@ public class EmployeeAdapter extends BaseAdapter {
             holder.name_text = (TextView) convertView.findViewById(R.id.item_employee_name);
             holder.department_text = (TextView) convertView.findViewById(R.id.item_employee_department);
             convertView.setTag(holder);
-        }else {
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         Map<String, Object> data = list.get(position);
         if (data != null) {
-
+            if (data.get("personname") != null) {
+                holder.name_text.setText(data.get("personname") + "");
+            }
+            if (data.get("crafttype") != null) {
+                holder.department_text.setText(data.get("crafttype") + "");
+            }
         }
         return convertView;
     }
@@ -68,6 +73,7 @@ public class EmployeeAdapter extends BaseAdapter {
         private TextView name_text;
         private TextView department_text;
     }
+
     public int getPositionForSelection(int selection) {
         List<Map<String, Object>> contactsList = new ArrayList<>();
         for (int i = 0; i < contactsList.size(); i++) {
@@ -79,6 +85,7 @@ public class EmployeeAdapter extends BaseAdapter {
         }
         return -1;
     }
+
     public void resetList(List<Map<String, Object>> list) {
         if (this.list != null) this.list.clear();
         else this.list = new ArrayList<>();

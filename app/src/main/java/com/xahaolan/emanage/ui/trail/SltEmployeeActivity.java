@@ -18,6 +18,7 @@ import com.xahaolan.emanage.adapter.EmployeeAdapter;
 import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.http.services.TrailServices;
+import com.xahaolan.emanage.ui.task.CreateTaskActivity;
 import com.xahaolan.emanage.utils.common.StringUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
@@ -44,7 +45,8 @@ public class SltEmployeeActivity extends BaseActivity {
     private int departmentid;
     private int page = 1;  //当前页
     private int rows = 20;   //每页显示记录数
-    private Boolean hasNextPage;
+    private Boolean hasNextPage =false;
+    private int sltType = 0; //1.工作轨迹  2.创建任务
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,50 +62,53 @@ public class SltEmployeeActivity extends BaseActivity {
     @Override
     public void initView() {
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        /*下拉刷新*/
-        BaseActivity.setSwipRefresh(swipeLayout, new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (msg.what == MyConstant.HANDLER_REFRESH_SUCCESS) {
-                    page = 1;
-                    requestEmployeeList();
-                }
-            }
-        });
+        swipeLayout.setEnabled(false); //禁止下拉刷新
+        setSwipRefresh(swipeLayout, null);
         side_bar = (SideBar) findViewById(R.id.trail_list_employee_sidebar);
         dialog_text = (TextView) findViewById(R.id.trail_list_employee_dialog);
         list_view = (ListView) findViewById(R.id.trail_list_employee_listview);
-        list_view.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    if (view.getLastVisiblePosition() == view.getCount() - 1) {
-                        if (hasNextPage) {
-                            page++;
-                            requestEmployeeList();
-                        } else if (list_view.getFooterViewsCount() <= 0) {
-                            ToastUtils.showShort(context, "没有更多了");
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-            }
-        });
+//        list_view.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(AbsListView view, int scrollState) {
+//                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+//                    if (view.getLastVisiblePosition() == view.getCount() - 1) {
+//                        if (hasNextPage) {
+//                            page++;
+//                            requestEmployeeList();
+//                        } else if (list_view.getFooterViewsCount() <= 0) {
+//                            ToastUtils.showShort(context, "没有更多了");
+//                        }
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//
+//            }
+//        });
         list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Map<String, Object> employeeData = (Map<String, Object>) parent.getAdapter().getItem(position);
-                if (employeeData.get("personId") != null) {
-                    personId = (int) employeeData.get("personId");
+                if (employeeData.get("id") == null) {
+                    ToastUtils.showShort(context,"无法获取员工ID");
+                    return;
                 }
+                if (employeeData.get("personname") == null){
+                    ToastUtils.showShort(context,"无法获取员工姓名");
+                    return;
+                }
+                personId = new Double((Double)employeeData.get("id")).intValue();
+                String personName = (String) employeeData.get("personname");
                 Bundle bundle = new Bundle();
-                bundle.putInt("personId", personId);
-                MyUtils.jump(context, WorkTrailActivity.class, bundle, false, null);
+                bundle.putInt("employeeId", personId);
+                if (sltType == 1){
+                    MyUtils.jump(context, WorkTrailActivity.class, bundle, false, null);
+                }else if (sltType == 2){
+                    bundle.putString("employeeName",personName);
+                    MyUtils.jump(context, CreateTaskActivity.class, bundle, false, null);
+                }
                 finish();
             }
         });
@@ -127,6 +132,7 @@ public class SltEmployeeActivity extends BaseActivity {
     public void initData() {
         intent = getIntent();
         departmentid = intent.getIntExtra("departmentid",0);
+        sltType = intent.getIntExtra("sltType", 0);
     }
 
     @Override
@@ -153,22 +159,16 @@ public class SltEmployeeActivity extends BaseActivity {
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
                     dataList = (List<Map<String, Object>>) msg.obj;
-//                            if (lastPage == 0 || currentPage == lastPage) {
-//                                hasNextPage = false;
-//                            } else {
-//                                hasNextPage = true;
-//                            }
                     if (dataList != null && dataList.size() > 0) {
-//                            if (page == 1) {
-//                                activityAdapter.resetList(activityList);
-//                            } else {
-//                                activityAdapter.appendList(activityList);
-//                            }
+                        adapter.resetList(dataList);
                         adapter.notifyDataSetChanged();
                     }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")){
+                        BaseActivity.loginOut(context);
+                    }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);

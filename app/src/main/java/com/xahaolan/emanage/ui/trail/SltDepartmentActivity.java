@@ -1,5 +1,6 @@
 package com.xahaolan.emanage.ui.trail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,11 +28,13 @@ import java.util.Map;
 public class SltDepartmentActivity extends BaseActivity {
     private static final String TAG = SltDepartmentActivity.class.getSimpleName();
     private SwipeRefreshLayout swipeLayout;
+    private Intent intent;
 
     private LinearLayout items_layout;
     //    private String[] nameArr = {"销售部","技术部","工程部","采购部","财务部"};
     private List<Map<String, Object>> dataList;
 
+    private int sltType = 0; //1.工作轨迹  2.创建任务
     private int personid; //申请人id
     private int page = 1;  //当前页
     private int rows = 20;   //每页显示记录数
@@ -58,13 +61,14 @@ public class SltDepartmentActivity extends BaseActivity {
 
     @Override
     public void initData() {
-
+        intent = getIntent();
+        sltType = intent.getIntExtra("sltType", 0);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        dataList = new ArrayList<>();
+        items_layout.removeAllViews();
         requestDepartment();
     }
 
@@ -85,13 +89,16 @@ public class SltDepartmentActivity extends BaseActivity {
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
                     dataList = (List<Map<String, Object>>) msg.obj;
                     if (dataList != null && dataList.size() > 0) {
-                        for (int i = 0; i < dataList.size();i++){
+                        for (int i = 0; i < dataList.size(); i++) {
                             items_layout.addView(addItemView(dataList.get(i)));
                         }
                     }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")) {
+                        BaseActivity.loginOut(context);
+                    }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
@@ -100,17 +107,18 @@ public class SltDepartmentActivity extends BaseActivity {
         });
     }
 
-    public View addItemView(final Map<String,Object> data) {
+    public View addItemView(final Map<String, Object> data) {
         View itemView = LayoutInflater.from(context).inflate(R.layout.item_view_slt_employee, null);
         TextView name_text = (TextView) itemView.findViewById(R.id.item_view_employee_name);
-        name_text.setText(data.get("name")+"");
+        name_text.setText(data.get("dpmname") + "");
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (data.get("departmentid") != null){
-                    int departmentId = new Double((Double) data.get("departmentid")).intValue();
+                if (data.get("id") != null) {
+                    int departmentId = new Double((Double) data.get("id")).intValue();
                     Bundle bundle = new Bundle();
-                    bundle.putInt("departmentid",departmentId);
+                    bundle.putInt("sltType",sltType);
+                    bundle.putInt("departmentid", departmentId);
                     MyUtils.jump(context, SltEmployeeActivity.class, bundle, false, null);
                 }
             }

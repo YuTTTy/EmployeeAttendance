@@ -9,6 +9,7 @@
     android:padding="@dimen/usually_spacing_middle"
     >
     <ImageView
+        android:src="@drawable/icon_employee"
         android:layout_width="@dimen/usually_image_width"
         android:layout_height="@dimen/usually_image_hight"
         android:id="@+id/item_employee_head"

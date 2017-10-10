@@ -89,10 +89,10 @@ public class MyConstant {
     public static final String COLOR_ORANGE = "#FF8000";//
 
     /* 考勤 */
-    public static final int APPLY_DOCUMENT_LEAVE_APPLY = 1;  //请假申请
-    public static final int APPLY_DOCUMENT_OUT_REGISTER = 2;  //外出登记
-    public static final int APPLY_DOCUMENT_OUT_APPLY = 3;  //出差申请
-    public static final int APPLY_DOCUMENT_WORK_REGISTER = 4;  //加班登记
+    public static final int APPLY_DOCUMENT_LEAVE_APPLY = 0;  //请假申请
+    public static final int APPLY_DOCUMENT_OUT_REGISTER = 1;  //外出登记
+    public static final int APPLY_DOCUMENT_OUT_APPLY = 2;  //出差申请
+    public static final int APPLY_DOCUMENT_WORK_REGISTER = 3;  //加班登记
 
     /* 查看我的申请，审批 */
     public static final int CHECK_MINE_APPLY = 1;  //查看我的申请

@@ -17,25 +17,25 @@
             android:layout_height="wrap_content"></include>
 
         <RelativeLayout
-            android:background="@color/baseBg"
             android:layout_width="match_parent"
-            android:paddingTop="@dimen/usually_spacing_middle"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/baseBg"
+            android:paddingTop="@dimen/usually_spacing_middle">
 
             <FrameLayout
                 android:id="@+id/apply_document_submit_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:layout_alignParentBottom="true">
+                android:layout_alignParentBottom="true"
+                android:background="@color/white">
 
                 <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/usually_spacing_middle"
                     android:layout_marginLeft="@dimen/usually_spacing_big"
                     android:layout_marginRight="@dimen/usually_spacing_big"
                     android:layout_marginTop="@dimen/usually_spacing_middle"
-                    android:layout_marginBottom="@dimen/usually_spacing_middle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:background="@color/blue"
                     android:gravity="center"
                     android:padding="@dimen/usually_spacing_middle"
@@ -45,18 +45,18 @@
             </FrameLayout>
 
             <ScrollView
-                android:layout_marginBottom="@dimen/usually_spacing_middle"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_above="@+id/apply_document_submit_layout"
-                android:layout_height="match_parent">
+                android:layout_marginBottom="@dimen/usually_spacing_middle">
 
                 <LinearLayout
-                    android:padding="@dimen/usually_spacing_middle"
                     android:id="@+id/apply_document_scroll_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/white"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="@dimen/usually_spacing_middle">
 
                     <LinearLayout
                         android:id="@+id/apply_document_start_position_layout"
@@ -77,9 +77,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="输入始发地"
-                            android:textColorHint="@color/baseTextAssist"
                             android:padding="@dimen/usually_spacing_middle"
                             android:textColor="@color/baseTextAssist"
+                            android:textColorHint="@color/baseTextAssist"
                             android:textSize="@dimen/text_main_content" />
                     </LinearLayout>
 
@@ -98,13 +98,13 @@
                             android:textSize="@dimen/text_main_content" />
 
                         <EditText
-                            android:textColorHint="@color/baseTextAssist"
                             android:id="@+id/apply_document_end_position_et"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="输入目的地"
                             android:padding="@dimen/usually_spacing_small"
                             android:textColor="@color/baseTextAssist"
+                            android:textColorHint="@color/baseTextAssist"
                             android:textSize="@dimen/text_main_content" />
                     </LinearLayout>
 
@@ -122,14 +122,17 @@
                             android:textColor="@color/baseTextSub"
                             android:textSize="@dimen/text_main_content" />
 
-                        <EditText
-                            android:textColorHint="@color/baseTextAssist"
-                            android:id="@+id/apply_document_out_time_et"
+                        <TextView
+                            android:id="@+id/apply_document_out_time_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/usually_spacing_small"
-                            android:textColor="@color/baseTextAssist"
+                            android:textColor="@color/baseTextMain"
                             android:textSize="@dimen/text_main_content" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/usually_line_middle"
+                            android:background="@color/baseLine"></View>
                     </LinearLayout>
 
                     <LinearLayout
@@ -146,14 +149,17 @@
                             android:textColor="@color/baseTextSub"
                             android:textSize="@dimen/text_main_content" />
 
-                        <EditText
-                            android:textColorHint="@color/baseTextAssist"
-                            android:id="@+id/apply_document_start_time_et"
+                        <TextView
+                            android:id="@+id/apply_document_start_time_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/usually_spacing_small"
-                            android:textColor="@color/baseTextAssist"
+                            android:textColor="@color/baseTextMain"
                             android:textSize="@dimen/text_main_content" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/usually_line_middle"
+                            android:background="@color/baseLine"></View>
                     </LinearLayout>
 
                     <LinearLayout
@@ -170,14 +176,17 @@
                             android:textColor="@color/baseTextSub"
                             android:textSize="@dimen/text_main_content" />
 
-                        <EditText
-                            android:textColorHint="@color/baseTextAssist"
-                            android:id="@+id/apply_document_end_time_et"
+                        <TextView
+                            android:id="@+id/apply_document_end_time_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/usually_spacing_small"
-                            android:textColor="@color/baseTextAssist"
+                            android:textColor="@color/baseTextMain"
                             android:textSize="@dimen/text_main_content" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/usually_line_middle"
+                            android:background="@color/baseLine"></View>
                     </LinearLayout>
 
                     <LinearLayout
@@ -195,12 +204,12 @@
                             android:textSize="@dimen/text_main_content" />
 
                         <EditText
-                            android:textColorHint="@color/baseTextAssist"
                             android:id="@+id/apply_document_work_time_et"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/usually_spacing_small"
-                            android:textColor="@color/baseTextAssist"
+                            android:textColor="@color/baseTextMain"
+                            android:textColorHint="@color/baseTextAssist"
                             android:textSize="@dimen/text_main_content" />
                     </LinearLayout>
 
@@ -218,13 +227,13 @@
                             android:textSize="@dimen/text_main_content" />
 
                         <EditText
-                            android:textColorHint="@color/baseTextAssist"
                             android:id="@+id/apply_document_leave_day_et"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
                             android:padding="@dimen/usually_spacing_small"
-                            android:textColor="@color/baseTextAssist"
+                            android:textColor="@color/baseTextMain"
+                            android:textColorHint="@color/baseTextAssist"
                             android:textSize="@dimen/text_main_content" />
 
                         <TextView
@@ -244,25 +253,25 @@
                         android:padding="@dimen/usually_spacing_middle">
 
                         <TextView
+                            android:id="@+id/textView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="请假类型："
                             android:textColor="@color/baseTextSub"
-                            android:textSize="@dimen/text_main_content"
-                            android:id="@+id/textView" />
+                            android:textSize="@dimen/text_main_content" />
 
                         <EditText
-                            android:textColorHint="@color/baseTextAssist"
                             android:id="@+id/apply_document_leave_type_et"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@+id/textView"
                             android:hint="点击选择类型"
                             android:padding="@dimen/usually_spacing_middle"
-                            android:textColor="@color/baseTextAssist"
-                            android:textSize="@dimen/text_main_content"
-                            android:layout_below="@+id/textView"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true" />
+                            android:textColor="@color/baseTextMain"
+                            android:textColorHint="@color/baseTextAssist"
+                            android:textSize="@dimen/text_main_content" />
 
                         <ImageView
                             android:layout_width="wrap_content"
@@ -286,14 +295,14 @@
                             android:textSize="@dimen/text_main_content" />
 
                         <EditText
-                            android:textColorHint="@color/baseTextAssist"
                             android:id="@+id/apply_document_traffic_tool_et"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
                             android:hint="请选择交通工具"
                             android:padding="@dimen/usually_spacing_middle"
-                            android:textColor="@color/baseTextAssist"
+                            android:textColor="@color/baseTextMain"
+                            android:textColorHint="@color/baseTextAssist"
                             android:textSize="@dimen/text_main_content" />
 
                         <ImageView
@@ -320,22 +329,22 @@
                             android:textSize="@dimen/text_main_content" />
 
                         <EditText
-                            android:textColorHint="@color/baseTextAssist"
                             android:id="@+id/apply_document_reason_et"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="请填写请假是由"
                             android:padding="@dimen/usually_spacing_small"
-                            android:textColor="@color/baseTextAssist"
+                            android:textColor="@color/baseTextMain"
+                            android:textColorHint="@color/baseTextAssist"
                             android:textSize="@dimen/text_main_content" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:padding="@dimen/usually_spacing_middle"
                         android:id="@+id/apply_document_voice_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="@dimen/usually_spacing_middle">
 
                         <ImageView
                             android:id="@+id/apply_document_voice_icon"
@@ -344,23 +353,24 @@
                             android:src="@drawable/icon_voice" />
 
                         <TextView
-                            android:visibility="gone"
-                            android:layout_marginLeft="@dimen/usually_spacing_middle"
-                            android:layout_marginRight="100dp"
                             android:id="@+id/apply_document_voice_length"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@color/blue"
+                            android:layout_marginLeft="@dimen/usually_spacing_big"
+                            android:layout_marginRight="100dp"
+                            android:textSize="15dp"
+                            android:padding="@dimen/usually_spacing_small"
+                            android:textColor="@color/baseTextSub"
                             />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:padding="@dimen/usually_spacing_middle"
-                        android:layout_marginTop="@dimen/usually_spacing_middle"
                         android:id="@+id/apply_document_photos_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="@dimen/usually_spacing_middle"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/usually_spacing_middle">
 
                         <ImageView
                             android:id="@+id/apply_document_photos_icon"
@@ -372,6 +382,7 @@
                             android:id="@+id/apply_document_photos_items_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:padding="@dimen/usually_spacing_small"
                             android:orientation="horizontal"></LinearLayout>
                     </LinearLayout>
 
@@ -390,12 +401,12 @@
                             android:textSize="@dimen/text_main_content" />
 
                         <EditText
-                            android:textColorHint="@color/baseTextAssist"
                             android:id="@+id/apply_document_examine_et"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/usually_spacing_small"
                             android:textColor="@color/baseTextAssist"
+                            android:textColorHint="@color/baseTextAssist"
                             android:textSize="@dimen/text_main_content" />
                     </LinearLayout>
                 </LinearLayout>

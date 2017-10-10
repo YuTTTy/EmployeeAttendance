@@ -58,6 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:padding="@dimen/usually_spacing_middle"
             android:orientation="horizontal">
 
             <TextView
@@ -77,11 +78,13 @@
         </LinearLayout>
 
         <ListView
+            android:dividerHeight="@dimen/usually_line"
             android:id="@+id/check_apply_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@android:color/transparent"
             android:listSelector="@null"
+            android:background="@color/white"
+            android:divider="@color/baseLine"
             android:scrollbars="none"></ListView>
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

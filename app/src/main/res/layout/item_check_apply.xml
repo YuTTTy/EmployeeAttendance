@@ -21,7 +21,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/item_check_apply_name"
-        android:text="value"
         android:textColor="@color/baseTextMain"
         android:textSize="@dimen/text_main_content" />
 
@@ -42,7 +41,7 @@
         android:layout_below="@+id/item_check_apply_name_text"
         android:layout_marginTop="@dimen/usually_spacing_small"
         android:layout_toRightOf="@+id/item_check_apply_time"
-        android:text="value"
+        android:text="未知"
         android:textColor="@color/baseTextMain"
         android:textSize="@dimen/text_main_content" />
 
@@ -63,7 +62,7 @@
         android:layout_below="@+id/item_check_apply_time_text"
         android:layout_marginTop="@dimen/usually_spacing_small"
         android:layout_toRightOf="@+id/item_check_apply_reason"
-        android:text="value"
+        android:text="暂无"
         android:textColor="@color/baseTextMain"
         android:textSize="@dimen/text_main_content" />
 
@@ -84,7 +83,7 @@
         android:layout_below="@+id/item_check_apply_reason_text"
         android:layout_marginTop="@dimen/usually_spacing_small"
         android:layout_toRightOf="@+id/item_check_apply_type"
-        android:text="value"
+        android:text="未知"
         android:textColor="@color/baseTextMain"
         android:textSize="@dimen/text_main_content" />
 
@@ -95,7 +94,6 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/item_check_apply_name_text"
         android:layout_marginTop="@dimen/usually_spacing_big"
-        android:text="未审批"
         android:textColor="@color/baseTextMain"
         android:textSize="@dimen/text_main_content" />
 </RelativeLayout>

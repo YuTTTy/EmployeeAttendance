@@ -61,12 +61,12 @@ public class PhotoCamerManager {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             /*清除相机之前存储的照片*/
             File file = null;
-            file = new File(Environment.getExternalStorageDirectory(),saveCamerUrl);
+            file = new File(Environment.getExternalStorageDirectory(), saveCamerUrl);
             if (file.exists()) {
                 file.delete();
             }
             /*指定照片存储路径*/
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(Environment.getExternalStorageDirectory(),saveCamerUrl)));
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(Environment.getExternalStorageDirectory(), saveCamerUrl)));
             /*裁剪图片宽高*/
             intent.putExtra("outputX", 100);
             intent.putExtra("outputY", 200);
@@ -102,12 +102,12 @@ public class PhotoCamerManager {
                     Toast.makeText(context, "没有选择图片", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                File addHeadTemp = new File(Environment.getExternalStorageDirectory(),saveCamerUrl);
+                File addHeadTemp = new File(Environment.getExternalStorageDirectory(), saveCamerUrl);
 //                String addHeadPath = addHeadTemp.getPath();
-                Message camerMsg = new Message();
-                camerMsg.what = MyConstant.HANDLER_SUCCESS;
-                camerMsg.obj = getAbsolutePath(Uri.fromFile(addHeadTemp));
-                handler.sendMessage(camerMsg);
+//                Message camerMsg = new Message();
+//                camerMsg.what = MyConstant.HANDLER_SUCCESS;
+//                camerMsg.obj = getAbsolutePath(Uri.fromFile(addHeadTemp));
+//                handler.sendMessage(camerMsg);
                 startPhotoZoom(Uri.fromFile(addHeadTemp));// 裁剪
                 break;
             /*相册*/
@@ -187,7 +187,7 @@ public class PhotoCamerManager {
           并不适用于传递图片之类的大数据。于是当A生成一个大数据要传递给B，往往不是通过Intent直接传递，而是在A生成数据的时候
           将数据保存到C，B再去调用C，C相当于一个转换的中间件。*/
         //uritempFile为Uri类变量，实例化uritempFile
-        uritempFile = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/" + "im.jpg");
+        uritempFile = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/"+ System.currentTimeMillis()+".jpg");
         LogUtils.e(TAG, "裁剪之后存储的uri ：" + uritempFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uritempFile);
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
@@ -257,7 +257,7 @@ public class PhotoCamerManager {
                 Toast.makeText(context, "没有选择图片", Toast.LENGTH_SHORT).show();
                 return;
             }
-            photo.compress(Bitmap.CompressFormat.JPEG, 40, baos); //压缩图片（分辨率） 100为不压缩
+            photo.compress(Bitmap.CompressFormat.JPEG, 10, baos); //压缩图片（分辨率） 100为不压缩
             baos.flush();
         } catch (IOException e) {
             LogUtils.e(TAG, "图片压缩异常");
@@ -273,16 +273,14 @@ public class PhotoCamerManager {
             return;
         }
 
-        if (type == 0) {
-            /*读取文件字节数组，并使用Base64编码*/
-            String dataStr = new String(Base64.encode(dataBytes, 0));
-            dataStr = "data:image/jpeg;base64," + dataStr;
-            LogUtils.e(TAG, "Base64编码后的字节 ：" + dataStr);
-            Message photoMsg = new Message();
-            photoMsg.what = MyConstant.HANDLER_SUCCESS;
-            photoMsg.obj = dataStr;
-            handler.sendMessage(photoMsg);
-        }
+//            /*读取文件字节数组，并使用Base64编码*/
+//            String dataStr = new String(Base64.encode(dataBytes, 0));
+//            dataStr = "data:image/jpeg;base64," + dataStr;
+//            LogUtils.e(TAG, "Base64编码后的字节 ：" + dataStr);
+        Message photoMsg = new Message();
+        photoMsg.what = MyConstant.HANDLER_SUCCESS;
+        photoMsg.obj = dataUrl;
+        handler.sendMessage(photoMsg);
 
         /*上传图片后处理bigmap，防止内存溢出*/
         if (photo != null && !photo.isRecycled()) {

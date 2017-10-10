@@ -22,6 +22,8 @@ import com.xahaolan.emanage.fragment.ContactsFragment;
 import com.xahaolan.emanage.fragment.LeaseFragment;
 import com.xahaolan.emanage.fragment.EngineeFragment;
 import com.xahaolan.emanage.fragment.NoticeFragment;
+import com.xahaolan.emanage.manager.polling.PollingService;
+import com.xahaolan.emanage.manager.polling.PollingUtil;
 import com.xahaolan.emanage.utils.common.LogUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
@@ -42,6 +44,8 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setcontentLayout(R.layout.activity_main);
         instance = this;
+        /* 开启上传位置轮询服务 */
+        PollingUtil.startPollingService(context,30*60, PollingService.class,PollingService.ACTION);
     }
 
     @Override

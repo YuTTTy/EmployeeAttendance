@@ -53,13 +53,48 @@ public class CheckApplyAdapter extends BaseAdapter {
             holder.type_text = (TextView) convertView.findViewById(R.id.item_check_apply_type_text);
             holder.state_text = (TextView) convertView.findViewById(R.id.item_check_apply_state_text);
             convertView.setTag(holder);
-        }else {
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         Map<String, Object> data = list.get(position);
         if (data != null) {
-
+            if (data.get("reason") != null) {
+                holder.reason_text.setText(data.get("reason") + "");
+            }
+            if (data.get("type") != null) {
+                //0(请假单)，1（外出登记），2（出差申请），3（加班）
+                int type = new Double((Double) data.get("type")).intValue();
+                if (type == 0) {
+                    holder.type_text.setText("请假");
+                } else if (type == 1) {
+                    holder.type_text.setText("外出");
+                } else if (type == 2) {
+                    holder.type_text.setText("出差");
+                } else if (type == 3) {
+                    holder.type_text.setText("加班");
+                }
+            }
+            if (data.get("state") != null) {
+                //0(待审批),1(已审批)，2(已拒绝)
+                int state = new Double((Double) data.get("state")).intValue();
+                if (state == 0) {
+                    holder.state_text.setText("待审批");
+                    if (data.get("startDate") != null){
+                        holder.time_text.setText(data.get("startDate")+"");
+                    }
+                } else if (state == 1) {
+                    holder.state_text.setText("已审批");
+                    if (data.get("endDate") != null){
+                        holder.time_text.setText(data.get("endDate")+"");
+                    }
+                } else if (state == 2) {
+                    holder.state_text.setText("已拒绝");
+                    if (data.get("endDate") != null){
+                        holder.time_text.setText(data.get("endDate")+"");
+                    }
+                }
+            }
         }
         return convertView;
     }

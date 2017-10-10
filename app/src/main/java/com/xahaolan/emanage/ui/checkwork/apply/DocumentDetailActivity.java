@@ -79,6 +79,7 @@ public class DocumentDetailActivity extends BaseActivity {
     @Override
     public void initData() {
         intent = getIntent();
+        id = intent.getIntExtra("id",0);
         applyType = intent.getIntExtra("ApplyType", 1);
 
     }
@@ -133,10 +134,16 @@ public class DocumentDetailActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-
+                    Map<String,Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null){
+                        setViewData(response);
+                    }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")){
+                        BaseActivity.loginOut(context);
+                    }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
@@ -160,10 +167,16 @@ public class DocumentDetailActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    finish();
+                    Map<String,Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null){
+                        setViewData(response);
+                    }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")){
+                        BaseActivity.loginOut(context);
+                    }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
@@ -187,10 +200,16 @@ public class DocumentDetailActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    finish();
+                    Map<String,Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null){
+                        setViewData(response);
+                    }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")){
+                        BaseActivity.loginOut(context);
+                    }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
@@ -214,10 +233,16 @@ public class DocumentDetailActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    finish();
+                    Map<String,Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null){
+                        setViewData(response);
+                    }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")){
+                        BaseActivity.loginOut(context);
+                    }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
@@ -255,5 +280,29 @@ public class DocumentDetailActivity extends BaseActivity {
         ImageView photo_image = (ImageView) photo_view.findViewById(R.id.item_view_photo_image);
         Glide.with(context).load(imageUrl).into(photo_image);
         return photo_view;
+    }
+
+    public void setViewData(Map<String,Object> response){
+        if (applyType == 0) {
+            state_text.setText("请假");
+        } else if (applyType == 1) {
+            state_text.setText("外出");
+        } else if (applyType == 2) {
+            state_text.setText("出差");
+        } else if (applyType == 3) {
+            state_text.setText("加班");
+        }
+        if (response.get("personName") != null){
+            name_text.setText(response.get("personName")+"");
+        }
+        if (response.get("startDate") != null){
+            time_text.setText(response.get("startDate")+"");
+        }
+        if (response.get("reason") != null){
+            reason_text.setText(response.get("reason")+"");
+        }
+        if (response.get("leaderName") != null){
+            check_name.setText(response.get("leaderName")+"");
+        }
     }
 }

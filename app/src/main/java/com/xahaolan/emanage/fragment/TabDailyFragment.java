@@ -43,10 +43,10 @@ public class TabDailyFragment extends BaseFragment {
     private View rootView;
     private int dailyType = 0; //0.全部 1.我的  2.日报  3.周报
     private int personId = 0;
-    private List<Map<String,Object>> dataList;
+    private List<Map<String, Object>> dataList;
     private int page = 1;  //当前页
     private int rows = 20;   //每页显示记录数
-    private Boolean hasNextPage;
+    private Boolean hasNextPage = false;
     private View foot;//页脚
 
     @Nullable
@@ -84,14 +84,14 @@ public class TabDailyFragment extends BaseFragment {
                 super.handleMessage(msg);
                 if (msg.what == MyConstant.HANDLER_REFRESH_SUCCESS) {
                     page = 1;
-                    if (dailyType == 0 || dailyType == 2){
+                    if (dailyType == 0 || dailyType == 2) {
                         personId = 0;
                         requestDailyList();
-                    }else if (dailyType == 1){
+                    } else if (dailyType == 1) {
                         personId = AppUtils.getPersonId(getActivity());
                         requestDailyList();
-                    }else {
-                        ToastUtils.showShort(getActivity(),"暂无周报");
+                    } else {
+                        ToastUtils.showShort(getActivity(), "暂无周报");
                     }
                 }
             }
@@ -114,13 +114,13 @@ public class TabDailyFragment extends BaseFragment {
                     if (view.getLastVisiblePosition() == view.getCount() - 1) {
                         if (hasNextPage) {
                             page++;
-                            if (dailyType == 0 || dailyType == 2){
+                            if (dailyType == 0 || dailyType == 2) {
                                 personId = 0;
                                 requestDailyList();
-                            }else if (dailyType == 1){
+                            } else if (dailyType == 1) {
                                 personId = AppUtils.getPersonId(getActivity());
                                 requestDailyList();
-                            }else {
+                            } else {
 //                                ToastUtils.showShort(getActivity(),"暂无周报");
                             }
                         } else if (list_view.getFooterViewsCount() <= 0) {
@@ -153,14 +153,14 @@ public class TabDailyFragment extends BaseFragment {
         if (!isPrepared || !isVisible) {
             return;
         }
-        if (dailyType == 0 || dailyType == 2){
+        if (dailyType == 0 || dailyType == 2) {
             personId = 0;
             requestDailyList();
-        }else if (dailyType == 1){
+        } else if (dailyType == 1) {
             personId = AppUtils.getPersonId(getActivity());
             requestDailyList();
-        }else {
-            ToastUtils.showShort(getActivity(),"暂无周报");
+        } else {
+            ToastUtils.showShort(getActivity(), "暂无周报");
         }
     }
 
@@ -171,36 +171,46 @@ public class TabDailyFragment extends BaseFragment {
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        new DailyServices(getActivity()).dailyQueryService(personId,new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        super.handleMessage(msg);
-                        if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-                            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-                        }
-                        if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                            dataList = (List<Map<String, Object>>) msg.obj;
-//                            if (lastPage == 0 || currentPage == lastPage) {
-//                                hasNextPage = false;
-//                            } else {
-//                                hasNextPage = true;
-//                            }
-                            if (dataList != null && dataList.size() > 0){
-                            if (page == 1) {
-                                adapter.resetList(dataList);
-                            } else {
-                                adapter.appendList(dataList);
+        new DailyServices(getActivity()).dailyQueryService(personId, page, rows, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null) {
+                        List<Map<String, Object>> footerList = (List<Map<String, Object>>) response.get("footer");
+                        dataList = (List<Map<String, Object>>) response.get("rows");
+                        if (dataList != null && dataList.size() >= 0) {
+                            if (response.get("total") != null){
+                                int total = new Double((Double)response.get("total")).intValue();
+                                if (total >= 20){
+                                    hasNextPage = true;
+                                }else {
+                                    hasNextPage=false;
+                                }
+                                if (page == 1){
+                                    adapter.resetList(dataList);
+                                }else {
+                                    adapter.appendList(dataList);
+                                }
                             }
-                                adapter.notifyDataSetChanged();
-                            }
-                        } else if (msg.what == MyConstant.REQUEST_FIELD) {
-                            String errMsg = (String) msg.obj;
-                            ToastUtils.showShort(getActivity(), errMsg);
-                        } else if (msg.what == MyConstant.REQUEST_ERROR) {
-                            String errMsg = (String) msg.obj;
-                            ToastUtils.showShort(getActivity(), errMsg);
+                            adapter.notifyDataSetChanged();
                         }
                     }
-                });
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    if (errMsg.equals("session过期")){
+                        ToastUtils.showShort(getActivity(), errMsg);
+                        BaseActivity.loginOut(getActivity());
+                    }
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(getActivity(), errMsg);
+                }
+            }
+        });
     }
 }

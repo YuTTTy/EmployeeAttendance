@@ -30,23 +30,24 @@ import java.util.List;
 
 public class BitmapUtils {
     /**
-     *                                    decodeStream解码图片为bitmap
+     * decodeStream解码图片为bitmap
+     * <p>
+     * decodeStream最大的秘密在于其直接调用JNI>>nativeDecodeAsset()来完成decode，无需再使用java层的createBitmap，
+     * 从而节省了java层的空间
      *
-     *          decodeStream最大的秘密在于其直接调用JNI>>nativeDecodeAsset()来完成decode，无需再使用java层的createBitmap，
-     *          从而节省了java层的空间
      * @param context
-     * @param resId     资源图片Id
-     * @param ImgName   assest目录下的图片名
-     * @param filePath  图片在文件夹下的路径
-     * @param fileUri   图片Uri
+     * @param resId      资源图片Id
+     * @param ImgName    assest目录下的图片名
+     * @param filePath   图片在文件夹下的路径
+     * @param fileUri    图片Uri
      * @param clazz
-     * @param sampleSize  压缩比例
+     * @param sampleSize 压缩比例
      * @return
      */
-    public static Bitmap decodeStreamToBitmap(Context context , int resId, String ImgName, String filePath, Uri fileUri, Activity clazz, int sampleSize){
+    public static Bitmap decodeStreamToBitmap(Context context, int resId, String ImgName, String filePath, Uri fileUri, Activity clazz, int sampleSize) {
 //        Bitmap bitmap = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inTempStorage = new byte[100*1024]; //为位图设置100K的缓存
+        options.inTempStorage = new byte[100 * 1024]; //为位图设置100K的缓存
         /*
         * //ALPHA_8：每个像素占用1byte内存（8位）
 //ARGB_4444:每个像素占用2byte内存（16位）
@@ -62,21 +63,21 @@ public class BitmapUtils {
         InputStream inStream = null;
         try {
             /*1.解码资源文件*/
-            if (resId != 0){
+            if (resId != 0) {
                 inStream = context.getResources().openRawResource(resId);
             }
             /*2.加载assest目录下的图片*/
-            if (ImgName != null && !ImgName.equals("")){
+            if (ImgName != null && !ImgName.equals("")) {
                 AssetManager assetMg = context.getAssets();
                 inStream = assetMg.open(ImgName); //ImgName图片名称
             }
             /*3.加载位图、及SD卡目录下的图片*/
 //            String filePath = Environment.getExternalStorageDirectory().toString() + "/DCIM/device.phg";
-            if (filePath != null && !filePath.equals("")){
+            if (filePath != null && !filePath.equals("")) {
                 inStream = new FileInputStream(filePath);
             }
             /*4.解码Uri*/
-            if (fileUri != null){
+            if (fileUri != null) {
                 inStream = clazz.getContentResolver().openInputStream(fileUri);
             }
 
@@ -85,8 +86,9 @@ public class BitmapUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return BitmapFactory.decodeStream(inStream,null,options);
+        return BitmapFactory.decodeStream(inStream, null, options);
     }
+
     /**
      * 获得所有图片的路径
      */
@@ -105,22 +107,24 @@ public class BitmapUtils {
 
     /**
      * Bitmap转化为drawable
+     *
      * @param bitmap
      * @return
      */
-    public static Drawable bitmap2Drawable(Bitmap bitmap){
-        return new BitmapDrawable(bitmap) ;
+    public static Drawable bitmap2Drawable(Bitmap bitmap) {
+        return new BitmapDrawable(bitmap);
     }
 
     /**
      * Drawable 转 bitmap
+     *
      * @param drawable
      * @return
      */
-    public static Bitmap drawable2Bitmap(Drawable drawable){
-        if(drawable instanceof BitmapDrawable){
-            return ((BitmapDrawable)drawable).getBitmap() ;
-        }else if(drawable instanceof NinePatchDrawable){
+    public static Bitmap drawable2Bitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        } else if (drawable instanceof NinePatchDrawable) {
             Bitmap bitmap = Bitmap
                     .createBitmap(
                             drawable.getIntrinsicWidth(),
@@ -132,19 +136,20 @@ public class BitmapUtils {
                     drawable.getIntrinsicHeight());
             drawable.draw(canvas);
             return bitmap;
-        }else{
-            return null ;
+        } else {
+            return null;
         }
     }
 
     /**
-     *                    view  to  bitmap
+     * view  to  bitmap
+     *
      * @param view
      * @param bitmapWidth
      * @param bitmapHeight
      * @return
      */
-    public static Bitmap convertViewToBitmap(View view, int bitmapWidth, int bitmapHeight){
+    public static Bitmap convertViewToBitmap(View view, int bitmapWidth, int bitmapHeight) {
         Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
         view.draw(new Canvas(bitmap));
 
@@ -152,11 +157,10 @@ public class BitmapUtils {
     }
 
     /**
-     *
      * @param view
      * @return
      */
-    public static Bitmap convertViewToBitmap(View view){
+    public static Bitmap convertViewToBitmap(View view) {
         view.buildDrawingCache();
         Bitmap bitmap = view.getDrawingCache();
         return bitmap;
@@ -169,11 +173,12 @@ public class BitmapUtils {
      * @param resInt
      * @return
      */
-    public static Drawable res2Drawable(Context context,int resInt){
+    public static Drawable res2Drawable(Context context, int resInt) {
         Resources resources = context.getResources();
         Drawable drawable = resources.getDrawable(resInt);
         return drawable;
     }
+
     /**
      * 获取资源文件 r.drawable中的图片转换为bitmap
      *
@@ -181,7 +186,7 @@ public class BitmapUtils {
      * @param resInt
      * @return
      */
-    public static Bitmap res2Bitmap(Context context,int resInt){
+    public static Bitmap res2Bitmap(Context context, int resInt) {
 //        Resources r = context.getResources();
 //        InputStream inputStream = r.openRawResource(resInt);
 //        BitmapDrawable  bmpDraw = new BitmapDrawable(inputStream);
@@ -194,13 +199,15 @@ public class BitmapUtils {
         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
         return bitmap;
     }
+
     /**
      * 照片转byte二进制
+     *
      * @param imagepath 需要转byte的照片路径
      * @return 已经转成的byte
      * @throws Exception
      */
-    public static byte[] readStream(String imagepath) throws Exception {
+    public static String readStream(String imagepath) throws Exception {
         FileInputStream fs = new FileInputStream(imagepath);
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
@@ -210,6 +217,34 @@ public class BitmapUtils {
         }
         outStream.close();
         fs.close();
-        return outStream.toByteArray();
+        return byte2hex(outStream.toByteArray());
     }
+    // 二进制转字符串
+    public static String byte2hex(byte[] b)
+    {
+        StringBuffer sb = new StringBuffer();
+        String tmp = "";
+        for (int i = 0; i < b.length; i++) {
+            tmp = Integer.toHexString(b[i] & 0XFF);
+            if (tmp.length() == 1){
+                sb.append("0" + tmp);
+            }else{
+                sb.append(tmp);
+            }
+
+        }
+        LogUtils.e(BitmapUtils.class.getSimpleName(), "照片转byte二进制字符串 : " + sb.toString());
+        return sb.toString();
+    }
+
+    public static String getImageStr(String imagePath) {
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] datas = baos.toByteArray();
+        StringBuffer buffer = new StringBuffer(String.valueOf(datas));
+        LogUtils.e(BitmapUtils.class.getSimpleName(), "照片转byte二进制 : " + buffer.toString());
+        return buffer.toString();
+    }
+
 }

@@ -100,13 +100,16 @@ public class TaskActivity extends BaseActivity {
                     title_text.setText("收到的任务");
                     change_text.setText("已发布的任务");
                     createId = AppUtils.getPersonId(context);
+                    executorId = 0;
                     state = 2;
                 } else if (state == 2) {
                     title_text.setText("已发布的任务");
                     change_text.setText("收到的任务");
                     executorId = AppUtils.getPersonId(context);
+                    createId = 0;
                     state = 1;
                 }
+                requestTaskList();
             }
         });
         list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -114,9 +117,12 @@ public class TaskActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Map<String, Object> data = (Map<String, Object>) parent.getAdapter().getItem(position);
                 if (data != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("detailData", (Serializable) data);
-                    MyUtils.jump(context, TaskDetailActivity.class, bundle, false, null);
+                    if (data.get("id")!= null){
+                        int taskId = new Double((Double)data.get("id")).intValue();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("taskId",taskId);
+                        MyUtils.jump(context, TaskDetailActivity.class, bundle, false, null);
+                    }
                 }
             }
         });
@@ -163,7 +169,7 @@ public class TaskActivity extends BaseActivity {
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        new TaskService(context).addTaskQueryService(createId, executorId, new Handler() {
+        new TaskService(context).addTaskQueryService(createId, executorId,page,rows, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -174,18 +180,21 @@ public class TaskActivity extends BaseActivity {
                     Map<String, Object> response = (Map<String, Object>) msg.obj;
                     if (response != null) {
                         if (response.get("resultList") != null) {
-                            dataList = (List<Map<String, Object>>) response.get("resultList");
-//                            if (lastPage == 0 || currentPage == lastPage) {
-//                                hasNextPage = false;
-//                            } else {
-//                                hasNextPage = true;
-//                            }
-                            if (dataList != null && dataList.size() > 0) {
-//                            if (page == 1) {
-//                                activityAdapter.resetList(activityList);
-//                            } else {
-//                                activityAdapter.appendList(activityList);
-//                            }
+                            dataList = (List<Map<String, Object>>) response.get("rows");
+                            if (dataList != null && dataList.size() >= 0) {
+                                if (response.get("total") != null){
+                                    int total = new Double((Double)response.get("total")).intValue();
+                                    if (total >= 20){
+                                        hasNextPage = true;
+                                    }else {
+                                        hasNextPage=false;
+                                    }
+                                    if (page == 1){
+                                        adapter.resetList(dataList);
+                                    }else {
+                                        adapter.appendList(dataList);
+                                    }
+                                }
                                 adapter.notifyDataSetChanged();
                             }
                         }
@@ -193,6 +202,9 @@ public class TaskActivity extends BaseActivity {
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")){
+                        BaseActivity.loginOut(context);
+                    }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);

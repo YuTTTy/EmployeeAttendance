@@ -59,11 +59,10 @@ public class TaskService extends BaseService {
      * @param executorId  执行人id
      * @param content     任务内容
      * @param endDate     截止日期
-     * @param sourceFile
      * @param handler
      */
     public void addTaskAddService(int createId,String createName,int executorId,
-                                  String content,String endDate,String[] sourceFile,final Handler handler) {
+                                  String content,String endDate,final Handler handler) {
         LogUtils.e(TAG, "==============================   任务添加 request   =======================================");
         String urlStr = MyConstant.BASE_URL + "/app/task!add.action";
         Map<String, Object> params = new HashMap<>();
@@ -72,9 +71,9 @@ public class TaskService extends BaseService {
         params.put("executorId", executorId);
         params.put("content", content);
         params.put("endDate", endDate);
-        params.put("sourceFile", sourceFile);
-        //        getVerificationParams(params, 1);//获取验证参数
-        Map<String,String> mHeaders = getHeader();
+//        params.put("sourceFile", sourceFile);
+        //        getVerificationParams(params,／ 1);//获取验证参数
+        Map<String,String> mHeaders = getFormHeader();
         GsonRequest<RepBase<List<Map<String,Object>>>> request = null;
         try {
             request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<List<Map<String,Object>>>>() {
@@ -112,10 +111,12 @@ public class TaskService extends BaseService {
      * @param executorId  执行人id
      * @param handler
      */
-    public void addTaskQueryService(int createId,int executorId,final Handler handler) {
+    public void addTaskQueryService(int createId,int executorId,int page,int rows,final Handler handler) {
         LogUtils.e(TAG, "==============================   任务列表查询 request   =======================================");
         String urlStr = MyConstant.BASE_URL + "/app/task!query.action";
         Map<String, Object> params = new HashMap<>();
+        params.put("page", page);
+        params.put("rows", rows);
         if (createId != 0){
             params.put("createId", createId);
         }
@@ -145,6 +146,92 @@ public class TaskService extends BaseService {
                                 message.what = MyConstant.REQUEST_FIELD;
                                 message.obj = response.getMsg();
                                 Log.e(TAG, "任务列表查询 field");
+                            }
+                            handler.sendMessage(message);
+                        }
+                    }, new EZErrListener<>(context, handler));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        requesQueue.add(request);
+    }
+    /**
+     *                    任务详情
+     *
+     * @param id
+     * @param handler
+     */
+    public void taskDetailService(int id,final Handler handler) {
+        LogUtils.e(TAG, "==============================   任务详情 request   =======================================");
+        String urlStr = MyConstant.BASE_URL + "/app/task!findbyID.action";
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        //        getVerificationParams(params, 1);//获取验证参数
+        Map<String,String> mHeaders = getHeader();
+        GsonRequest<RepBase<Map<String,Object>>> request = null;
+        try {
+            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<Map<String,Object>>>() {
+            },
+                    new Response.Listener<RepBase<Map<String,Object>>>() {
+                        @Override
+                        public void onResponse(RepBase<Map<String,Object>> response) {
+                            if (response == null || response.getSuccess() == null) {
+                                Log.e(TAG, "任务详情 null" + response);
+                                return;
+                            }
+                            Message message = new Message();
+                            if (response.getSuccess()) {
+                                Map<String,Object> responseData = response.getObj();
+                                message.what = MyConstant.REQUEST_SUCCESS;
+                                message.obj = responseData;
+                                Log.e(TAG, "任务详情 success");
+                            } else {
+                                message.what = MyConstant.REQUEST_FIELD;
+                                message.obj = response.getMsg();
+                                Log.e(TAG, "任务详情 field");
+                            }
+                            handler.sendMessage(message);
+                        }
+                    }, new EZErrListener<>(context, handler));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        requesQueue.add(request);
+    }
+    /**
+     *                    完成任务
+     *
+     * @param id
+     * @param handler
+     */
+    public void finishTaskService(int id,final Handler handler) {
+        LogUtils.e(TAG, "==============================   完成任务 request   =======================================");
+        String urlStr = MyConstant.BASE_URL + "/app/task!done.action";
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        //        getVerificationParams(params, 1);//获取验证参数
+        Map<String,String> mHeaders = getHeader();
+        GsonRequest<RepBase<String>> request = null;
+        try {
+            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<String>>() {
+            },
+                    new Response.Listener<RepBase<String>>() {
+                        @Override
+                        public void onResponse(RepBase<String> response) {
+                            if (response == null || response.getSuccess() == null) {
+                                Log.e(TAG, "完成任务 null" + response);
+                                return;
+                            }
+                            Message message = new Message();
+                            if (response.getSuccess()) {
+                                String responseData = response.getObj();
+                                message.what = MyConstant.REQUEST_SUCCESS;
+                                message.obj = responseData;
+                                Log.e(TAG, "完成任务 success");
+                            } else {
+                                message.what = MyConstant.REQUEST_FIELD;
+                                message.obj = response.getMsg();
+                                Log.e(TAG, "完成任务 field");
                             }
                             handler.sendMessage(message);
                         }

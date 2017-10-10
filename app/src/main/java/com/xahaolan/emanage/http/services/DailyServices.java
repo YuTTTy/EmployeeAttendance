@@ -56,29 +56,31 @@ public class DailyServices extends BaseService {
      * @param employeeid   员工id ，不传代表查询日报
      * @param handler
      */
-    public void dailyQueryService(int employeeid,final Handler handler) {
+    public void dailyQueryService(int employeeid,int page,int rows,final Handler handler) {
         LogUtils.e(TAG, "==============================   日报查询 request   =======================================");
         String urlStr = MyConstant.BASE_URL + "/app/dailyreportAPPAction!findAll.action";
         Map<String, Object> params = new HashMap<>();
+        params.put("page", page);
+        params.put("rows", rows);
         if (employeeid != 0){
             params.put("employeeid", employeeid);
         }
         //        getVerificationParams(params, 1);//获取验证参数
         Map<String,String> mHeaders = getHeader();
-        GsonRequest<RepBase<List<Map<String,Object>>>> request = null;
+        GsonRequest<RepBase<Map<String,Object>>> request = null;
         try {
-            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<List<Map<String,Object>>>>() {
+            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<Map<String,Object>>>() {
             },
-                    new Response.Listener<RepBase<List<Map<String,Object>>>>() {
+                    new Response.Listener<RepBase<Map<String,Object>>>() {
                         @Override
-                        public void onResponse(RepBase<List<Map<String,Object>>> response) {
+                        public void onResponse(RepBase<Map<String,Object>> response) {
                             if (response == null || response.getSuccess() == null) {
                                 Log.e(TAG, "日报查询 null" + response);
                                 return;
                             }
                             Message message = new Message();
                             if (response.getSuccess()) {
-                                List<Map<String,Object>> responseData = response.getObj();
+                                Map<String,Object> responseData = response.getObj();
                                 message.what = MyConstant.REQUEST_SUCCESS;
                                 message.obj = responseData;
                                 Log.e(TAG, "日报查询 success");
@@ -173,7 +175,7 @@ public class DailyServices extends BaseService {
         params.put("createuser", createuser);
         params.put("sourceFile", sourceFile);
         //        getVerificationParams(params, 1);//获取验证参数
-        Map<String,String> mHeaders = getHeader();
+        Map<String,String> mHeaders = getFormHeader();
         GsonRequest<RepBase<String>> request = null;
         try {
             request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<String>>() {

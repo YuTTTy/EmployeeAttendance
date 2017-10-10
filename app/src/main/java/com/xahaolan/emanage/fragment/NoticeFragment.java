@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.xahaolan.emanage.R;
 
+import static com.xahaolan.emanage.base.BaseActivity.loginOut;
 import static com.xahaolan.emanage.base.BaseActivity.setSwipRefresh;
 
 /**
@@ -43,6 +44,12 @@ public class NoticeFragment extends Fragment {
         swipeLayout.setEnabled(false); //禁止下拉刷新
         setSwipRefresh(swipeLayout, null);
         login_out_text = (TextView) getActivity().findViewById(R.id.login_out_text);
+        login_out_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginOut(getActivity());
+            }
+        });
     }
 
     public void initData() {

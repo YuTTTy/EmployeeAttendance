@@ -202,13 +202,13 @@ public abstract class BaseActivity extends FragmentActivity implements BaseInter
         SPUtils.clear(context, MyConstant.SHARED_SAVE);
         /*清除内存*/
         MyApplication.getInstance().clearMemory();
+//        /* 关闭指定activity */
+//        MainActivity.instance.finish();
+        /* close all activity */
+        MyUtils.closeAllActivity(context);
 
         MyUtils.jump(context, LoginActivity.class, new Bundle(), false, null);
         ((Activity)context).finish();
 
-        /* 关闭指定activity */
-        MainActivity.instance.finish();
-        /* close all activity */
-        MyUtils.closeAllActivity(context);
     }
 }

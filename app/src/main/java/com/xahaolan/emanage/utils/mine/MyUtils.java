@@ -48,23 +48,6 @@ public class MyUtils {
     private Context context;
 
     /**
-     * 设置时区 (上海)
-     * <p>
-     * 1970-01-01 08:00:00
-     */
-    public static String getTimeZone() {
-////        AlarmManager malarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-////        malarmManager.setTimeZone("Asia/Shanghai");
-//        SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        dff.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-//        String timeZoneStr = dff.format(new Date());
-//        LogUtils.e(TAG, "上海时区 : " + timeZoneStr);
-
-        String timeZoneStr = "1970-01-01 08:00:00";
-        return timeZoneStr;
-    }
-
-    /**
      * 页面跳转
      *
      * @param context
@@ -179,7 +162,20 @@ public class MyUtils {
         ActivityManager manager = (ActivityManager) context.getSystemService(context.ACTIVITY_SERVICE);
         manager.restartPackage(context.getPackageName());
     }
-
+    /**
+     * 自动补全单数
+     *
+     * @return
+     */
+    public static String suppleSingular(int number) {
+        String suppleStr = "";
+        if (number <= 9) {
+            suppleStr = "0" + number;
+        } else {
+            suppleStr = number + "";
+        }
+        return suppleStr;
+    }
     /**
      * 拨打电话
      *
