@@ -555,7 +555,7 @@ public class DocumentActivity extends BaseActivity {
      */
     public void requestApplyOutRegister() {
         Map<String,Object> paramsMap = new HashMap<>();
-        paramsMap.put("personId", personId);
+        paramsMap.put("personid", personId);
         paramsMap.put("outData", outData);
         paramsMap.put("startDate", startDate);
         paramsMap.put("endDate", endDate);
@@ -700,7 +700,7 @@ public class DocumentActivity extends BaseActivity {
      */
     public void requestApplyWork() {
         Map<String,Object> paramsMap = new HashMap<>();
-        paramsMap.put("personId", personId);
+        paramsMap.put("personid", personId);
         paramsMap.put("startDate", startDate);
         paramsMap.put("endDate", endDate);
         paramsMap.put("reason", reason);

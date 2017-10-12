@@ -119,7 +119,7 @@ public class SendDailyActivity extends BaseActivity {
                                 if (msg.what == 123) {
                                     String voicePath = (String) msg.obj;
                                     try {
-                                        voiceFile = String.valueOf(BitmapUtils.readStream(voicePath));
+                                        voiceFile = voicePath;
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }

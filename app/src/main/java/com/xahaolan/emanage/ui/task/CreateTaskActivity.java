@@ -178,52 +178,25 @@ public class CreateTaskActivity extends BaseActivity {
             return;
         }
 
-//        Map<String,Object> paramsMap = new HashMap<>();
-//        paramsMap.put("createId", createId);
-//        paramsMap.put("createName", createName);
-//        paramsMap.put("executorId", executorId);
-//        paramsMap.put("content", content);
-//        paramsMap.put("content", content);
-//        paramsMap.put("endDate", endDate);
-//        Map<String,Object> fileMap = new HashMap<>();
-//        if (sourceList != null && sourceList.size() > 0){
-//            for (String sourcePath : sourceList){
-//                fileMap.put("sourceFile",sourcePath);
-//            }
-//        }
-//        if (swipeLayout != null) {
-//            swipeLayout.setRefreshing(true);
-//        }
-//        LogUtils.e(TAG,"---------------- 创建任务request ----------------");
-//        LogUtils.e(TAG,"创建任务 request url : "+MyConstant.BASE_URL + "/app/dailyreportAPPAction!add.action");
-//        new FormRequest(context,MyConstant.BASE_URL + "/app/dailyreportAPPAction!add.action",paramsMap,fileMap,new Handler(){
-//            @Override
-//            public void handleMessage(Message msg) {
-//                super.handleMessage(msg);
-//                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-//                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-//                }
-//                if (msg.what == MyConstant.REQUEST_SUCCESS) {
-//                    finish();
-//                } else if (msg.what == MyConstant.REQUEST_FIELD) {
-//                    String errMsg = (String) msg.obj;
-//                    ToastUtils.showShort(context, errMsg);
-//                    if (errMsg.equals("session过期")) {
-//                        BaseActivity.loginOut(context);
-//                    }
-//                } else if (msg.what == MyConstant.REQUEST_ERROR) {
-//                    String errMsg = (String) msg.obj;
-//                    ToastUtils.showShort(context, errMsg);
-//                }
-//            }
-//        });
-
-//        preRequest();
+        Map<String,Object> paramsMap = new HashMap<>();
+        paramsMap.put("createId", createId);
+        paramsMap.put("createName", createName);
+        paramsMap.put("executorId", executorId);
+        paramsMap.put("content", content);
+        paramsMap.put("content", content);
+        paramsMap.put("endDate", endDate);
+        Map<String,Object> fileMap = new HashMap<>();
+        if (sourceList != null && sourceList.size() > 0){
+            for (String sourcePath : sourceList){
+                fileMap.put("sourceFile",sourcePath);
+            }
+        }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        new TaskService(context).addTaskAddService( createId, createName, executorId,
-         content, endDate, new Handler() {
+        LogUtils.e(TAG,"---------------- 创建任务request ----------------");
+        LogUtils.e(TAG,"创建任务 request url : "+MyConstant.BASE_URL + "/app/task!add.action");
+        new FormRequest(context,MyConstant.BASE_URL + "/app/dailyreportAPPAction!add.action",paramsMap,fileMap,new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -231,12 +204,11 @@ public class CreateTaskActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    String response = (String) msg.obj;
                     finish();
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
-                    if (errMsg.equals("session过期")){
+                    if (errMsg.equals("session过期")) {
                         BaseActivity.loginOut(context);
                     }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
@@ -245,6 +217,34 @@ public class CreateTaskActivity extends BaseActivity {
                 }
             }
         });
+
+//        preRequest();
+//        if (swipeLayout != null) {
+//            swipeLayout.setRefreshing(true);
+//        }
+//        new TaskService(context).addTaskAddService( createId, createName, executorId,
+//         content, endDate, new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+//                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+//                }
+//                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+//                    String response = (String) msg.obj;
+//                    finish();
+//                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                    if (errMsg.equals("session过期")){
+//                        BaseActivity.loginOut(context);
+//                    }
+//                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                }
+//            }
+//        });
     }
     public void getParams(){
         createId = AppUtils.getPersonId(context);
