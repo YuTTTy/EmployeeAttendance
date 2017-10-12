@@ -94,7 +94,7 @@ public class FormRequest {
             if (sessionId != null && !sessionId.equals("")) {
                 conn.setRequestProperty("cookie", sessionId);
             }
-            LogUtils.e(TAG, "请求头header ：" + conn.getHeaderFields());
+//            LogUtils.e(TAG, "请求头header ：" + conn.getHeaderFields());
             OutputStream out = new DataOutputStream(conn.getOutputStream());
             // text
             if (textMap != null) {
