@@ -196,7 +196,7 @@ public class CreateTaskActivity extends BaseActivity {
         }
         LogUtils.e(TAG,"---------------- 创建任务request ----------------");
         LogUtils.e(TAG,"创建任务 request url : "+MyConstant.BASE_URL + "/app/task!add.action");
-        new FormRequest(context,MyConstant.BASE_URL + "/app/dailyreportAPPAction!add.action",paramsMap,fileMap,new Handler(){
+        new FormRequest(context,MyConstant.BASE_URL + "/app/task!add.action",paramsMap,fileMap,new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -223,7 +223,7 @@ public class CreateTaskActivity extends BaseActivity {
 //            swipeLayout.setRefreshing(true);
 //        }
 //        new TaskService(context).addTaskAddService( createId, createName, executorId,
-//         content, endDate, new Handler() {
+//         content, endDate, new Handler(){
 //            @Override
 //            public void handleMessage(Message msg) {
 //                super.handleMessage(msg);

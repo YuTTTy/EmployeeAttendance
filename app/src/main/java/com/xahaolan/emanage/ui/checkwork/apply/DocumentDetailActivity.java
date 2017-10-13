@@ -105,14 +105,14 @@ public class DocumentDetailActivity extends BaseActivity {
             //出差申请
             case MyConstant.APPLY_DOCUMENT_OUT_APPLY:
                 setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "", R.color.baseTextMain, "出差详情", R.color.baseTextMain, "", R.color.baseTextMain, 0);
-                reason_name.setText("出差是由");
+                reason_name.setText("出差事由");
                 nameArr = new String[]{"始发地", "目的地","开始时间", "结束时间","交通工具"};
                 requestApplyOut();
                 break;
             //加班登记
             case MyConstant.APPLY_DOCUMENT_WORK_REGISTER:
                 setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "", R.color.baseTextMain, "加班详情", R.color.baseTextMain, "", R.color.baseTextMain, 0);
-                reason_name.setText("加班是由");
+                reason_name.setText("加班事由");
                 nameArr = new String[]{"开始时间", "结束时间", "加班时长"};
                 requestApplyWork();
                 break;
@@ -295,8 +295,13 @@ public class DocumentDetailActivity extends BaseActivity {
         if (response.get("personName") != null){
             name_text.setText(response.get("personName")+"");
         }
+        if (response.get("personname") != null){
+            name_text.setText(response.get("personname")+"");
+        }
         if (response.get("startDate") != null){
             time_text.setText(response.get("startDate")+"");
+        }else if (response.get("createdate") != null){
+            time_text.setText(response.get("createdate")+"");
         }
         if (response.get("reason") != null){
             reason_text.setText(response.get("reason")+"");

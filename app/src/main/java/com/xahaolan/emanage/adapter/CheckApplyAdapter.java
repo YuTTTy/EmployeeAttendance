@@ -59,6 +59,9 @@ public class CheckApplyAdapter extends BaseAdapter {
 
         Map<String, Object> data = list.get(position);
         if (data != null) {
+            if (data.get("personName") != null){
+                holder.name_text.setText(data.get("personName")+"");
+            }
             if (data.get("reason") != null) {
                 holder.reason_text.setText(data.get("reason") + "");
             }

@@ -396,6 +396,7 @@ public class CheckWorkServices extends BaseService {
      *                    外出登记添加
      *
      * @param personid   员工id
+     * @param departmentId   部门id
      * @param date    外出时间（2017-09-11）
      * @param starttime  开始时间（09:12:12）
      * @param endtime  结束时间（14:23:34）
@@ -403,12 +404,13 @@ public class CheckWorkServices extends BaseService {
      * @param sourceFile
      * @param handler
      */
-    public void outGoingAddService(int personid,String date,String starttime,String endtime,
+    public void outGoingAddService(int personid,int departmentId,String date,String starttime,String endtime,
                                    String reason,String[] sourceFile,final Handler handler) {
         LogUtils.e(TAG, "==============================   外出登记添加 request   =======================================");
         String urlStr = MyConstant.BASE_URL + "/app/outgoingAPPAction!add.action";
         Map<String, Object> params = new HashMap<>();
         params.put("personid", personid);
+        params.put("departmentId", departmentId);
         params.put("date", date);
         params.put("starttime", starttime);
         params.put("endtime", endtime);

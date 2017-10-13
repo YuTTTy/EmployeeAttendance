@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -89,12 +90,12 @@ public class FormRequest {
             conn.setRequestProperty("Connection", "Keep-Alive");
 //            conn.setRequestProperty("User-Agent","Mozilla/5.0 (Windows; U; Windows NT 6.1; zh-CN; rv:1.9.2.6)");
             conn.setRequestProperty("User-Agent", "Android");
-            conn.setRequestProperty("Content-Type","multipart/form-data; boundary=" + BOUNDARY);
+//            conn.setRequestProperty("Content-Type","multipart/form-data; boundary=" + BOUNDARY);
+            conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
             String sessionId = (String) SPUtils.get(context, MyConstant.SHARED_SAVE, MyConstant.SESSION_ID, new String());
             if (sessionId != null && !sessionId.equals("")) {
                 conn.setRequestProperty("cookie", sessionId);
             }
-//            LogUtils.e(TAG, "请求头header ：" + conn.getHeaderFields());
             OutputStream out = new DataOutputStream(conn.getOutputStream());
             // text
             if (textMap != null) {
@@ -154,6 +155,7 @@ public class FormRequest {
                             + "\"\r\n");
                     strBuf.append("Content-Type:" + contentType + "\r\n\r\n");
                     out.write(strBuf.toString().getBytes());
+//                    LogUtils.e(TAG,"图片资源文件 Params : "+strBuf.toString());
                     DataInputStream in = new DataInputStream(
                             new FileInputStream(file));
                     int bytes = 0;
@@ -168,6 +170,7 @@ public class FormRequest {
             out.write(endData);
             out.flush();
             out.close();
+            LogUtils.e(TAG, "请求头header ：" + getRequestHeaders(conn));
             // 读取返回数据
             if (conn.getResponseCode() == 200){
                 StringBuffer strBuf = new StringBuffer();
@@ -202,4 +205,30 @@ public class FormRequest {
             }
         }
     }
+    public String getRequestHeaders(HttpURLConnection httpUrlCon){
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("{"+httpUrlCon.getRequestMethod() + " / " + " HTTP/1.1");
+        buffer.append("，Host: " + httpUrlCon.getRequestProperty("Host"));
+        buffer.append("，Connection: " + httpUrlCon.getRequestProperty("Connection"));
+        buffer.append("，User-Agent: " + httpUrlCon.getRequestProperty("User-Agent"));
+        buffer.append("，Cookie: " + httpUrlCon.getRequestProperty("Cookie"));
+        buffer.append("，Content-Type: " + httpUrlCon.getRequestProperty("Content-Type"));
+        buffer.append("，Accept: " + httpUrlCon.getRequestProperty("Accept"));
+        buffer.append("，Accept-Encoding: " + httpUrlCon.getRequestProperty("Accept-Encoding"));
+        buffer.append("，Accept-Language: " + httpUrlCon.getRequestProperty("Accept-Language"));
+        buffer.append("，Connection: " + httpUrlCon.getHeaderField("Connection")+"}");//利用另一种读取HTTP头字段
+        return buffer.toString();
+    }
+//    public String getHeaders(HttpURLConnection conn){
+//        StringBuffer buffer = new StringBuffer();
+//        Map<String, List<String>> header = conn.getHeaderFields();
+//        for (Map.Entry<String, List<String>> entry : header.entrySet()) {
+//            String key = entry.getKey();
+//            for (String value : entry.getValue()) {
+//                buffer.append(key + ":" + value);
+////                System.out.println(key + ":" + value);
+//            }
+//        }
+//        return buffer.toString();
+//    }
 }

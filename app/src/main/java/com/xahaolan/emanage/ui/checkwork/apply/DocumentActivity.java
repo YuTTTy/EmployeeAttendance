@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyConstant;
+import com.xahaolan.emanage.dialog.DialogSingleText;
 import com.xahaolan.emanage.http.FormRequest;
 import com.xahaolan.emanage.http.services.CheckWorkServices;
 import com.xahaolan.emanage.manager.PhotoCamerManager;
@@ -76,10 +77,10 @@ public class DocumentActivity extends BaseActivity {
     private EditText leave_day_et;
     /* 请假类型 */
     private RelativeLayout leave_type_layout;
-    private EditText leave_type_et;
+    private TextView leave_type_text;
     /* 交通工具 */
     private RelativeLayout trafic_tool_layout;
-    private EditText trafic_tool_et;
+    private TextView trafic_tool_text;
     /* 是由 */
     private LinearLayout reason_layout;
     private TextView reason_text;
@@ -98,6 +99,7 @@ public class DocumentActivity extends BaseActivity {
     private FrameLayout submit_layout;
 
     private int personId;//  员工id
+    private int departmentId;//  部门id
     private String personName;//  员工姓名
     private String outData;// 外出时间
     private String startDate;// 开始日期（2017-09-11）
@@ -109,6 +111,9 @@ public class DocumentActivity extends BaseActivity {
     private String voiceFile;
     private String[] sourceFile;
     private List<String> sourceList;
+
+    private String[] leaveTypeArr = {"病假", "事假", "婚假", "丧假", "产假", "年休假"};
+    private String[] trafficTypeArr = {"汽车", "火车", "轮船", "飞机"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,10 +150,10 @@ public class DocumentActivity extends BaseActivity {
         leave_day_et = (EditText) findViewById(R.id.apply_document_leave_day_et);
         leave_day_layout.setOnClickListener(this);
         leave_type_layout = (RelativeLayout) findViewById(R.id.apply_document_leave_type_layout);
-        leave_type_et = (EditText) findViewById(R.id.apply_document_leave_type_et);
+        leave_type_text = (TextView) findViewById(R.id.apply_document_leave_type_et);
         leave_type_layout.setOnClickListener(this);
         trafic_tool_layout = (RelativeLayout) findViewById(R.id.apply_document_traffic_tool_layout);
-        trafic_tool_et = (EditText) findViewById(R.id.apply_document_traffic_tool_et);
+        trafic_tool_text = (TextView) findViewById(R.id.apply_document_traffic_tool_et);
         trafic_tool_layout.setOnClickListener(this);
         reason_layout = (LinearLayout) findViewById(R.id.apply_document_reason_layout);
         reason_text = (TextView) findViewById(R.id.apply_document_reason_text);
@@ -221,7 +226,7 @@ public class DocumentActivity extends BaseActivity {
                 out_time_layout.setVisibility(View.GONE);
                 work_time_layout.setVisibility(View.GONE);
                 trafic_tool_layout.setVisibility(View.GONE);
-                reason_text.setText("请假是由");
+                reason_text.setText("请假事由");
                 reason_et.setHint("填写请假事由");
                 break;
             //外出登记
@@ -317,11 +322,31 @@ public class DocumentActivity extends BaseActivity {
                 break;
             /* 请假类型 */
             case R.id.apply_document_leave_type_layout:
-
+                new DialogSingleText(context, leaveTypeArr, new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        int pos = (int) msg.obj;
+                        String sltType = leaveTypeArr[pos];
+                        if (sltType != null && !sltType.equals("")) {
+                            leave_type_text.setText(sltType);
+                        }
+                    }
+                }).show();
                 break;
             /* 交通工具 */
             case R.id.apply_document_traffic_tool_layout:
-
+                new DialogSingleText(context, trafficTypeArr, new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        int pos = (int) msg.obj;
+                        String sltType = trafficTypeArr[pos];
+                        if (sltType != null && !sltType.equals("")) {
+                            trafic_tool_text.setText(sltType);
+                        }
+                    }
+                }).show();
                 break;
             /* play audio */
             case R.id.apply_document_voice_length:
@@ -341,7 +366,7 @@ public class DocumentActivity extends BaseActivity {
                         super.handleMessage(msg);
                         if (msg.what == MyConstant.HANDLER_SUCCESS) {
                             String imagePath = (String) msg.obj;
-                            LogUtils.e(TAG,"拍照图片路径 ："+imagePath);
+                            LogUtils.e(TAG, "拍照图片路径 ：" + imagePath);
                             try {
                                 sourceList.add(imagePath);
                                 photo_items_layout.removeAllViews();
@@ -459,13 +484,14 @@ public class DocumentActivity extends BaseActivity {
 //            return;
 //        }
         personId = AppUtils.getPersonId(context);
+        departmentId = AppUtils.getDepartmentId(context);
         personName = AppUtils.getPersonName(context);
         outData = out_time_text.getText().toString();
         startDate = start_time_text.getText().toString();
         endDate = end_time_text.getText().toString();
         origin = start_position_et.getText().toString();//      始发地
         destination = end_position_et.getText().toString();//  目的地
-        vehicle = trafic_tool_et.getText().toString();//  交通工具
+        vehicle = trafic_tool_text.getText().toString();//  交通工具
         reason = reason_et.getText().toString();
 
         if (applyType == MyConstant.APPLY_DOCUMENT_LEAVE_APPLY) {
@@ -483,33 +509,33 @@ public class DocumentActivity extends BaseActivity {
      * 请假申请
      */
     public void requestApplyLeave() {
-        Map<String,Object> paramsMap = new HashMap<>();
+        Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("personId", personId);
         paramsMap.put("personName", personName);
         paramsMap.put("startDate", startDate);
         paramsMap.put("endDate", endDate);
         paramsMap.put("reason", reason);
-        Map<String,Object> fileMap = new HashMap<>();
-        if (sourceList != null && sourceList.size() > 0){
-            for (String sourcePath : sourceList){
-                fileMap.put("sourceFile",sourcePath);
+        Map<String, Object> fileMap = new HashMap<>();
+        if (sourceList != null && sourceList.size() > 0) {
+            for (String sourcePath : sourceList) {
+                fileMap.put("sourceFile", sourcePath);
             }
         }
-        if (voiceFile != null && !voiceFile.equals("")){
-            fileMap.put("sourceFile",voiceFile);
+        if (voiceFile != null && !voiceFile.equals("")) {
+            fileMap.put("sourceFile", voiceFile);
         }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        LogUtils.e(TAG,"---------------- 创建任务request ----------------");
-        LogUtils.e(TAG,"创建任务 request url : "+MyConstant.BASE_URL + "/app/dailyreportAPPAction!add.action");
-        new FormRequest(context,MyConstant.BASE_URL + "/app/leaveOrderAPPAction!add.action",paramsMap,fileMap,new Handler(){
+        LogUtils.e(TAG, "---------------- 创建任务request ----------------");
+        LogUtils.e(TAG, "创建任务 request url : " + MyConstant.BASE_URL + "/app/dailyreportAPPAction!add.action");
+        new FormRequest(context, MyConstant.BASE_URL + "/app/leaveOrderAPPAction!add.action", paramsMap, fileMap, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-                            swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-                        }
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
                     finish();
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
@@ -554,27 +580,28 @@ public class DocumentActivity extends BaseActivity {
      * 外出登记申请
      */
     public void requestApplyOutRegister() {
-        Map<String,Object> paramsMap = new HashMap<>();
+        Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("personid", personId);
-        paramsMap.put("outData", outData);
-        paramsMap.put("startDate", startDate);
-        paramsMap.put("endDate", endDate);
+        paramsMap.put("departmentId", departmentId);
+        paramsMap.put("data", outData);
+        paramsMap.put("starttime", startDate);
+        paramsMap.put("endtime", endDate);
         paramsMap.put("reason", reason);
-        Map<String,Object> fileMap = new HashMap<>();
-        if (sourceList != null && sourceList.size() > 0){
-            for (String sourcePath : sourceList){
-                fileMap.put("sourceFile",sourcePath);
+        Map<String, Object> fileMap = new HashMap<>();
+        if (sourceList != null && sourceList.size() > 0) {
+            for (String sourcePath : sourceList) {
+                fileMap.put("sourceFile", sourcePath);
             }
         }
-        if (voiceFile != null && !voiceFile.equals("")){
-            fileMap.put("sourceFile",voiceFile);
+        if (voiceFile != null && !voiceFile.equals("")) {
+            fileMap.put("sourceFile", voiceFile);
         }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        LogUtils.e(TAG,"---------------- 外出登记申请 request ----------------");
-        LogUtils.e(TAG,"外出登记申请 request url : "+MyConstant.BASE_URL + "/app/outgoingAPPAction!add.action");
-        new FormRequest(context,MyConstant.BASE_URL + "/app/outgoingAPPAction!add.action",paramsMap,fileMap,new Handler(){
+        LogUtils.e(TAG, "---------------- 外出登记申请 request ----------------");
+        LogUtils.e(TAG, "外出登记申请 request url : " + MyConstant.BASE_URL + "/app/outgoingAPPAction!add.action");
+        new FormRequest(context, MyConstant.BASE_URL + "/app/outgoingAPPAction!add.action", paramsMap, fileMap, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -598,7 +625,7 @@ public class DocumentActivity extends BaseActivity {
 
 //        preRequest();
 //        new CheckWorkServices(context).outGoingAddService(personId, outData, startDate,
-//                endDate, reason, sourceFile, new Handler() {
+//                endDate, reason, sourceFile, new Han／dler() {
 //                    @Override
 //                    public void handleMessage(Message msg) {
 //                        super.handleMessage(msg);
@@ -625,7 +652,7 @@ public class DocumentActivity extends BaseActivity {
      * 出差申请
      */
     public void requestApplyOut() {
-        Map<String,Object> paramsMap = new HashMap<>();
+        Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("personId", personId);
         paramsMap.put("personName", personName);
         paramsMap.put("origin", origin);
@@ -634,21 +661,21 @@ public class DocumentActivity extends BaseActivity {
         paramsMap.put("endDate", endDate);
         paramsMap.put("vehicle", vehicle);
         paramsMap.put("reason", reason);
-        Map<String,Object> fileMap = new HashMap<>();
-        if (sourceList != null && sourceList.size() > 0){
-            for (String sourcePath : sourceList){
-                fileMap.put("sourceFile",sourcePath);
+        Map<String, Object> fileMap = new HashMap<>();
+        if (sourceList != null && sourceList.size() > 0) {
+            for (String sourcePath : sourceList) {
+                fileMap.put("sourceFile", sourcePath);
             }
         }
-        if (voiceFile != null && !voiceFile.equals("")){
-            fileMap.put("sourceFile",voiceFile);
+        if (voiceFile != null && !voiceFile.equals("")) {
+            fileMap.put("sourceFile", voiceFile);
         }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        LogUtils.e(TAG,"---------------- 出差申请 request ----------------");
-        LogUtils.e(TAG,"出差申请 request url : "+MyConstant.BASE_URL + "/app/businessTrip!add.action");
-        new FormRequest(context,MyConstant.BASE_URL + "/app/businessTrip!add.action",paramsMap,fileMap,new Handler(){
+        LogUtils.e(TAG, "---------------- 出差申请 request ----------------");
+        LogUtils.e(TAG, "出差申请 request url : " + MyConstant.BASE_URL + "/app/businessTrip!add.action");
+        new FormRequest(context, MyConstant.BASE_URL + "/app/businessTrip!add.action", paramsMap, fileMap, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -699,26 +726,26 @@ public class DocumentActivity extends BaseActivity {
      * 加班登记
      */
     public void requestApplyWork() {
-        Map<String,Object> paramsMap = new HashMap<>();
+        Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("personid", personId);
         paramsMap.put("startDate", startDate);
         paramsMap.put("endDate", endDate);
         paramsMap.put("reason", reason);
-        Map<String,Object> fileMap = new HashMap<>();
-        if (sourceList != null && sourceList.size() > 0){
-            for (String sourcePath : sourceList){
-                fileMap.put("sourceFile",sourcePath);
+        Map<String, Object> fileMap = new HashMap<>();
+        if (sourceList != null && sourceList.size() > 0) {
+            for (String sourcePath : sourceList) {
+                fileMap.put("sourceFile", sourcePath);
             }
         }
-        if (voiceFile != null && !voiceFile.equals("")){
-            fileMap.put("sourceFile",voiceFile);
+        if (voiceFile != null && !voiceFile.equals("")) {
+            fileMap.put("sourceFile", voiceFile);
         }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        LogUtils.e(TAG,"---------------- 加班登记 request ----------------");
-        LogUtils.e(TAG,"加班登记 request url : "+MyConstant.BASE_URL + "/app/workAPPAction!add.action");
-        new FormRequest(context,MyConstant.BASE_URL + "/app/workAPPAction!add.action",paramsMap,fileMap,new Handler(){
+        LogUtils.e(TAG, "---------------- 加班登记 request ----------------");
+        LogUtils.e(TAG, "加班登记 request url : " + MyConstant.BASE_URL + "/app/workAPPAction!add.action");
+        new FormRequest(context, MyConstant.BASE_URL + "/app/workAPPAction!add.action", paramsMap, fileMap, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -766,7 +793,7 @@ public class DocumentActivity extends BaseActivity {
     }
 
     /**
-     *             添加照片
+     * 添加照片
      *
      * @param imageUrl
      * @return

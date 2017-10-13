@@ -55,11 +55,11 @@ public class AppUtils {
         return userName;
     }
 
-    public static String getDepartmentId(Context context) {
-        String departmentid = "";
+    public static int getDepartmentId(Context context) {
+        int departmentid = 0;
         Map<String, Object> loginData = (Map<String, Object>) SPUtils.get(context, MyConstant.SHARED_SAVE,MyConstant.SP_LOGIN_DATA,new HashMap<String,Object>());
         if (loginData != null && loginData.get("departmentid") != null) {
-            departmentid = (String) loginData.get("departmentid");
+            departmentid = new Double((Double)loginData.get("departmentid")).intValue();
         }
         return departmentid;
     }

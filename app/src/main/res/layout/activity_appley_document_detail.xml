@@ -47,7 +47,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/usually_spacing_middle"
-                android:text="time"
                 android:textColor="@color/baseTextMain"
                 android:textSize="@dimen/text_main_content" />
 

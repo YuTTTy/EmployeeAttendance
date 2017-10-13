@@ -33,7 +33,7 @@
 
             <EditText
                 android:id="@+id/create_task_content"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:hint="请输入任务内容"

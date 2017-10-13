@@ -153,8 +153,8 @@ public class CheckApplyActivity extends BaseActivity {
 
     @Override
     public void initData() {
-//        personid = 49;
-        personid = AppUtils.getPersonId(context);
+        personid = 49;
+//        personid = AppUtils.getPersonId(context);
         dataList = new ArrayList<>();
         intent = getIntent();
         checkType = intent.getIntExtra("CheckType", 1);
