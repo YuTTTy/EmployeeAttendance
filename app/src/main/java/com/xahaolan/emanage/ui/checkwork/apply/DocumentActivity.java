@@ -1,8 +1,12 @@
 package com.xahaolan.emanage.ui.checkwork.apply;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +31,8 @@ import com.xahaolan.emanage.http.FormRequest;
 import com.xahaolan.emanage.http.services.CheckWorkServices;
 import com.xahaolan.emanage.manager.PhotoCamerManager;
 import com.xahaolan.emanage.manager.VoiceManager;
+import com.xahaolan.emanage.manager.camer.PermissionsActivity;
+import com.xahaolan.emanage.manager.camer.PermissionsChecker;
 import com.xahaolan.emanage.utils.common.BitmapUtils;
 import com.xahaolan.emanage.utils.common.LogUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
@@ -34,6 +40,7 @@ import com.xahaolan.emanage.utils.mine.AppUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
 import com.xahaolan.emanage.view.wheel.dialog.ChangeBirthDialog;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -51,6 +58,10 @@ public class DocumentActivity extends BaseActivity {
     private ChangeBirthDialog timeDialog;
     private VoiceManager voiceManager;
     private PhotoCamerManager photoCamerUtil;
+    private PermissionsChecker mPermissionsChecker; // 权限检测器
+    private static final int REQUEST_PERMISSION = 4;  //权限请求
+    static final String[] PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
     private int applyType;  //1.请假申请  2.外出登记  3.出差申请  4.加班登记
     private int audioType = 0;// 0.未播放  1.正在播放
 
@@ -111,6 +122,8 @@ public class DocumentActivity extends BaseActivity {
     private String voiceFile;
     private String[] sourceFile;
     private List<String> sourceList;
+    private Map<String, Object> paramsMap; //非资源文件params
+    private List<Map<String,Object>> fileList;//资源文件params
 
     private String[] leaveTypeArr = {"病假", "事假", "婚假", "丧假", "产假", "年休假"};
     private String[] trafficTypeArr = {"汽车", "火车", "轮船", "飞机"};
@@ -213,7 +226,10 @@ public class DocumentActivity extends BaseActivity {
     public void initData() {
         timeDialog = new ChangeBirthDialog(context);
         sourceList = new ArrayList<>();
+        paramsMap = new HashMap<>();
+        fileList = new ArrayList<>();
         voiceManager = new VoiceManager();
+        mPermissionsChecker = new PermissionsChecker(this);
         photoCamerUtil = new PhotoCamerManager((Activity) context, context);
         intent = getIntent();
         applyType = intent.getIntExtra("ApplyType", 1);
@@ -360,31 +376,50 @@ public class DocumentActivity extends BaseActivity {
                 break;
             /* photos */
             case R.id.apply_document_photos_icon:
-                photoCamerUtil.takePhotoCamer(1, new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        super.handleMessage(msg);
-                        if (msg.what == MyConstant.HANDLER_SUCCESS) {
-                            String imagePath = (String) msg.obj;
-                            LogUtils.e(TAG, "拍照图片路径 ：" + imagePath);
-                            try {
-                                sourceList.add(imagePath);
-                                photo_items_layout.removeAllViews();
-                                for (int i = 0; i < sourceList.size(); i++) {
-                                    photo_items_layout.addView(addPhotoItemView(sourceList.get(i)));
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
+                //检查权限(6.0以上做权限判断)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
+                        PermissionsActivity.startActivityForResult(this, REQUEST_PERMISSION,
+                                PERMISSIONS);
+                    } else {
+                        openCamer();
                     }
-                });
+                } else {
+                    openCamer();
+                }
+
+
                 break;
             /* submit */
             case R.id.apply_document_submit_layout:
                 getParamsData();
                 break;
         }
+    }
+
+    public void openCamer() {
+        photoCamerUtil.takePhotoCamer(1, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == MyConstant.HANDLER_SUCCESS) {
+                    String imagePath = (String) msg.obj;
+                    if (imagePath == null || imagePath.equals("")) {
+                        LogUtils.e(TAG, "拍照图片路径 ：" + imagePath);
+                        return;
+                    }
+                    try {
+                        sourceList.add(imagePath);
+                        photo_items_layout.removeAllViews();
+                        for (int i = 0; i < sourceList.size(); i++) {
+                            photo_items_layout.addView(addPhotoItemView(sourceList.get(i)));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -509,27 +544,30 @@ public class DocumentActivity extends BaseActivity {
      * 请假申请
      */
     public void requestApplyLeave() {
-        Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("personId", personId);
         paramsMap.put("personName", personName);
         paramsMap.put("startDate", startDate);
         paramsMap.put("endDate", endDate);
         paramsMap.put("reason", reason);
-        Map<String, Object> fileMap = new HashMap<>();
+        Map<String, Object> fileMap;
         if (sourceList != null && sourceList.size() > 0) {
-            for (String sourcePath : sourceList) {
+            for (Object sourcePath : sourceList) {
+                fileMap = new HashMap<>();
                 fileMap.put("sourceFile", sourcePath);
+                fileList.add(fileMap);
             }
         }
         if (voiceFile != null && !voiceFile.equals("")) {
+            fileMap = new HashMap<>();
             fileMap.put("sourceFile", voiceFile);
+            fileList.add(fileMap);
         }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
-        LogUtils.e(TAG, "---------------- 创建任务request ----------------");
-        LogUtils.e(TAG, "创建任务 request url : " + MyConstant.BASE_URL + "/app/dailyreportAPPAction!add.action");
-        new FormRequest(context, MyConstant.BASE_URL + "/app/leaveOrderAPPAction!add.action", paramsMap, fileMap, new Handler() {
+        LogUtils.e(TAG, "---------------- 请假申请request ----------------");
+        LogUtils.e(TAG, "请假申请 request url : " + MyConstant.BASE_URL + "/app/dailyreportAPPAction!add.action");
+        new FormRequest(context, MyConstant.BASE_URL + "/app/leaveOrderAPPAction!add.action", paramsMap, fileList, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -580,28 +618,31 @@ public class DocumentActivity extends BaseActivity {
      * 外出登记申请
      */
     public void requestApplyOutRegister() {
-        Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("personid", personId);
         paramsMap.put("departmentId", departmentId);
         paramsMap.put("data", outData);
         paramsMap.put("starttime", startDate);
         paramsMap.put("endtime", endDate);
         paramsMap.put("reason", reason);
-        Map<String, Object> fileMap = new HashMap<>();
+        Map<String, Object> fileMap;
         if (sourceList != null && sourceList.size() > 0) {
-            for (String sourcePath : sourceList) {
+            for (Object sourcePath : sourceList) {
+                fileMap = new HashMap<>();
                 fileMap.put("sourceFile", sourcePath);
+                fileList.add(fileMap);
             }
         }
         if (voiceFile != null && !voiceFile.equals("")) {
+            fileMap = new HashMap<>();
             fileMap.put("sourceFile", voiceFile);
+            fileList.add(fileMap);
         }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
         LogUtils.e(TAG, "---------------- 外出登记申请 request ----------------");
         LogUtils.e(TAG, "外出登记申请 request url : " + MyConstant.BASE_URL + "/app/outgoingAPPAction!add.action");
-        new FormRequest(context, MyConstant.BASE_URL + "/app/outgoingAPPAction!add.action", paramsMap, fileMap, new Handler() {
+        new FormRequest(context, MyConstant.BASE_URL + "/app/outgoingAPPAction!add.action", paramsMap, fileList, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -661,21 +702,25 @@ public class DocumentActivity extends BaseActivity {
         paramsMap.put("endDate", endDate);
         paramsMap.put("vehicle", vehicle);
         paramsMap.put("reason", reason);
-        Map<String, Object> fileMap = new HashMap<>();
+        Map<String, Object> fileMap;
         if (sourceList != null && sourceList.size() > 0) {
-            for (String sourcePath : sourceList) {
+            for (Object sourcePath : sourceList) {
+                fileMap = new HashMap<>();
                 fileMap.put("sourceFile", sourcePath);
+                fileList.add(fileMap);
             }
         }
         if (voiceFile != null && !voiceFile.equals("")) {
+            fileMap = new HashMap<>();
             fileMap.put("sourceFile", voiceFile);
+            fileList.add(fileMap);
         }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
         LogUtils.e(TAG, "---------------- 出差申请 request ----------------");
         LogUtils.e(TAG, "出差申请 request url : " + MyConstant.BASE_URL + "/app/businessTrip!add.action");
-        new FormRequest(context, MyConstant.BASE_URL + "/app/businessTrip!add.action", paramsMap, fileMap, new Handler() {
+        new FormRequest(context, MyConstant.BASE_URL + "/app/businessTrip!add.action", paramsMap, fileList, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -731,21 +776,25 @@ public class DocumentActivity extends BaseActivity {
         paramsMap.put("startDate", startDate);
         paramsMap.put("endDate", endDate);
         paramsMap.put("reason", reason);
-        Map<String, Object> fileMap = new HashMap<>();
+        Map<String, Object> fileMap;
         if (sourceList != null && sourceList.size() > 0) {
-            for (String sourcePath : sourceList) {
+            for (Object sourcePath : sourceList) {
+                fileMap = new HashMap<>();
                 fileMap.put("sourceFile", sourcePath);
+                fileList.add(fileMap);
             }
         }
         if (voiceFile != null && !voiceFile.equals("")) {
+            fileMap = new HashMap<>();
             fileMap.put("sourceFile", voiceFile);
+            fileList.add(fileMap);
         }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
         LogUtils.e(TAG, "---------------- 加班登记 request ----------------");
         LogUtils.e(TAG, "加班登记 request url : " + MyConstant.BASE_URL + "/app/workAPPAction!add.action");
-        new FormRequest(context, MyConstant.BASE_URL + "/app/workAPPAction!add.action", paramsMap, fileMap, new Handler() {
+        new FormRequest(context, MyConstant.BASE_URL + "/app/workAPPAction!add.action", paramsMap, fileList, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);

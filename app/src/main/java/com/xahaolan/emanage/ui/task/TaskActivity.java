@@ -179,7 +179,7 @@ public class TaskActivity extends BaseActivity {
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
                     Map<String, Object> response = (Map<String, Object>) msg.obj;
                     if (response != null) {
-                        if (response.get("resultList") != null) {
+                        if (response.get("rows") != null) {
                             dataList = (List<Map<String, Object>>) response.get("rows");
                             if (dataList != null && dataList.size() >= 0) {
                                 if (response.get("total") != null){

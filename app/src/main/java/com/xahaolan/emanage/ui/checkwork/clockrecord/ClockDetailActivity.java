@@ -50,13 +50,17 @@ public class ClockDetailActivity extends BaseActivity {
         intent = getIntent();
         data = (Map<String, Object>) intent.getSerializableExtra("clockDetail");
         if (data != null) {
+            String address = "";
+            if (data.get("label") != null) {
+                address = (String) data.get("label");
+            }
             if (data.get("createTime") != null) {
                 String createTime = (String) data.get("createTime");
-                items_layout.addView(addItemView("签到", "",createTime));
+                items_layout.addView(addItemView("签到", address, createTime));
             }
             if (data.get("createdate") != null) {
                 String createData = (String) data.get("createdate");
-                items_layout.addView(addItemView("签退", "", createData));
+                items_layout.addView(addItemView("签退", address, createData));
             }
         }
     }

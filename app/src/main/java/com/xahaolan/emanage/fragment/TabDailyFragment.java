@@ -1,6 +1,5 @@
 package com.xahaolan.emanage.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,11 +18,9 @@ import com.xahaolan.emanage.adapter.TabDailyAdapter;
 import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.http.services.DailyServices;
-import com.xahaolan.emanage.ui.daily.SendDailyActivity;
 import com.xahaolan.emanage.utils.common.LogUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.AppUtils;
-import com.xahaolan.emanage.utils.mine.MyUtils;
 
 import java.util.List;
 import java.util.Map;

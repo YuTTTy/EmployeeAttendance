@@ -6,22 +6,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.util.Base64;
 import android.widget.Toast;
 
 import com.xahaolan.emanage.base.MyConstant;
+import com.xahaolan.emanage.manager.camer.FileStorage;
 import com.xahaolan.emanage.utils.common.BitmapUtils;
 import com.xahaolan.emanage.utils.common.LogUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Created by aiodiy on 2017/3/3.
@@ -35,6 +42,7 @@ public class PhotoCamerManager {
     private Handler handler;
 
     private String saveCamerUrl; //拍照路径
+    private Uri imageUri;
     public String dataUrl;//图片本地路径
     public byte[] dataBytes; //压缩后的图片字节数组
     Uri uritempFile;
@@ -56,34 +64,48 @@ public class PhotoCamerManager {
     }
 
     public void takeCamear() {
-        String status = Environment.getExternalStorageState();
-        if (status.equals(Environment.MEDIA_MOUNTED)) {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            /*清除相机之前存储的照片*/
-            File file = null;
-            file = new File(Environment.getExternalStorageDirectory(), saveCamerUrl);
-            if (file.exists()) {
-                file.delete();
-            }
-            /*指定照片存储路径*/
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(Environment.getExternalStorageDirectory(), saveCamerUrl)));
-            /*裁剪图片宽高*/
-            intent.putExtra("outputX", 100);
-            intent.putExtra("outputY", 200);
-
-//            /*调用系统相机拍照返回Intent 为空的处理 */
-//            SimpleDateFormat format = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-//            String fileName = format.format(new Date());
-//            ContentValues values = new ContentValues();
-//            values.put(MediaStore.Images.Media.TITLE,fileName);
-//            Uri photoUri = clazz.getContentResolver().insert(
-//                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//        String status = Environment.getExternalStorageState();
+//        if (status.equals(Environment.MEDIA_MOUNTED)) {
+//            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//            /*清除相机之前存储的照片*/
+//            File file = null;
+//            file = new File(Environment.getExternalStorageDirectory(), saveCamerUrl);
+//            if (file.exists()) {
+//                file.delete();
+//            }
+//            /*指定照片存储路径*/
+//            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(Environment.getExternalStorageDirectory(), saveCamerUrl)));
+//            /*裁剪图片宽高*/
+//            intent.putExtra("outputX", 100);
+//            intent.putExtra("outputY", 200);
 //
-//            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-            clazz.startActivityForResult(intent, MyConstant.RESULT_CAMER);
+////            /*调用系统相机拍照返回Intent 为空的处理 */
+////            SimpleDateFormat format = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+////            String fileName = format.format(new Date());
+////            ContentValues values = new ContentValues();
+////            values.put(MediaStore.Images.Media.TITLE,fileName);
+////            Uri photoUri = clazz.getContentResolver().insert(
+////                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+////
+////            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+//            clazz.startActivityForResult(intent, MyConstant.RESULT_CAMER);
+//        } else {
+//            Toast.makeText(context, "没有可用的存储卡", Toast.LENGTH_SHORT).show();
+//        }
+
+        File file = new FileStorage().createIconFile();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            imageUri = FileProvider.getUriForFile(clazz, "com.xahaolan.fileprovider", file);//通过FileProvider创建一个content类型的Uri
         } else {
-            Toast.makeText(context, "没有可用的存储卡", Toast.LENGTH_SHORT).show();
+            imageUri = Uri.fromFile(file);
         }
+        Intent intent = new Intent();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
+        }
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);//设置Action为拍照
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);//将拍取的照片保存到指定URI
+        clazz.startActivityForResult(intent, MyConstant.RESULT_CAMER);
     }
 
     public void takePhoto() {
@@ -97,18 +119,20 @@ public class PhotoCamerManager {
         switch (requestCode) {
             /*相机*/
             case MyConstant.RESULT_CAMER:
-                if (resultCode == 0) {
-                    LogUtils.e(TAG, "没有选择图片");
-                    Toast.makeText(context, "没有选择图片", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                File addHeadTemp = new File(Environment.getExternalStorageDirectory(), saveCamerUrl);
+//                if (resultCode == 0) {
+//                    LogUtils.e(TAG, "没有选择图片");
+//                    Toast.makeText(context, "没有选择图片", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                File addHeadTemp = new File(Environment.getExternalStorageDirectory(), saveCamerUrl);
 //                String addHeadPath = addHeadTemp.getPath();
+
 //                Message camerMsg = new Message();
 //                camerMsg.what = MyConstant.HANDLER_SUCCESS;
-//                camerMsg.obj = getAbsolutePath(Uri.fromFile(addHeadTemp));
+//                camerMsg.obj = imageUri;
 //                handler.sendMessage(camerMsg);
-                startPhotoZoom(Uri.fromFile(addHeadTemp));// 裁剪
+//                startPhotoZoom(Uri.fromFile(addHeadTemp));// 裁剪
+                imageUri = startPhotoZoom(MyConstant.RESULT_TAILER);// 裁剪
                 break;
             /*相册*/
             case MyConstant.RESULT_PHOTO:
@@ -135,20 +159,55 @@ public class PhotoCamerManager {
                 break;
             /*裁剪*/
             case MyConstant.RESULT_TAILER:
-                if (resultCode == 0) {
-                    LogUtils.e(TAG, "没有选择图片");
-                    Toast.makeText(context, "没有选择图片", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+//                if (resultCode == 0) {
+//                    LogUtils.e(TAG, "没有选择图片");
+//                    Toast.makeText(context, "没有选择图片", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                if (uritempFile != null) {
+//                    setPicToView(uritempFile);
+//                }
 
-                if (uritempFile != null) {
-                    setPicToView(uritempFile);
-                }
+                Message camerMsg = new Message();
+                camerMsg.what = MyConstant.HANDLER_SUCCESS;
+                camerMsg.obj = getAbsolutePath(imageUri);
+                handler.sendMessage(camerMsg);
                 break;
         }
 
     }
+    /**
+     * 裁剪图片方法实现
+     */
+    public Uri startPhotoZoom(int requestCode) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        Uri outPutUri = Uri.fromFile(new FileStorage().createCropFile());
+        //sdk>=24
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setDataAndType(imageUri, "image/*");
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, outPutUri);
+            intent.putExtra("noFaceDetection", false);//去除默认的人脸识别，否则和剪裁匡重叠
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        }else {
+            intent.setDataAndType(imageUri, "image/*");
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, outPutUri);
+        }
 
+        // 设置裁剪
+        intent.putExtra("crop", "true");
+        // aspectX aspectY 是宽高的比例
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        // outputX outputY 是裁剪图片宽高
+        intent.putExtra("outputX", 200);
+        intent.putExtra("outputY", 200);
+        intent.putExtra("return-data", false);
+        intent.putExtra("circleCrop", false);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());// 图片格式
+        clazz.startActivityForResult(intent, requestCode);//这里就将裁剪后的图片的Uri返回了
+        return outPutUri;
+    }
     /**
      * 调用系统裁剪功能
      *
@@ -226,24 +285,6 @@ public class PhotoCamerManager {
     }
 
     /**
-     * 将uri转换为存储中的路径
-     *
-     * @param uri
-     */
-    public String getPath(Uri uri) {
-        if ((uri.getAuthority()).isEmpty()) {
-            LogUtils.e(TAG, "将uri转换为存储中的路径,uri为空");
-            return null;
-        }
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = clazz.managedQuery(uri, projection, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String path = cursor.getString(column_index);
-        return path;
-    }
-
-    /**
      * 读取裁剪之后的图片文件字节数组，并转换为Base64string
      */
     public void setPicToView(Uri uriFile) {
@@ -290,38 +331,4 @@ public class PhotoCamerManager {
             System.gc(); //提醒系统及时回收
         }
     }
-
-//        /**
-//     * 读取裁剪之后的图片文件字节数组，并转换为Base64string
-//     *
-//     * @param picdata
-//     */
-//    public void setPicToView(Intent picdata) {
-//        Bundle extras = picdata.getExtras();
-//        if (extras != null) {
-//            Bitmap photo = extras.getParcelable("data");
-////            Drawable drawable = new BitmapDrawable(photo);
-//
-//            /*压缩图片*/
-//            ByteArrayOutputStream baos = null;
-//            try {
-//                baos = new ByteArrayOutputStream();
-//                photo.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-//                baos.flush();
-//                baos.flush();
-//            } catch (IOException e) {
-//                LogUtils.e(TAG, "图片压缩异常");
-//                e.printStackTrace();
-//            }
-//            dataBytes = baos.toByteArray(); //压缩后的字节数组
-//            dataUrl = extras.getString("PATH");//图片路径
-//            LogUtils.e(TAG, "图片压缩后的本地存储路径：" + dataUrl);
-//
-//           /*读取文件字节数组，并使用Base64编码*/
-//            String enableImage = new String(Base64.encode(dataBytes, 0));
-//            String imageName = "addHeadImage.jpg";
-//
-//        }
-//    }
-
 }

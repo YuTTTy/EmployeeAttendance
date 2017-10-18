@@ -1,90 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/swipe_refresh_layout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/baseBg">
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/public_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></include>
 
     <LinearLayout
-        android:id="@+id/main_layout"
+        android:id="@+id/check_apply_examine_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/check_apply_wait_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="@dimen/usually_spacing_middle"
+            android:text="待审批"
+            android:textColor="@color/baseTextMain"
+            android:textSize="@dimen/text_main_content" />
+
+        <View
+            android:layout_width="@dimen/usually_line_middle"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/baseLine"></View>
+
+        <TextView
+            android:id="@+id/check_apply_already_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="@dimen/usually_spacing_middle"
+            android:text="已审批"
+            android:textColor="@color/baseTextMain"
+            android:textSize="@dimen/text_main_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/check_apply_slt_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/usually_spacing_middle">
+
+        <TextView
+            android:id="@+id/check_apply_slt_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/usually_spacing_small"
+            android:text="全部"
+            android:textColor="@color/baseTextMain"
+            android:textSize="@dimen/text_main_content" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:src="@drawable/ico_pull_down" />
+    </LinearLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <include
-            layout="@layout/public_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></include>
-
-        <LinearLayout
-            android:id="@+id/check_apply_examine_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/check_apply_wait_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/usually_spacing_middle"
-                android:text="待审批"
-                android:textColor="@color/baseTextMain"
-                android:textSize="@dimen/text_main_content" />
-
-            <View
-                android:layout_width="@dimen/usually_line_middle"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="2dp"
-                android:layout_marginTop="2dp"
-                android:background="@color/baseLine"></View>
-
-            <TextView
-                android:id="@+id/check_apply_already_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/usually_spacing_middle"
-                android:text="已审批"
-                android:textColor="@color/baseTextMain"
-                android:textSize="@dimen/text_main_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/check_apply_slt_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:padding="@dimen/usually_spacing_middle"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/check_apply_slt_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/usually_spacing_small"
-                android:text="全部"
-                android:textColor="@color/baseTextMain"
-                android:textSize="@dimen/text_main_content" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:src="@drawable/ico_pull_down" />
-        </LinearLayout>
+        android:background="@color/baseBg">
 
         <ListView
-            android:dividerHeight="@dimen/usually_line"
             android:id="@+id/check_apply_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:listSelector="@null"
             android:background="@color/white"
             android:divider="@color/baseLine"
+            android:dividerHeight="@dimen/usually_line"
+            android:listSelector="@null"
             android:scrollbars="none"></ListView>
-    </LinearLayout>
-</android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

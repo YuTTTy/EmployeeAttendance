@@ -1,5 +1,6 @@
 package com.xahaolan.emanage.ui;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyApplication;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.http.services.LoginServices;
+import com.xahaolan.emanage.manager.camer.PermissionsActivity;
+import com.xahaolan.emanage.manager.camer.PermissionsChecker;
 import com.xahaolan.emanage.utils.common.SPUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
@@ -34,9 +37,30 @@ public class LoginActivity extends BaseActivity {
     private EditText pass_et;
     private TextView btn_text;
 
+    private PermissionsChecker mPermissionsChecker; // 权限检测器
+    private static final int REQUEST_PERMISSION = 444;  //权限请求
+    static final String[] PERMISSIONS = new String[]{Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mPermissionsChecker = new PermissionsChecker(this);
+
+        //检查权限(6.0以上做权限判断)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
+                PermissionsActivity.startActivityForResult(this, REQUEST_PERMISSION,
+                        PERMISSIONS);
+            } else {
+                isLogin();
+            }
+        } else {
+            isLogin();
+        }
+    }
+
+    public void isLogin() {
         Boolean isLogin = (Boolean) SPUtils.get(context, MyConstant.SHARED_SAVE, MyConstant.IS_ALREADY_LOGIN, false);
         if (isLogin) {
             MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
@@ -147,12 +171,14 @@ public class LoginActivity extends BaseActivity {
                     if (dataList != null && dataList.size() > 0) {
                         Map<String, Object> data = dataList.get(0);
                         MyApplication.setLoginData(data);
-                        SPUtils.put(context, MyConstant.SHARED_SAVE, MyConstant.SP_LOGIN_DATA,data);
+                        SPUtils.put(context, MyConstant.SHARED_SAVE, MyConstant.SP_LOGIN_DATA, data);
                         SPUtils.put(context, MyConstant.SHARED_SAVE, MyConstant.IS_ALREADY_LOGIN, true);
                         MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
                         finish();
-                    }else {
-                        ToastUtils.showShort(context,"未获取用户数据，请稍后再试");
+                    } else {
+                        ToastUtils.showShort(context, "未获取用户数据，请稍后再试");
+                        MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
+                        finish();
                     }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;

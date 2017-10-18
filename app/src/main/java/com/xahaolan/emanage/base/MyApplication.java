@@ -2,6 +2,9 @@ package com.xahaolan.emanage.base;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Build;
+
+import com.xahaolan.emanage.manager.camer.PermissionsActivity;
 
 import java.util.Map;
 
@@ -34,7 +37,6 @@ public class MyApplication extends Application {
         super.onCreate();
         myApplication = this;
         applicationContext = this;
-
     }
 
     /*是否首次进入主页*/

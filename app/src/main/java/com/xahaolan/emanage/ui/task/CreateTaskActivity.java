@@ -61,6 +61,8 @@ public class CreateTaskActivity extends BaseActivity {
      private String endDate;//     截止日期
     private String[] sourceFile;
     private List<String> sourceList;
+    private Map<String, Object> paramsMap; //非资源文件params
+    private List<Map<String,Object>> fileList;//资源文件params
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,6 +152,8 @@ public class CreateTaskActivity extends BaseActivity {
     public void initData() {
         photoCamerUtil = new PhotoCamerManager((Activity) context, context);
         sourceList = new ArrayList<>();
+        paramsMap = new HashMap<>();
+        fileList = new ArrayList<>();
     }
 
     @Override
@@ -178,17 +182,18 @@ public class CreateTaskActivity extends BaseActivity {
             return;
         }
 
-        Map<String,Object> paramsMap = new HashMap<>();
         paramsMap.put("createId", createId);
         paramsMap.put("createName", createName);
         paramsMap.put("executorId", executorId);
         paramsMap.put("content", content);
         paramsMap.put("content", content);
         paramsMap.put("endDate", endDate);
-        Map<String,Object> fileMap = new HashMap<>();
+        Map<String,Object> fileMap;
         if (sourceList != null && sourceList.size() > 0){
             for (String sourcePath : sourceList){
+                fileMap = new HashMap<>();
                 fileMap.put("sourceFile",sourcePath);
+                fileList.add(fileMap);
             }
         }
         if (swipeLayout != null) {
@@ -196,7 +201,7 @@ public class CreateTaskActivity extends BaseActivity {
         }
         LogUtils.e(TAG,"---------------- 创建任务request ----------------");
         LogUtils.e(TAG,"创建任务 request url : "+MyConstant.BASE_URL + "/app/task!add.action");
-        new FormRequest(context,MyConstant.BASE_URL + "/app/task!add.action",paramsMap,fileMap,new Handler(){
+        new FormRequest(context,MyConstant.BASE_URL + "/app/task!add.action",paramsMap,fileList,new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);

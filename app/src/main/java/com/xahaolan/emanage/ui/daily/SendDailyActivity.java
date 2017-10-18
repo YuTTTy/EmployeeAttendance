@@ -69,6 +69,8 @@ public class SendDailyActivity extends BaseActivity {
     private String voiceFile;
     private String[] sourceFile;
     private List<String> sourceList;
+    private Map<String, Object> paramsMap; //非资源文件params
+    private List<Map<String,Object>> fileList;//资源文件params
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +142,8 @@ public class SendDailyActivity extends BaseActivity {
     @Override
     public void initData() {
         sourceList = new ArrayList<>();
+        paramsMap = new HashMap<>();
+        fileList = new ArrayList<>();
         voiceManager = new VoiceManager();
         photoCamerUtil = new PhotoCamerManager((Activity) context, context);
 
@@ -234,7 +238,6 @@ public class SendDailyActivity extends BaseActivity {
 //            return;
 //        }
 
-        Map<String,Object> paramsMap = new HashMap<>();
 //        paramsMap.put("department", department);
         paramsMap.put("employeeid", employeeid);
 //        paramsMap.put("projectid", projectid);
@@ -245,21 +248,25 @@ public class SendDailyActivity extends BaseActivity {
 //        paramsMap.put("weather", weather);
 //        paramsMap.put("state", state);
         paramsMap.put("createuser", createuser);
-        Map<String,Object> fileMap = new HashMap<>();
+        Map<String,Object> fileMap;
         if (sourceList != null && sourceList.size() > 0){
             for (String sourcePath : sourceList){
+                fileMap = new HashMap<>();
                 fileMap.put("sourceFile",sourcePath);
+                fileList.add(fileMap);
             }
         }
         if (voiceFile != null && !voiceFile.equals("")){
+            fileMap = new HashMap<>();
             fileMap.put("sourceFile",voiceFile);
+            fileList.add(fileMap);
         }
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);
         }
         LogUtils.e(TAG,"---------------- 创建日报request ----------------");
         LogUtils.e(TAG,"创建日报request url : "+MyConstant.BASE_URL + "/app/dailyreportAPPAction!add.action");
-        new FormRequest(context,MyConstant.BASE_URL + "/app/dailyreportAPPAction!add.action",paramsMap,fileMap,new Handler(){
+        new FormRequest(context,MyConstant.BASE_URL + "/app/dailyreportAPPAction!add.action",paramsMap,fileList,new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);

@@ -61,6 +61,9 @@ public class ClockRecordAdapter extends BaseAdapter {
 
         Map<String, Object> data = list.get(position);
         if (data != null) {
+            if (data.get("personName") != null){
+                holder.name_text.setText(data.get("personName")+"");
+            }
             if (data.get("createTime") != null) {
                 String createTime = (String) data.get("createTime");
                 holder.time_text.setText(createTime.substring(0,11));
