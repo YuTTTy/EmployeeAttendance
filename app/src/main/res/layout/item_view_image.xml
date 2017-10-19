@@ -5,8 +5,8 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_marginLeft="@dimen/usually_spacing_middle"
+        android:layout_marginTop="@dimen/usually_spacing_middle"
         android:id="@+id/item_view_photo_image"
-        android:layout_width="@dimen/usually_photo_size"
-        android:layout_height="@dimen/usually_photo_size" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

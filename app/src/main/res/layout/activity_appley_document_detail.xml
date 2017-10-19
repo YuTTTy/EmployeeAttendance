@@ -4,117 +4,114 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/apply_detail_main_layout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/baseBg"
-        android:orientation="vertical">
-
-        <include
-            layout="@layout/public_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></include>
+        android:layout_height="wrap_content">
 
         <LinearLayout
-            android:id="@+id/apply_detail_title_layout"
+            android:id="@+id/apply_detail_main_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/usually_spacing_middle"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/usually_spacing_middle">
-
-            <ImageView
-                android:id="@+id/apply_detail_title_head"
-                android:layout_width="@dimen/usually_image_width"
-                android:layout_height="@dimen/usually_image_hight"
-                android:src="@drawable/icon_employee" />
-
-            <TextView
-                android:id="@+id/apply_detail_title_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/usually_spacing_middle"
-                android:layout_weight="1"
-                android:text="未知"
-                android:textColor="@color/baseTextMain"
-                android:textSize="@dimen/text_main_content" />
-
-            <TextView
-                android:id="@+id/apply_detail_title_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/usually_spacing_middle"
-                android:textColor="@color/baseTextMain"
-                android:textSize="@dimen/text_main_content" />
-
-            <TextView
-                android:id="@+id/apply_detail_title_state"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/usually_spacing_middle"
-                android:text="state"
-                android:textColor="@color/baseTextMain"
-                android:textSize="@dimen/text_main_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/usually_spacing_middle"
-            android:background="@color/white"
+            android:layout_height="match_parent"
+            android:background="@color/baseBg"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/apply_detail_reason_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/usually_spacing_middle"
-                android:text="是由："
-                android:textColor="@color/baseTextSub"
-                android:textSize="@dimen/text_main_content" />
-
-            <TextView
-                android:id="@+id/apply_detail_reason_text"
+            <include
+                layout="@layout/public_title"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="wrap_content"></include>
+
+            <LinearLayout
+                android:id="@+id/apply_detail_title_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/usually_spacing_middle"
                 android:background="@color/white"
-                android:padding="@dimen/usually_spacing_middle"
-                android:textColor="@color/baseTextMain"
-                android:textSize="@dimen/text_main_content" />
-        </LinearLayout>
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/usually_spacing_middle">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/usually_spacing_middle"
-            android:background="@color/white"
-            android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/apply_detail_title_head"
+                    android:layout_width="@dimen/usually_image_width"
+                    android:layout_height="@dimen/usually_image_hight"
+                    android:src="@drawable/icon_employee" />
 
-            <TextView
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/apply_detail_title_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/usually_spacing_middle"
+                    android:layout_weight="1"
+                    android:text="未知"
+                    android:textColor="@color/baseTextMain"
+                    android:textSize="@dimen/text_main_content" />
+
+                <TextView
+                    android:id="@+id/apply_detail_title_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/usually_spacing_middle"
+                    android:textColor="@color/baseTextMain"
+                    android:textSize="@dimen/text_main_content" />
+
+                <TextView
+                    android:id="@+id/apply_detail_title_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/usually_spacing_middle"
+                    android:text="state"
+                    android:textColor="@color/baseTextMain"
+                    android:textSize="@dimen/text_main_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/usually_spacing_middle"
-                android:text="语音"
-                android:textColor="@color/baseTextSub"
-                android:textSize="@dimen/text_main_content" />
+                android:layout_marginTop="@dimen/usually_spacing_middle"
+                android:background="@color/white"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/apply_detail_voice_image"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/apply_detail_reason_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/usually_spacing_middle"
+                    android:text="是由："
+                    android:textColor="@color/baseTextSub"
+                    android:textSize="@dimen/text_main_content" />
+
+                <TextView
+                    android:id="@+id/apply_detail_reason_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="@color/white"
+                    android:padding="@dimen/usually_spacing_middle"
+                    android:textColor="@color/baseTextMain"
+                    android:textSize="@dimen/text_main_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/usually_spacing_middle"
-                android:padding="@dimen/usually_spacing_middle" />
-        </LinearLayout>
+                android:layout_marginTop="@dimen/usually_spacing_middle"
+                android:background="@color/white"
+                android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/usually_spacing_middle"
-            android:background="@color/white"
-            android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/usually_spacing_middle"
+                    android:text="语音"
+                    android:textColor="@color/baseTextSub"
+                    android:textSize="@dimen/text_main_content" />
+
+                <TextView
+                    android:id="@+id/apply_detail_voice_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/usually_spacing_middle"
+                    android:padding="@dimen/usually_spacing_middle" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -125,42 +122,42 @@
                 android:textSize="@dimen/text_main_content" />
 
             <LinearLayout
+                android:background="@color/white"
                 android:id="@+id/apply_detail_photos_layout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/usually_spacing_middle"
-                android:orientation="horizontal"></LinearLayout>
+                android:orientation="vertical"></LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/usually_line"
+                android:layout_marginLeft="@dimen/usually_spacing_middle"
+                android:layout_marginRight="@dimen/usually_spacing_middle"
+                android:background="@color/baseLine"></View>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/usually_spacing_middle"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="@dimen/usually_spacing_middle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="审批人 : "
+                    android:textColor="@color/baseTextSub"
+                    android:textSize="@dimen/text_main_content" />
+
+                <TextView
+                    android:id="@+id/apply_detail_check_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/baseTextMain"
+                    android:textSize="@dimen/text_main_content" />
+
+            </LinearLayout>
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/usually_line"
-            android:layout_marginLeft="@dimen/usually_spacing_middle"
-            android:layout_marginRight="@dimen/usually_spacing_middle"
-            android:background="@color/baseLine"></View>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/usually_spacing_middle"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:padding="@dimen/usually_spacing_middle">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="审批人 : "
-                android:textColor="@color/baseTextSub"
-                android:textSize="@dimen/text_main_content" />
-
-            <TextView
-                android:id="@+id/apply_detail_check_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/baseTextMain"
-                android:textSize="@dimen/text_main_content" />
-
-        </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 </android.support.v4.widget.SwipeRefreshLayout>

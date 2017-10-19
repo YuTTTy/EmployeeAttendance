@@ -8,7 +8,7 @@
     <dimen name="text_note">10dp</dimen><!--用于标签内容，注释，最小内容文案-->
     <dimen name="text_min">8dp</dimen><!--最小文字-->
 
-    <dimen name="usually_photo_size">40dp</dimen>
+    <dimen name="usually_photo_size">80dp</dimen>
     <dimen name="usually_image_width">30dp</dimen>
     <dimen name="usually_image_hight">30dp</dimen>
     <dimen name="usually_width_spacing">10dp</dimen>

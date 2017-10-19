@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,7 +17,9 @@ import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.http.services.CheckWorkServices;
+import com.xahaolan.emanage.utils.common.DensityUtil;
 import com.xahaolan.emanage.utils.common.LogUtils;
+import com.xahaolan.emanage.utils.common.ScreenUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -362,6 +365,7 @@ public class DocumentDetailActivity extends BaseActivity {
      *
      */
     public void getItemsData() {
+        phots_layout.removeAllViews();
         for (int i = 0; i < urlArr.length; i++) {
             phots_layout.addView(getPhotoItemView(urlArr[i]));
         }
@@ -375,6 +379,9 @@ public class DocumentDetailActivity extends BaseActivity {
     public View getPhotoItemView(String imageUrl) {
         View photo_view = LayoutInflater.from(context).inflate(R.layout.item_view_image, null);
         ImageView photo_image = (ImageView) photo_view.findViewById(R.id.item_view_photo_image);
+        ViewGroup.LayoutParams params = photo_image.getLayoutParams();
+        params.width = ScreenUtils.getScreenWidth(context);
+        params.height = ScreenUtils.getScreenWidth(context) - DensityUtil.dp2px(context,20);
         Glide.with(context).load(MyConstant.BASE_URL+imageUrl).into(photo_image);
         return photo_view;
     }
