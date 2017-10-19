@@ -21,7 +21,7 @@ public class VisitActivity extends BaseActivity {
 
     @Override
     public void setTitleAttribute() {
-        setTitle(0,R.color.titleBg,R.drawable.ico_left_white,"",R.color.baseTextMain,"考勤",R.color.baseTextMain,"",R.color.baseTextMain,0);
+        setTitle(0,R.color.titleBg,R.drawable.ico_left_white,"",R.color.baseTextMain,"客户拜访",R.color.baseTextMain,"",R.color.baseTextMain,0);
     }
 
     @Override

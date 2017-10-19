@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.BoolRes;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -39,8 +40,8 @@ public class LoginActivity extends BaseActivity {
 
     private PermissionsChecker mPermissionsChecker; // 权限检测器
     private static final int REQUEST_PERMISSION = 444;  //权限请求
-    static final String[] PERMISSIONS = new String[]{Manifest.permission.INTERNET,
-            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    static final String[] PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,8 +178,8 @@ public class LoginActivity extends BaseActivity {
                         finish();
                     } else {
                         ToastUtils.showShort(context, "未获取用户数据，请稍后再试");
-                        MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
-                        finish();
+//                        MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
+//                        finish();
                     }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
@@ -198,5 +199,15 @@ public class LoginActivity extends BaseActivity {
         pass_et.setText("");
         /*隐藏软键盘*/
         MyUtils.hideKeyboard(LoginActivity.this);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            finish();
+            System.exit(0);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

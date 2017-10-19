@@ -2,13 +2,10 @@ package com.xahaolan.emanage.utils.mine;
 
 import android.content.Context;
 
-import com.xahaolan.emanage.base.MyApplication;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.utils.common.SPUtils;
-import com.xahaolan.emanage.utils.common.StringUtils;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

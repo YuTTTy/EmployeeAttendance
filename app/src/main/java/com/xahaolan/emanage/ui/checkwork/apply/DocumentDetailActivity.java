@@ -16,12 +16,14 @@ import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.http.services.CheckWorkServices;
+import com.xahaolan.emanage.utils.common.LogUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by helinjie on 2017/9/3.   申请单详情
@@ -37,7 +39,7 @@ public class DocumentDetailActivity extends BaseActivity {
     private TextView name_text;
     private TextView time_text;
     private TextView state_text;
-    private LinearLayout items_layout;
+//    private LinearLayout items_layout;
     private TextView reason_name;
     private TextView reason_text;
     private TextView voice_text;
@@ -45,8 +47,8 @@ public class DocumentDetailActivity extends BaseActivity {
     private TextView check_name;
 
     private int id;
-    private String[] nameArr;
-    private String[] valueArr;
+    private String urlStr = "";
+    private String[] urlArr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,7 @@ public class DocumentDetailActivity extends BaseActivity {
         name_text = (TextView) findViewById(R.id.apply_detail_title_name);
         time_text = (TextView) findViewById(R.id.apply_detail_title_time);
         state_text = (TextView) findViewById(R.id.apply_detail_title_state);
-        items_layout = (LinearLayout) findViewById(R.id.apply_detail_items_layout);
+//        items_layout = (LinearLayout) findViewById(R.id.apply_detail_items_layout);
         reason_name = (TextView) findViewById(R.id.apply_detail_reason_name);
         reason_text = (TextView) findViewById(R.id.apply_detail_reason_text);
         voice_text = (TextView) findViewById(R.id.apply_detail_voice_image);
@@ -91,32 +93,33 @@ public class DocumentDetailActivity extends BaseActivity {
             //请假申请
             case MyConstant.APPLY_DOCUMENT_LEAVE_APPLY:
                 setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "", R.color.baseTextMain, "请假详情", R.color.baseTextMain, "", R.color.baseTextMain, 0);
-                reason_name.setText("请假是由");
-                nameArr = new String[]{"开始时间", "结束时间", "请假天数", "请假类型"};
+                reason_name.setText("请假是由：");
+//                nameArr = new String[]{"开始时间", "结束时间", "请假天数", "请假类型"};
                 requestApplyLeave();
                 break;
             //外出登记
             case MyConstant.APPLY_DOCUMENT_OUT_REGISTER:
                 setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "", R.color.baseTextMain, "外出详情", R.color.baseTextMain, "", R.color.baseTextMain, 0);
                 reason_name.setText("外出是由");
-                nameArr = new String[]{"开始时间", "结束时间"};
+//                nameArr = new String[]{"开始时间", "结束时间"};
                 requestApplyOutRegister();
                 break;
             //出差申请
             case MyConstant.APPLY_DOCUMENT_OUT_APPLY:
                 setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "", R.color.baseTextMain, "出差详情", R.color.baseTextMain, "", R.color.baseTextMain, 0);
-                reason_name.setText("出差事由");
-                nameArr = new String[]{"始发地", "目的地","开始时间", "结束时间","交通工具"};
+                reason_name.setText("出差事由：");
+//                nameArr = new String[]{"始发地", "目的地","开始时间", "结束时间","交通工具"};
                 requestApplyOut();
                 break;
             //加班登记
             case MyConstant.APPLY_DOCUMENT_WORK_REGISTER:
                 setTitle(0, R.color.titleBg, R.drawable.ico_left_white, "", R.color.baseTextMain, "加班详情", R.color.baseTextMain, "", R.color.baseTextMain, 0);
-                reason_name.setText("加班事由");
-                nameArr = new String[]{"开始时间", "结束时间", "加班时长"};
+                reason_name.setText("加班事由：");
+//                nameArr = new String[]{"开始时间", "结束时间", "加班时长"};
                 requestApplyWork();
                 break;
         }
+//        requestLoadImages();
     }
 
     /**
@@ -251,35 +254,37 @@ public class DocumentDetailActivity extends BaseActivity {
         });
     }
 
-    public void getItemsData() {
-        for (int i = 0; i < nameArr.length; i++) {
-            Map<String, Object> itemData = new HashMap<>();
-            itemData.put("name", nameArr[i]);
-            itemData.put("value", valueArr[i]);
-            items_layout.addView(getItemView(itemData));
+    /**
+     *   下载图片
+     */
+    public void requestLoadImages() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
         }
-    }
-
-    public View getItemView(Map<String, Object> itemData) {
-        View item_view = LayoutInflater.from(context).inflate(R.layout.item_view_apply_detail, null);
-        TextView name_text = (TextView) item_view.findViewById(R.id.item_view_apply_detail_name);
-        TextView value_text = (TextView) item_view.findViewById(R.id.item_view_apply_detail_value);
-        if (itemData != null) {
-            if (itemData.get("name") != null) {
-                name_text.setText(itemData.get("name") + "");
+        new CheckWorkServices(context).loadImagesService(id, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    Map<String,Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null){
+                        setViewData(response);
+                    }
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")){
+                        BaseActivity.loginOut(context);
+                    }
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
             }
-            if (itemData.get("value") != null) {
-                value_text.setText(itemData.get("value") + "");
-            }
-        }
-        return item_view;
-    }
-
-    public View getPhotoItemView(String imageUrl) {
-        View photo_view = LayoutInflater.from(context).inflate(R.layout.item_view_image, null);
-        ImageView photo_image = (ImageView) photo_view.findViewById(R.id.item_view_photo_image);
-        Glide.with(context).load(imageUrl).into(photo_image);
-        return photo_view;
+        });
     }
 
     public void setViewData(Map<String,Object> response){
@@ -309,5 +314,83 @@ public class DocumentDetailActivity extends BaseActivity {
         if (response.get("leaderName") != null){
             check_name.setText(response.get("leaderName")+"");
         }
+        if(response.get("urls") != null){
+            urlStr = (String) response.get("urls");
+            setImageViews();
+        }
     }
+
+    /**
+     *
+     */
+    public void setImageViews(){
+        int numUrl = 0;
+        urlArr = new String[appearNumber(urlStr,",")+1];
+        while (urlStr != null && !urlStr.equals("")) {
+            if (urlStr.contains(",")){
+                String subUrl = StringUtils.substringBefore(urlStr,","); //截取第一个路径
+                urlStr = urlStr.substring(subUrl.length()+1,urlStr.length());//删除第一个路径
+                urlArr[numUrl] = subUrl; //路径添加
+                numUrl++;
+            }else {
+                urlArr[numUrl] = urlStr; //路径添加
+                urlStr = "";
+            }
+        }
+        LogUtils.e(TAG,"图片加载路径 ：" + urlArr.toString());
+
+        getItemsData();
+    }
+    /**
+     * 获取指定字符串出现的次数
+     *
+     * @param srcText 源字符串
+     * @param findText 要查找的字符串
+     * @return
+     */
+    public static int appearNumber(String srcText, String findText) {
+        int count = 0;
+        Pattern p = Pattern.compile(findText);
+        Matcher m = p.matcher(srcText);
+        while (m.find()) {
+            count++;
+        }
+        return count;
+    }
+
+    /**
+     *
+     */
+    public void getItemsData() {
+        for (int i = 0; i < urlArr.length; i++) {
+            phots_layout.addView(getPhotoItemView(urlArr[i]));
+        }
+    }
+
+    /**
+     *
+     * @param imageUrl
+     * @return
+     */
+    public View getPhotoItemView(String imageUrl) {
+        View photo_view = LayoutInflater.from(context).inflate(R.layout.item_view_image, null);
+        ImageView photo_image = (ImageView) photo_view.findViewById(R.id.item_view_photo_image);
+        Glide.with(context).load(MyConstant.BASE_URL+imageUrl).into(photo_image);
+        return photo_view;
+    }
+
+//    public View getItemView(Map<String, Object> itemData) {
+//        View item_view = LayoutInflater.from(context).inflate(R.layout.item_view_apply_detail, null);
+//        TextView name_text = (TextView) item_view.findViewById(R.id.item_view_apply_detail_name);
+//        TextView value_text = (TextView) item_view.findViewById(R.id.item_view_apply_detail_value);
+//        if (itemData != null) {
+//            if (itemData.get("name") != null) {
+//                name_text.setText(itemData.get("name") + "");
+//            }
+//            if (itemData.get("value") != null) {
+//                value_text.setText(itemData.get("value") + "");
+//            }
+//        }
+//        return item_view;
+//    }
 }

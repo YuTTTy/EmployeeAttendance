@@ -63,9 +63,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/usually_spacing_middle">
+                        >
 
                         <TextView
+                            android:layout_marginLeft="@dimen/usually_spacing_middle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="始发地："
@@ -78,9 +79,15 @@
                             android:layout_height="wrap_content"
                             android:hint="输入始发地"
                             android:padding="@dimen/usually_spacing_middle"
-                            android:textColor="@color/baseTextAssist"
+                            android:background="@android:color/transparent"
+                            android:textColor="@color/baseTextMain"
                             android:textColorHint="@color/baseTextAssist"
                             android:textSize="@dimen/text_main_content" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/usually_line"
+                            android:background="@color/baseLine"
+                            ></View>
                     </LinearLayout>
 
                     <LinearLayout
@@ -88,9 +95,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/usually_spacing_middle">
+                        >
 
                         <TextView
+                            android:layout_marginTop="@dimen/usually_spacing_middle"
+                            android:layout_marginLeft="@dimen/usually_spacing_middle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="目的地："
@@ -102,10 +111,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="输入目的地"
-                            android:padding="@dimen/usually_spacing_small"
-                            android:textColor="@color/baseTextAssist"
+                            android:padding="@dimen/usually_spacing_middle"
+                            android:background="@android:color/transparent"
+                            android:textColor="@color/baseTextMain"
                             android:textColorHint="@color/baseTextAssist"
                             android:textSize="@dimen/text_main_content" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/usually_line"
+                            android:background="@color/baseLine"
+                            ></View>
                     </LinearLayout>
 
                     <LinearLayout
@@ -113,9 +128,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/usually_spacing_middle">
+                        >
 
                         <TextView
+                            android:layout_marginLeft="@dimen/usually_spacing_middle"
+                            android:layout_marginTop="@dimen/usually_spacing_middle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="外出时间："
@@ -131,8 +148,9 @@
                             android:textSize="@dimen/text_main_content" />
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/usually_line_middle"
-                            android:background="@color/baseLine"></View>
+                            android:layout_height="@dimen/usually_line"
+                            android:background="@color/baseLine"
+                            ></View>
                     </LinearLayout>
 
                     <LinearLayout
@@ -140,9 +158,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/usually_spacing_middle">
+                        >
 
                         <TextView
+                            android:layout_marginTop="@dimen/usually_spacing_middle"
+                            android:layout_marginLeft="@dimen/usually_spacing_middle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="开始时间："
@@ -156,10 +176,12 @@
                             android:padding="@dimen/usually_spacing_small"
                             android:textColor="@color/baseTextMain"
                             android:textSize="@dimen/text_main_content" />
+
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/usually_line_middle"
-                            android:background="@color/baseLine"></View>
+                            android:layout_height="@dimen/usually_line"
+                            android:background="@color/baseLine"
+                            ></View>
                     </LinearLayout>
 
                     <LinearLayout
@@ -167,9 +189,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/usually_spacing_middle">
+                        >
 
                         <TextView
+                            android:layout_marginLeft="@dimen/usually_spacing_middle"
+                            android:layout_marginTop="@dimen/usually_spacing_middle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="结束时间："
@@ -185,8 +209,9 @@
                             android:textSize="@dimen/text_main_content" />
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/usually_line_middle"
-                            android:background="@color/baseLine"></View>
+                            android:layout_height="@dimen/usually_line"
+                            android:background="@color/baseLine"
+                            ></View>
                     </LinearLayout>
 
                     <LinearLayout
@@ -194,9 +219,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/usually_spacing_middle">
+                        >
 
                         <TextView
+                            android:layout_marginTop="@dimen/usually_spacing_middle"
+                            android:layout_marginLeft="@dimen/usually_spacing_middle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="加班时长："
@@ -204,6 +231,7 @@
                             android:textSize="@dimen/text_main_content" />
 
                         <EditText
+                            android:background="@android:color/transparent"
                             android:id="@+id/apply_document_work_time_et"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -211,15 +239,22 @@
                             android:textColor="@color/baseTextMain"
                             android:textColorHint="@color/baseTextAssist"
                             android:textSize="@dimen/text_main_content" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/usually_line"
+                            android:background="@color/baseLine"
+                            ></View>
                     </LinearLayout>
 
                     <RelativeLayout
                         android:id="@+id/apply_document_leave_day_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/usually_spacing_middle">
+                        >
 
                         <TextView
+                            android:layout_marginLeft="@dimen/usually_spacing_middle"
+                            android:layout_marginTop="@dimen/usually_spacing_middle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="请假天数："
@@ -227,11 +262,12 @@
                             android:textSize="@dimen/text_main_content" />
 
                         <EditText
+                            android:background="@android:color/transparent"
                             android:id="@+id/apply_document_leave_day_et"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
-                            android:padding="@dimen/usually_spacing_small"
+                            android:padding="@dimen/usually_spacing_middle"
                             android:textColor="@color/baseTextMain"
                             android:textColorHint="@color/baseTextAssist"
                             android:textSize="@dimen/text_main_content" />
@@ -240,19 +276,27 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:layout_marginTop="15dp"
+                            android:layout_marginTop="20dp"
                             android:text="天"
                             android:textColor="@color/baseTextMain"
                             android:textSize="@dimen/text_main_content" />
+                        <View
+                            android:layout_below="@+id/apply_document_leave_day_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/usually_line"
+                            android:background="@color/baseLine"
+                            ></View>
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:id="@+id/apply_document_leave_type_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/usually_spacing_middle">
+                        >
 
                         <TextView
+                            android:layout_marginTop="@dimen/usually_spacing_middle"
+                            android:layout_marginLeft="@dimen/usually_spacing_middle"
                             android:id="@+id/textView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -276,17 +320,25 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="30dp"
                             android:src="@drawable/ico_right_gray" />
+                        <View
+                            android:layout_below="@+id/apply_document_leave_type_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/usually_line"
+                            android:background="@color/baseLine"
+                            ></View>
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:id="@+id/apply_document_traffic_tool_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/usually_spacing_middle">
+                        >
 
                         <TextView
+                            android:layout_marginLeft="@dimen/usually_spacing_middle"
+                            android:layout_marginTop="@dimen/usually_spacing_middle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="交通工具："
@@ -307,8 +359,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="30dp"
                             android:src="@drawable/ico_right_gray" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/usually_line"
+                            android:background="@color/baseLine"
+                            android:layout_below="@+id/apply_document_traffic_tool_et"
+                            ></View>
                     </RelativeLayout>
 
                     <LinearLayout
@@ -316,9 +374,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/usually_spacing_middle">
+                        >
 
                         <TextView
+                            android:layout_marginTop="@dimen/usually_spacing_middle"
+                            android:layout_marginLeft="@dimen/usually_spacing_middle"
                             android:id="@+id/apply_document_reason_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -327,14 +387,20 @@
                             android:textSize="@dimen/text_main_content" />
 
                         <EditText
+                            android:background="@android:color/transparent"
                             android:id="@+id/apply_document_reason_et"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="请填写请假是由"
-                            android:padding="@dimen/usually_spacing_small"
+                            android:padding="@dimen/usually_spacing_middle"
                             android:textColor="@color/baseTextMain"
                             android:textColorHint="@color/baseTextAssist"
                             android:textSize="@dimen/text_main_content" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/usually_line"
+                            android:background="@color/baseLine"
+                            ></View>
                     </LinearLayout>
 
                     <LinearLayout
@@ -342,7 +408,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:padding="@dimen/usually_spacing_middle">
+                        android:padding="@dimen/usually_spacing_middle"
+                        >
 
                         <ImageView
                             android:id="@+id/apply_document_voice_icon"
@@ -389,9 +456,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/usually_spacing_middle">
+                        >
 
                         <TextView
+                            android:layout_marginLeft="@dimen/usually_spacing_middle"
+                            android:layout_marginTop="@dimen/usually_spacing_middle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="审核人员："
@@ -399,13 +468,19 @@
                             android:textSize="@dimen/text_main_content" />
 
                         <EditText
+                            android:background="@android:color/transparent"
                             android:id="@+id/apply_document_examine_et"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="@dimen/usually_spacing_small"
+                            android:padding="@dimen/usually_spacing_middle"
                             android:textColor="@color/baseTextMain"
                             android:textColorHint="@color/baseTextAssist"
                             android:textSize="@dimen/text_main_content" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/usually_line"
+                            android:background="@color/baseLine"
+                            ></View>
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>

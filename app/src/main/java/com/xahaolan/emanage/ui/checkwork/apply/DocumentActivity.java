@@ -546,6 +546,7 @@ public class DocumentActivity extends BaseActivity {
     public void requestApplyLeave() {
         paramsMap.put("personId", personId);
         paramsMap.put("personName", personName);
+        paramsMap.put("departmentId", departmentId);
         paramsMap.put("startDate", startDate);
         paramsMap.put("endDate", endDate);
         paramsMap.put("reason", reason);
@@ -696,6 +697,7 @@ public class DocumentActivity extends BaseActivity {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("personId", personId);
         paramsMap.put("personName", personName);
+        paramsMap.put("departmentId", departmentId);
         paramsMap.put("origin", origin);
         paramsMap.put("destination", destination);
         paramsMap.put("startDate", startDate);
@@ -774,6 +776,7 @@ public class DocumentActivity extends BaseActivity {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("personid", personId);
         paramsMap.put("startDate", startDate);
+        paramsMap.put("departmentId", departmentId);
         paramsMap.put("endDate", endDate);
         paramsMap.put("reason", reason);
         Map<String, Object> fileMap;

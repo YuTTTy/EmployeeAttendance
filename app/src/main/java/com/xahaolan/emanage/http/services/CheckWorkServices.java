@@ -894,4 +894,47 @@ public class CheckWorkServices extends BaseService {
         }
         requesQueue.add(request);
     }
+    /**
+     *     down load  images
+     *
+     * @param attrId  附件记录id
+     * @param handler
+     */
+    public void loadImagesService(int attrId,final Handler handler) {
+        LogUtils.e(TAG, "==============================   down load  images request   =======================================");
+        String urlStr = MyConstant.BASE_URL + "/app/interface!download.action";
+        Map<String, Object> params = new HashMap<>();
+        params.put("attrId", attrId);
+        //        getVerificationParams(params, 1);//获取验证参数
+        Map<String,String> mHeaders = getHeader();
+        GsonRequest<RepBase<String>> request = null;
+        try {
+            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<String>>() {
+            },
+                    new Response.Listener<RepBase<String>>() {
+                        @Override
+                        public void onResponse(RepBase<String> response) {
+                            if (response == null || response.getSuccess() == null) {
+                                Log.e(TAG, "down load  images null" + response);
+                                return;
+                            }
+                            Message message = new Message();
+                            if (response.getSuccess()) {
+                                String responseData = response.getObj();
+                                message.what = MyConstant.REQUEST_SUCCESS;
+                                message.obj = responseData;
+                                Log.e(TAG, "down load  images success");
+                            } else {
+                                message.what = MyConstant.REQUEST_FIELD;
+                                message.obj = response.getMsg();
+                                Log.e(TAG, "down load  images field");
+                            }
+                            handler.sendMessage(message);
+                        }
+                    }, new EZErrListener<>(context, handler));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        requesQueue.add(request);
+    }
 }

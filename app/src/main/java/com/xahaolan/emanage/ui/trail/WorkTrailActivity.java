@@ -207,16 +207,18 @@ public class WorkTrailActivity extends BaseActivity implements LocationSource, A
                                 addMarker(latitude, longtitude, DateUtil.getCurrentDateStr(MyConstant.DATE_FORMAT_YMD_HM), locAddress);
                             }
                         }
-                    } else if (msg.what == MyConstant.REQUEST_FIELD) {
-                        String errMsg = (String) msg.obj;
-                        ToastUtils.showShort(context, errMsg);
-                        if (errMsg.equals("session过期")) {
-                            BaseActivity.loginOut(context);
-                        }
-                    } else if (msg.what == MyConstant.REQUEST_ERROR) {
-                        String errMsg = (String) msg.obj;
-                        ToastUtils.showShort(context, errMsg);
                     }
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")) {
+                        BaseActivity.loginOut(context);
+                    }else if (errMsg.equals("该用户没有上传过位置信息")){
+                        ToastUtils.showShort(context,"该用户没有上传过位置信息");
+                    }
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
                 }
             }
         });

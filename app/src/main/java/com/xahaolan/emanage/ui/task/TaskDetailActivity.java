@@ -5,18 +5,26 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.http.services.TaskService;
+import com.xahaolan.emanage.utils.common.LogUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by               task detail
@@ -36,6 +44,8 @@ public class TaskDetailActivity extends BaseActivity {
 
     private int taskId;
     private Map<String,Object> detailData;
+    private String urlStr = "";
+    private String[] urlArr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,5 +165,67 @@ public class TaskDetailActivity extends BaseActivity {
         if (detailData.get("content") != null){
             content_text.setText(detailData.get("content")+"");
         }
+        if(detailData.get("urls") != null){
+            urlStr = (String) detailData.get("urls");
+            setImageViews();
+        }
+    }
+    /**
+     *
+     */
+    public void setImageViews(){
+        int numUrl = 0;
+        urlArr = new String[appearNumber(urlStr,",")+1];
+        while (urlStr != null && !urlStr.equals("")) {
+            if (urlStr.contains(",")){
+                String subUrl = StringUtils.substringBefore(urlStr,","); //截取第一个路径
+                urlStr = urlStr.substring(subUrl.length()+1,urlStr.length());//删除第一个路径
+                urlArr[numUrl] = subUrl; //路径添加
+                numUrl++;
+            }else {
+                urlArr[numUrl] = urlStr; //路径添加
+                urlStr = "";
+            }
+        }
+        LogUtils.e(TAG,"图片加载路径 ：" + urlArr.toString());
+
+        getItemsData();
+    }
+    /**
+     * 获取指定字符串出现的次数
+     *
+     * @param srcText 源字符串
+     * @param findText 要查找的字符串
+     * @return
+     */
+    public static int appearNumber(String srcText, String findText) {
+        int count = 0;
+        Pattern p = Pattern.compile(findText);
+        Matcher m = p.matcher(srcText);
+        while (m.find()) {
+            count++;
+        }
+        return count;
+    }
+
+    /**
+     *
+     */
+    public void getItemsData() {
+        for (int i = 0; i < urlArr.length; i++) {
+            items_layout.addView(getPhotoItemView(urlArr[i]));
+        }
+    }
+
+    /**
+     *
+     * @param imageUrl
+     * @return
+     */
+    public View getPhotoItemView(String imageUrl) {
+        View photo_view = LayoutInflater.from(context).inflate(R.layout.item_view_image, null);
+        ImageView photo_image = (ImageView) photo_view.findViewById(R.id.item_view_photo_image);
+        Glide.with(context).load(MyConstant.BASE_URL+imageUrl).into(photo_image);
+        return photo_view;
     }
 }

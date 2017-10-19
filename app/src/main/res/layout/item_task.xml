@@ -16,7 +16,7 @@
             android:layout_height="40dp"
             android:gravity="center"
             android:background="@color/gray"
-            android:text="head"
+            android:text=""
             android:textColor="@color/baseTextMain"
             android:textSize="@dimen/text_main_content" />
 
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/usually_spacing_middle"
             android:layout_toRightOf="@+id/item_task_head"
-            android:text="name"
+            android:text="未知"
             android:textColor="@color/baseTextMain"
             android:textSize="@dimen/text_main_content" />
 
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/item_task_head"
             android:layout_marginTop="@dimen/usually_spacing_small"
-            android:text="content"
+            android:text="暂无"
             android:textColor="@color/baseTextMain"
             android:textSize="@dimen/text_main_content" />
 
@@ -46,7 +46,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/item_task_content"
             android:layout_marginTop="@dimen/usually_spacing_small"
-            android:text="count down time"
             android:textColor="@color/red"
             android:textSize="@dimen/text_assist_content" />
 
@@ -63,7 +62,6 @@
             android:id="@+id/item_task_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="state"
             android:layout_alignParentRight="true"
             android:layout_marginTop="@dimen/usually_spacing_small"
             android:textColor="@color/baseTextMain"

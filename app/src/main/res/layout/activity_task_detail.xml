@@ -27,7 +27,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="发布人 : "
+                android:text="发布人  : "
                 android:textColor="@color/baseTextSub"
                 android:textSize="@dimen/text_main_content" />
 
@@ -57,7 +57,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="执行人 : "
+                android:text="执行人  : "
                 android:textColor="@color/baseTextSub"
                 android:textSize="@dimen/text_main_content" />
 
@@ -110,7 +110,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_weight="1"
             android:background="@color/white"
             android:orientation="vertical"
             android:padding="@dimen/usually_spacing_middle">
@@ -129,23 +129,26 @@
                 android:layout_marginTop="@dimen/usually_spacing_middle"
                 android:textColor="@color/baseTextMain"
                 android:textSize="@dimen/text_main_content" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/usually_line"
+                android:background="@color/baseLine"></View>
             <LinearLayout
-                android:layout_marginTop="@dimen/usually_spacing_middle"
+                android:id="@+id/task_detail_item_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/task_detail_item_layout"
-                ></LinearLayout>
+                android:layout_marginTop="@dimen/usually_spacing_middle"
+                android:orientation="horizontal"></LinearLayout>
         </LinearLayout>
+
         <TextView
             android:id="@+id/task_detail_btn"
-            android:padding="@dimen/usually_spacing_middle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/usually_spacing_middle"
             android:text="完成任务"
             android:textColor="@color/red"
-            android:textSize="@dimen/text_button"
-            android:gravity="center"
-            />
+            android:textSize="@dimen/text_button" />
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

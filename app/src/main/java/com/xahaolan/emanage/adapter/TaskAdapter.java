@@ -83,9 +83,9 @@ public class TaskAdapter extends BaseAdapter {
             if (data.get("state") != null) {
                 int state = new Double((Double)data.get("state")).intValue();
                 if (state == 0){
-                    holder.end_time_text.setText("未完成");
+                    holder.state_text.setText("未完成");
                 }else if (state == 1){
-                    holder.end_time_text.setText("已完成");
+                    holder.state_text.setText("已完成");
                 }
             }
         }
