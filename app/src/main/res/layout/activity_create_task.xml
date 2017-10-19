@@ -4,167 +4,173 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/main_layout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/baseBg"
-        android:orientation="vertical">
-
-        <include
-            layout="@layout/public_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></include>
+        android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/main_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/usually_spacing_small"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:padding="@dimen/usually_spacing_fifteen">
+            android:layout_height="match_parent"
+            android:background="@color/baseBg"
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="任务内容 : "
-                android:textColor="@color/baseTextMain"
-                android:textSize="@dimen/text_main_content" />
-
-            <EditText
-                android:id="@+id/create_task_content"
+            <include
+                layout="@layout/public_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:hint="请输入任务内容"
-                android:textColor="@color/baseTextMain"
-                android:textColorHint="@color/baseTextAssist"
-                android:textSize="@dimen/text_main_content" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/usually_line"
-            android:layout_marginLeft="@dimen/usually_spacing_middle"
-            android:layout_marginRight="@dimen/usually_spacing_middle"
-            android:background="@color/baseLine"></View>
-
-        <LinearLayout
-            android:id="@+id/create_task_execute_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:padding="@dimen/usually_spacing_fifteen">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="执行人   : "
-                android:textColor="@color/baseTextMain"
-                android:textSize="@dimen/text_main_content" />
-
-            <TextView
-                android:id="@+id/create_task_execute_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/baseTextMain"
-                android:textColorHint="@color/baseTextAssist"
-                android:textSize="@dimen/text_main_content" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ico_right_gray" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/usually_line"
-            android:layout_marginLeft="@dimen/usually_spacing_middle"
-            android:layout_marginRight="@dimen/usually_spacing_middle"
-            android:background="@color/baseLine"></View>
-
-        <LinearLayout
-            android:id="@+id/create_task_time_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:padding="@dimen/usually_spacing_fifteen">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="截止日期 : "
-                android:textColor="@color/baseTextMain"
-                android:textSize="@dimen/text_main_content" />
-
-            <TextView
-                android:id="@+id/create_task_time_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/baseTextMain"
-                android:textSize="@dimen/text_main_content" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ico_right_gray" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/usually_line"
-            android:layout_marginLeft="@dimen/usually_spacing_middle"
-            android:layout_marginRight="@dimen/usually_spacing_middle"
-            android:background="@color/baseLine"></View>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
-            android:background="@color/white"
-            android:orientation="vertical"
-            android:padding="@dimen/usually_spacing_fifteen">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="添加图片："
-                android:textColor="@color/baseTextMain"
-                android:textSize="@dimen/text_main_content" />
-
-            <ImageView
-                android:id="@+id/create_task_photo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/usually_spacing_big"
-                android:src="@drawable/icon_photo" />
+                android:layout_height="wrap_content"></include>
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/usually_spacing_small"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="@dimen/usually_spacing_fifteen">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="任务内容 : "
+                    android:textColor="@color/baseTextMain"
+                    android:textSize="@dimen/text_main_content" />
+
+                <EditText
+                    android:id="@+id/create_task_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:hint="请输入任务内容"
+                    android:textColor="@color/baseTextMain"
+                    android:textColorHint="@color/baseTextAssist"
+                    android:textSize="@dimen/text_main_content" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/usually_line"
+                android:layout_marginLeft="@dimen/usually_spacing_middle"
+                android:layout_marginRight="@dimen/usually_spacing_middle"
+                android:background="@color/baseLine"></View>
+
+            <LinearLayout
+                android:id="@+id/create_task_execute_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="@dimen/usually_spacing_fifteen">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="执行人   : "
+                    android:textColor="@color/baseTextMain"
+                    android:textSize="@dimen/text_main_content" />
+
+                <TextView
+                    android:id="@+id/create_task_execute_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/baseTextMain"
+                    android:textColorHint="@color/baseTextAssist"
+                    android:textSize="@dimen/text_main_content" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ico_right_gray" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/usually_line"
+                android:layout_marginLeft="@dimen/usually_spacing_middle"
+                android:layout_marginRight="@dimen/usually_spacing_middle"
+                android:background="@color/baseLine"></View>
+
+            <LinearLayout
+                android:id="@+id/create_task_time_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="@dimen/usually_spacing_fifteen">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="截止日期 : "
+                    android:textColor="@color/baseTextMain"
+                    android:textSize="@dimen/text_main_content" />
+
+                <TextView
+                    android:id="@+id/create_task_time_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/baseTextMain"
+                    android:textSize="@dimen/text_main_content" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ico_right_gray" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/usually_line"
+                android:layout_marginLeft="@dimen/usually_spacing_middle"
+                android:layout_marginRight="@dimen/usually_spacing_middle"
+                android:background="@color/baseLine"></View>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="@dimen/usually_spacing_fifteen">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="添加图片："
+                    android:textColor="@color/baseTextMain"
+                    android:textSize="@dimen/text_main_content" />
+
+                <ImageView
+                    android:id="@+id/create_task_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/usually_spacing_middle"
+                    android:src="@drawable/icon_photo" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:padding="@dimen/usually_spacing_middle"
                 android:id="@+id/create_task_photos_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/usually_spacing_big"
-                android:orientation="horizontal"></LinearLayout>
-        </LinearLayout>
+                android:background="@color/white"
+                android:orientation="vertical"></LinearLayout>
 
-        <TextView
-            android:id="@+id/create_task_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/usually_spacing_middle"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="@dimen/usually_spacing_middle"
-            android:background="@color/blue"
-            android:gravity="center"
-            android:padding="@dimen/usually_spacing_middle"
-            android:text="提交任务"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_button" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/create_task_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/usually_spacing_middle"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="@dimen/usually_spacing_big"
+                android:background="@color/blue"
+                android:gravity="center"
+                android:padding="@dimen/usually_spacing_middle"
+                android:text="提交任务"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_button" />
+        </LinearLayout>
+    </ScrollView>
 </android.support.v4.widget.SwipeRefreshLayout>

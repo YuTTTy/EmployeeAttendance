@@ -8,6 +8,7 @@ import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,7 +24,9 @@ import com.xahaolan.emanage.http.services.TaskService;
 import com.xahaolan.emanage.manager.PhotoCamerManager;
 import com.xahaolan.emanage.ui.trail.SltDepartmentActivity;
 import com.xahaolan.emanage.utils.common.BitmapUtils;
+import com.xahaolan.emanage.utils.common.DensityUtil;
 import com.xahaolan.emanage.utils.common.LogUtils;
+import com.xahaolan.emanage.utils.common.ScreenUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.AppUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
@@ -286,6 +289,9 @@ public class CreateTaskActivity extends BaseActivity {
     public View addPhotoItemView(String imageUrl) {
         View photo_view = LayoutInflater.from(context).inflate(R.layout.item_view_image, null);
         ImageView photo_image = (ImageView) photo_view.findViewById(R.id.item_view_photo_image);
+        ViewGroup.LayoutParams params = photo_image.getLayoutParams();
+        params.width = ScreenUtils.getScreenWidth(context);
+        params.height = ScreenUtils.getScreenWidth(context) - DensityUtil.dp2px(context,20);
         photo_image.setScaleType(ImageView.ScaleType.FIT_XY);
         Glide.with(context).load(imageUrl).into(photo_image);
         return photo_view;
