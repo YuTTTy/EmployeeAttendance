@@ -90,9 +90,9 @@ public class LoginActivity extends BaseActivity {
         btn_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
-//                finish();
-                login();
+                MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
+                finish();
+//                login();
             }
         });
     }

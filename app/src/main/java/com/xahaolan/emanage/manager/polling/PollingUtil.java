@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
 
+import com.xahaolan.emanage.utils.common.DateUtil;
+import com.xahaolan.emanage.utils.common.LogUtils;
+
 /**
  * Created by helinjie on 2017/9/28.
  */
@@ -24,10 +27,13 @@ public class PollingUtil {
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //触发服务的起始时间
+//        long triggerAtTime = System.currentTimeMillis();
         long triggerAtTime = SystemClock.elapsedRealtime();
+        LogUtils.e("触发服务的起始时间 ：",triggerAtTime +", " + DateUtil.getStringByFormat(triggerAtTime,"yyyy-MM-dd HH:mm:ss"));
+//        LogUtils.e("当前时间 ：",System.currentTimeMillis()+"");
 
         //使用AlarmManger的setRepeating方法设置定期执行的时间间隔（seconds秒）和需要执行的Service
-        manager.setRepeating(AlarmManager.ELAPSED_REALTIME, triggerAtTime,
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtTime,
                 seconds * 1000, pendingIntent);
     }
     //停止轮询服务

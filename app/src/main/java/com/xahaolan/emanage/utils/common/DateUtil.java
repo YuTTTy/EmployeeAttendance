@@ -132,7 +132,22 @@ public class DateUtil {
         return curDateTime;
 
     }
-
+    /**
+     * 描述：获取milliseconds表示的日期时间的字符串.
+     *
+     * @param format 格式化字符串，如："yyyy-MM-dd HH:mm:ss"
+     * @return String 日期时间字符串
+     */
+    public static String getStringByFormat(long milliseconds, String format) {
+        String thisDateTime = null;
+        try {
+            SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat(format);
+            thisDateTime = mSimpleDateFormat.format(milliseconds);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return thisDateTime;
+    }
     /**
      *       是否同一天
      *
@@ -449,24 +464,6 @@ public class DateUtil {
         }
         return age;
     }
-
-    /**
-     * 描述：获取milliseconds表示的日期时间的字符串.
-     *
-     * @param format 格式化字符串，如："yyyy-MM-dd HH:mm:ss"
-     * @return String 日期时间字符串
-     */
-    public static String getStringByFormat(long milliseconds, String format) {
-        String thisDateTime = null;
-        try {
-            SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat(format);
-            thisDateTime = mSimpleDateFormat.format(milliseconds);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return thisDateTime;
-    }
-
 
     /**
      * 描述：计算两个日期所差的天数.
