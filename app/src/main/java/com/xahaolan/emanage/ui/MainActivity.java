@@ -88,7 +88,7 @@ public class MainActivity extends BaseActivity  implements GeocodeSearch.OnGeoco
         }
         MyApplication.setFirstMain(false);
         /* 开启上传位置轮询服务 */
-        PollingUtil.startPollingService(context,1*60, PollingService.class,PollingService.ACTION);
+        PollingUtil.startPollingService(context,30*60, PollingService.class,PollingService.ACTION);
     }
 
     /**
