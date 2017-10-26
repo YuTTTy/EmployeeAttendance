@@ -121,6 +121,10 @@ public class TaskActivity extends BaseActivity {
                         int taskId = new Double((Double)data.get("id")).intValue();
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("taskId",taskId);
+                        if (data.get("state") != null) {
+                            int state = new Double((Double) data.get("state")).intValue();
+                            bundle.putInt("state",state);
+                        }
                         MyUtils.jump(context, TaskDetailActivity.class, bundle, false, null);
                     }
                 }

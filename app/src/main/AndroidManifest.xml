@@ -24,18 +24,19 @@
 
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <!-- voice -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 
-    <!-- 定位 -->
+    <!-- 通过GPS芯片接收卫星的定位信息，定位精度达10米以内 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <!--允许程序访问CellID或WiFi热点来获取粗略的位置-->
+    <!--通过WiFi或移动基站的方式获取用户错略的经纬度信息，定位精度大概误差在30~1500米 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- 唤醒锁 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
     <application
         android:name=".base.MyApplication"
         android:allowBackup="true"
@@ -45,6 +46,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ui.LoginActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -71,7 +73,7 @@
             android:windowSoftInputMode="stateAlwaysHidden"></activity>
         <!-- 详情 -->
         <activity
-            android:name=".ui.checkwork.apply.DocumentDetailActivity"
+            android:name=".ui.checkwork.DocumentDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"></activity>
 
@@ -151,6 +153,7 @@
         <service android:name=".manager.polling.PollingService"></service>
 
         <activity android:name=".manager.camer.PermissionsActivity" />
+        <!-- 7.0系统相机拍照问题 ，通过FileProvider创建一个content类型的Uri -->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.xahaolan.fileprovider"

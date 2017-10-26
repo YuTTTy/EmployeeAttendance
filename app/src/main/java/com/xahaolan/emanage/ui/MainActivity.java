@@ -4,13 +4,11 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.KeyEvent;
@@ -20,31 +18,29 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import com.amap.api.services.core.AMapException;
-import com.amap.api.services.core.LatLonPoint;
-import com.amap.api.services.geocoder.GeocodeResult;
-import com.amap.api.services.geocoder.GeocodeSearch;
-import com.amap.api.services.geocoder.RegeocodeQuery;
-import com.amap.api.services.geocoder.RegeocodeResult;
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
 import com.xahaolan.emanage.R;
 import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyApplication;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.fragment.ContactsFragment;
-import com.xahaolan.emanage.fragment.LeaseFragment;
 import com.xahaolan.emanage.fragment.EngineeFragment;
+import com.xahaolan.emanage.fragment.LeaseFragment;
 import com.xahaolan.emanage.fragment.NoticeFragment;
 import com.xahaolan.emanage.http.services.TrailServices;
-import com.xahaolan.emanage.manager.polling.PollingService;
-import com.xahaolan.emanage.manager.polling.PollingUtil;
+import com.xahaolan.emanage.utils.common.DateUtil;
 import com.xahaolan.emanage.utils.common.LogUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
 import com.xahaolan.emanage.utils.mine.AppUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
 
-import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class MainActivity extends BaseActivity  implements GeocodeSearch.OnGeocodeSearchListener {
+public class MainActivity extends BaseActivity {
     private static String TAG = MainActivity.class.getSimpleName();
     private SwipeRefreshLayout swipeLayout;
     public static MainActivity instance = null;
@@ -54,6 +50,9 @@ public class MainActivity extends BaseActivity  implements GeocodeSearch.OnGeoco
     private String[] textArray = {"通讯录", "公告", "租凭", "工程"};
     private Class fragmentArray[] = {ContactsFragment.class, NoticeFragment.class, LeaseFragment.class, EngineeFragment.class};
     private FragmentTabHost tabHost;
+
+    private AMapLocationClient locationClient = null;
+    private AMapLocationClientOption locationOption = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,19 +75,22 @@ public class MainActivity extends BaseActivity  implements GeocodeSearch.OnGeoco
     @Override
     public void initData() {
         tabHost.setCurrentTab(3);
-        MyUtils.closeAllActivity(context);
+//        /* 开启上传位置轮询服务 */
+//        PollingUtil.startPollingService(context, 1 * 60, PollingService.class, PollingService.ACTION);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         MyUtils.hideKeyboard((Activity) context);
+        MyUtils.closeAllActivity(context);
+        LogUtils.e(TAG, "是否首次登录 ：" + MyApplication.getFirstMain());
         if (MyApplication.getFirstMain()) {
             getLocation();
         }
         MyApplication.setFirstMain(false);
-        /* 开启上传位置轮询服务 */
-        PollingUtil.startPollingService(context,30*60, PollingService.class,PollingService.ACTION);
+//        /* 开启上传位置轮询服务 */
+//        PollingUtil.startPollingService(context, 5 * 60, PollingService.class, PollingService.ACTION);
     }
 
     /**
@@ -151,6 +153,7 @@ public class MainActivity extends BaseActivity  implements GeocodeSearch.OnGeoco
     }
 
     long exitTime = 0L; //退出时间
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -160,7 +163,7 @@ public class MainActivity extends BaseActivity  implements GeocodeSearch.OnGeoco
             } else {
 //                android.os.Process.killProcess(Process.myPid());
                 finish();
-                System.exit(0);
+//                System.exit(0);
             }
             return true;
         }
@@ -173,77 +176,86 @@ public class MainActivity extends BaseActivity  implements GeocodeSearch.OnGeoco
     private String label;//    位置文字信息
     private String autoflag = "0";   //上传方式（0：自动，1：手动）
 
-    private LocationManager locationManager;
-    private String locationProvider;
-
     public void getLocation() {
-        //获取地理位置管理器
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        //获取所有可用的位置提供器
-        List<String> providers = locationManager.getProviders(true);
-        if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
-            //如果是Network
-            locationProvider = LocationManager.NETWORK_PROVIDER;
-        } else if (providers.contains(LocationManager.GPS_PROVIDER)) {
-            //如果是GPS
-            locationProvider = LocationManager.GPS_PROVIDER;
-        } else if (providers.contains(LocationManager.PASSIVE_PROVIDER)) {
-            //如果是PASSIVE定位
-            locationProvider = LocationManager.PASSIVE_PROVIDER;
-        }else {
-            LogUtils.e(TAG, "没有可用的位置提供器");
-            return;
-        }
-        //获取Location
-        Location location = locationManager.getLastKnownLocation(locationProvider);
-        if (location != null) {
-            //不为空,显示地理位置经纬度
-            latitude = location.getLatitude() + "";
-            longitude = location.getLongitude() + "";
-            LogUtils.e(TAG, "首次获取经纬度 ：" + latitude + ", " + longitude);
-//            getAddress(location);
-            getAddress(new LatLonPoint(Double.parseDouble(latitude),Double.parseDouble(longitude)));
-        }else {
-            LogUtils.e(TAG, "首次获取经纬度值为空，开启位置监听");
-            //监视地理位置变化
-            locationManager.requestLocationUpdates(locationProvider, 3000, 0, locationListener);
-        }
+        //初始化client
+        locationClient = new AMapLocationClient(this.getApplicationContext());
+        getDefaultOption();
+        //设置定位参数
+        locationClient.setLocationOption(locationOption);
+        // 设置定位监听
+        locationClient.setLocationListener(locationListener);
+        /* 开始定位 */
+        startLocation();
     }
 
     /**
-     * 响应逆地理编码
+     * 默认的定位参数
+     *
+     * @author hongming.wang
+     * @since 2.8.0
      */
-    public void getAddress(final LatLonPoint latLonPoint) {
-        GeocodeSearch geocoderSearch = new GeocodeSearch(this);
-        geocoderSearch.setOnGeocodeSearchListener(this);
-        RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 200,
-                GeocodeSearch.AMAP);// 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
-        geocoderSearch.getFromLocationAsyn(query);// 设置异步逆地理编码请求
+    private void getDefaultOption() {
+        locationOption = new AMapLocationClientOption();
+        locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);//可选，设置定位模式，可选的模式有高精度、仅设备、仅网络。默认为高精度模式
+        locationOption.setGpsFirst(false);//可选，设置是否gps优先，只在高精度模式下有效。默认关闭
+        locationOption.setHttpTimeOut(30000);//可选，设置网络请求超时时间。默认为30秒。在仅设备模式下无效
+        locationOption.setInterval(10*60*1000);//可选，设置定位间隔。默认为2秒
+        locationOption.setNeedAddress(true);//可选，设置是否返回逆地理地址信息。默认是true
+        locationOption.setOnceLocation(false);//可选，设置是否单次定位。默认是false
+        locationOption.setOnceLocationLatest(false);//可选，设置是否等待wifi刷新，默认为false.如果设置为true,会自动变为单次定位，持续定位时不要使用
+        AMapLocationClientOption.setLocationProtocol(AMapLocationClientOption.AMapLocationProtocol.HTTP);//可选， 设置网络请求的协议。可选HTTP或者HTTPS。默认为HTTP
+        locationOption.setSensorEnable(false);//可选，设置是否使用传感器。默认是false
+        locationOption.setWifiScan(true); //可选，设置是否开启wifi扫描。默认为true，如果设置为false会同时停止主动刷新，停止以后完全依赖于系统刷新，定位位置可能存在误差
+        locationOption.setLocationCacheEnable(false); //可选，设置是否使用缓存定位，默认为true
+        acquireWakeLock();
     }
 
     /**
-     * 地理编码查询回调
+     * 定位监听
      */
-    @Override
-    public void onGeocodeSearched(GeocodeResult result, int rCode) {
-    }
-
-    /**
-     * 逆地理编码回调
-     */
-    @Override
-    public void onRegeocodeSearched(RegeocodeResult result, int rCode) {
-        if (rCode == AMapException.CODE_AMAP_SUCCESS) {
-            if (result != null && result.getRegeocodeAddress() != null
-                    && result.getRegeocodeAddress().getFormatAddress() != null) {
-                label = result.getRegeocodeAddress().getFormatAddress();
-                LogUtils.e(TAG,"当前定位地址 ：" + label);
-                requestLoadLoc();
+    AMapLocationListener locationListener = new AMapLocationListener() {
+        @Override
+        public void onLocationChanged(AMapLocation location) {
+            if (null != location) {
+                if (location.getErrorCode() == 0) {
+                    longitude = location.getLongitude() + "";
+                    latitude = location.getLatitude() + "";
+                    label = location.getAddress();
+                    LogUtils.e(TAG, "经纬度 ：" + longitude + ", " + latitude + " ; 地址：" + label);
+//                    ToastUtils.showShort(context, "经纬度 ：" + longitude + ", " + latitude + " ; 地址：" + label);
+                    requestLoadLoc();
+                } else {
+                    LogUtils.e(TAG, "定位失败 : "+ location.getErrorInfo());
+//                    ToastUtils.showShort(context,"定位失败 : "+ location.getErrorInfo());
+                }
             } else {
-                LogUtils.e(TAG,"没有找到相关地址");
+                LogUtils.e(TAG, "定位失败，loc is null");
+//                ToastUtils.showShort(context, "定位失败，loc is null");
             }
-        } else {
-            LogUtils.e(TAG,"逆地理编码error : " + rCode);
+        }
+    };
+    private PowerManager.WakeLock wakeLock;
+
+    /**
+     * 申请电源锁，禁止休眠
+     */
+    private void acquireWakeLock() {
+        if (null == wakeLock) {
+            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass()
+                    .getCanonicalName());
+            if (null != wakeLock) {
+                wakeLock.acquire();
+//                wakeLock.setReferenceCounted(false);
+                LogUtils.e(TAG,"获取电源锁 -------------------");
+            }
+        }
+    }
+    // 释放设备电源锁
+    private void releaseWakeLock() {
+        if (null != wakeLock) {
+            wakeLock.release();
+            wakeLock = null;
         }
     }
 
@@ -252,7 +264,7 @@ public class MainActivity extends BaseActivity  implements GeocodeSearch.OnGeoco
      */
     public void requestLoadLoc() {
         personId = AppUtils.getPersonId(getApplicationContext());
-        LogUtils.e(TAG, "上传位置请求 ：" + personId);
+        LogUtils.e(TAG, "===================== 上传定位数据时间 ：" + DateUtil.getStringByFormat(System.currentTimeMillis(), MyConstant.DATE_FORMAT_YMDHMS));
         new TrailServices(getApplicationContext()).uploadLocService(personId, longitude, latitude,
                 label, autoflag, new Handler() {
                     @Override
@@ -260,9 +272,14 @@ public class MainActivity extends BaseActivity  implements GeocodeSearch.OnGeoco
                         super.handleMessage(msg);
                         if (msg.what == MyConstant.REQUEST_SUCCESS) {
                             LogUtils.e(TAG, "上传位置成功");
+//                            ToastUtils.showShort(context, "上传位置成功");
                         } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                            stopLocation();
                             String errMsg = (String) msg.obj;
-                            LogUtils.e(TAG, "上传位置失败 ：" + errMsg);
+                            if (errMsg.equals("session过期")) {
+                                BaseActivity.loginOut(context);
+                            }
+//                            ToastUtils.showShort(context,errMsg);
                         } else if (msg.what == MyConstant.REQUEST_ERROR) {
                             String errMsg = (String) msg.obj;
                             LogUtils.e(TAG, "上传位置错误 ：" + errMsg);
@@ -272,43 +289,48 @@ public class MainActivity extends BaseActivity  implements GeocodeSearch.OnGeoco
     }
 
     /**
-     //     * LocationListern监听器
-     //     * 参数：地理位置提供器、监听位置变化的时间间隔、位置变化的距离间隔、LocationListener监听器
-     //     */
-
-    LocationListener locationListener = new LocationListener() {
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle arg2) {
-            LogUtils.e(TAG, "onStatusChanged ：" + latitude + ", " + longitude);
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-            LogUtils.e(TAG, "onProviderEnabled ：" + latitude + ", " + longitude);
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-            LogUtils.e(TAG, "onProviderDisabled ：" + latitude + ", " + longitude);
-        }
-
-        @Override
-        public void onLocationChanged(Location location) {
-            LogUtils.e(TAG, "定位经纬度 ：" + latitude + ", " + longitude);
-            //如果位置发生变化,重新显示
-            if (latitude == null || latitude.equals("")){
-
+     * start location
+     */
+    public void startLocation() {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                locationClient.startLocation();
             }
+        }, 3000);
+    }
+
+    /**
+     * 停止定位
+     *
+     * @author hongming.wang
+     * @since 2.8.0
+     */
+    private void stopLocation() {
+        if (null != locationClient) {
+            // 停止定位
+            locationClient.stopLocation();
+            /**
+             * 如果AMapLocationClient是在当前Activity实例化的，
+             * 在Activity的onDestroy中一定要执行AMapLocationClient的onDestroy
+             */
+            locationClient.onDestroy();
+            locationClient = null;
+            locationOption = null;
+//            ToastUtils.showShort(context, "停止定位");
         }
-    };
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+//        stopLocation();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (locationManager != null) {
-            //移除监听器
-            locationManager.removeUpdates(locationListener);
-        }
+//        stopLocation();
         LogUtils.e(TAG, "onDestroy");
     }
 }

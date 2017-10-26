@@ -29,8 +29,7 @@ public class PollingUtil {
         //触发服务的起始时间
 //        long triggerAtTime = System.currentTimeMillis();
         long triggerAtTime = SystemClock.elapsedRealtime();
-        LogUtils.e("触发服务的起始时间 ：",triggerAtTime +", " + DateUtil.getStringByFormat(triggerAtTime,"yyyy-MM-dd HH:mm:ss"));
-//        LogUtils.e("当前时间 ：",System.currentTimeMillis()+"");
+//        LogUtils.e("触发服务的起始时间 ：",triggerAtTime +", " + DateUtil.getStringByFormat(triggerAtTime,"yyyy-MM-dd HH:mm:ss"));
 
         //使用AlarmManger的setRepeating方法设置定期执行的时间间隔（seconds秒）和需要执行的Service
         manager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtTime,

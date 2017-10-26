@@ -41,7 +41,7 @@ public class LoginActivity extends BaseActivity {
     private PermissionsChecker mPermissionsChecker; // 权限检测器
     private static final int REQUEST_PERMISSION = 444;  //权限请求
     static final String[] PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,};
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.WAKE_LOCK};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,6 +172,7 @@ public class LoginActivity extends BaseActivity {
                     if (dataList != null && dataList.size() > 0) {
                         Map<String, Object> data = dataList.get(0);
                         MyApplication.setLoginData(data);
+                        MyApplication.setFirstMain(true);
                         SPUtils.put(context, MyConstant.SHARED_SAVE, MyConstant.SP_LOGIN_DATA, data);
                         SPUtils.put(context, MyConstant.SHARED_SAVE, MyConstant.IS_ALREADY_LOGIN, true);
                         MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);

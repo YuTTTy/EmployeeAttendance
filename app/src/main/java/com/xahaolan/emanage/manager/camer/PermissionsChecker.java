@@ -2,6 +2,7 @@ package com.xahaolan.emanage.manager.camer;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 
 /**
@@ -31,5 +32,4 @@ public class PermissionsChecker {
         return ContextCompat.checkSelfPermission(mContext, permission) ==
                 PackageManager.PERMISSION_DENIED;
     }
-
 }

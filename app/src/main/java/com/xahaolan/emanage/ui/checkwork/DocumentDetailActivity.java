@@ -1,4 +1,4 @@
-package com.xahaolan.emanage.ui.checkwork.apply;
+package com.xahaolan.emanage.ui.checkwork;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,19 +37,24 @@ public class DocumentDetailActivity extends BaseActivity {
     private SwipeRefreshLayout swipeLayout;
     private Intent intent;
     private int applyType;  //1.请假申请  2.外出登记  3.出差申请  4.加班登记
+    private int examineType;
 
     private ImageView head_image;
     private TextView name_text;
     private TextView time_text;
     private TextView state_text;
-//    private LinearLayout items_layout;
+    //    private LinearLayout items_layout;
     private TextView reason_name;
     private TextView reason_text;
     private TextView voice_text;
     private LinearLayout phots_layout;
     private TextView check_name;
+    private LinearLayout btn_layout;
+    private TextView agree_text;
+    private TextView refuse_text;
 
     private int id;
+    private int auditflag; //审核标志（1:审核通过，2:审核驳回）
     private String urlStr = "";
     private String[] urlArr;
 
@@ -79,14 +84,74 @@ public class DocumentDetailActivity extends BaseActivity {
         voice_text = (TextView) findViewById(R.id.apply_detail_voice_image);
         phots_layout = (LinearLayout) findViewById(R.id.apply_detail_photos_layout);
         check_name = (TextView) findViewById(R.id.apply_detail_check_name);
+        btn_layout = (LinearLayout) findViewById(R.id.apply_detail_check_btn_layout);
+        agree_text = (TextView) findViewById(R.id.apply_detail_check_agree);
+        refuse_text = (TextView) findViewById(R.id.apply_detail_check_refuse);
+        setOnclickListener();
+    }
+
+    public void setOnclickListener() {
+        agree_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                auditflag = 1;
+                switch (applyType) {
+                    //请假申请
+                    case MyConstant.APPLY_DOCUMENT_LEAVE_APPLY:
+                        requestAgreeLeave();
+                        break;
+                    //外出登记
+                    case MyConstant.APPLY_DOCUMENT_OUT_REGISTER:
+                        requestAgreeOutRegister();
+                        break;
+                    //出差申请
+                    case MyConstant.APPLY_DOCUMENT_OUT_APPLY:
+                        requestAgreeOut();
+                        break;
+                    //加班登记
+                    case MyConstant.APPLY_DOCUMENT_WORK_REGISTER:
+                        requestAgreeWork();
+                        break;
+                }
+            }
+        });
+        refuse_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                auditflag = 2;
+                switch (applyType) {
+                    //请假申请
+                    case MyConstant.APPLY_DOCUMENT_LEAVE_APPLY:
+                        requestAgreeLeave();
+                        break;
+                    //外出登记
+                    case MyConstant.APPLY_DOCUMENT_OUT_REGISTER:
+                        requestAgreeOutRegister();
+                        break;
+                    //出差申请
+                    case MyConstant.APPLY_DOCUMENT_OUT_APPLY:
+                        requestAgreeOut();
+                        break;
+                    //加班登记
+                    case MyConstant.APPLY_DOCUMENT_WORK_REGISTER:
+                        requestAgreeWork();
+                        break;
+                }
+            }
+        });
     }
 
     @Override
     public void initData() {
         intent = getIntent();
-        id = intent.getIntExtra("id",0);
+        id = intent.getIntExtra("id", 0);
         applyType = intent.getIntExtra("ApplyType", 1);
-
+        examineType = intent.getIntExtra("examineType",1);
+        if (examineType == 1) {
+            btn_layout.setVisibility(View.VISIBLE);
+        } else if (examineType == 2) {
+            btn_layout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -140,14 +205,14 @@ public class DocumentDetailActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    Map<String,Object> response = (Map<String, Object>) msg.obj;
-                    if (response != null){
+                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null) {
                         setViewData(response);
                     }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
-                    if (errMsg.equals("session过期")){
+                    if (errMsg.equals("session过期")) {
                         BaseActivity.loginOut(context);
                     }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
@@ -173,14 +238,14 @@ public class DocumentDetailActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    Map<String,Object> response = (Map<String, Object>) msg.obj;
-                    if (response != null){
+                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null) {
                         setViewData(response);
                     }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
-                    if (errMsg.equals("session过期")){
+                    if (errMsg.equals("session过期")) {
                         BaseActivity.loginOut(context);
                     }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
@@ -206,14 +271,14 @@ public class DocumentDetailActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    Map<String,Object> response = (Map<String, Object>) msg.obj;
-                    if (response != null){
+                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null) {
                         setViewData(response);
                     }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
-                    if (errMsg.equals("session过期")){
+                    if (errMsg.equals("session过期")) {
                         BaseActivity.loginOut(context);
                     }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
@@ -239,14 +304,14 @@ public class DocumentDetailActivity extends BaseActivity {
                     swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
                 }
                 if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    Map<String,Object> response = (Map<String, Object>) msg.obj;
-                    if (response != null){
+                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+                    if (response != null) {
                         setViewData(response);
                     }
                 } else if (msg.what == MyConstant.REQUEST_FIELD) {
                     String errMsg = (String) msg.obj;
                     ToastUtils.showShort(context, errMsg);
-                    if (errMsg.equals("session过期")){
+                    if (errMsg.equals("session过期")) {
                         BaseActivity.loginOut(context);
                     }
                 } else if (msg.what == MyConstant.REQUEST_ERROR) {
@@ -257,40 +322,40 @@ public class DocumentDetailActivity extends BaseActivity {
         });
     }
 
-    /**
-     *   下载图片
-     */
-    public void requestLoadImages() {
-        if (swipeLayout != null) {
-            swipeLayout.setRefreshing(true);
-        }
-        new CheckWorkServices(context).loadImagesService(id, new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-                }
-                if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    Map<String,Object> response = (Map<String, Object>) msg.obj;
-                    if (response != null){
-                        setViewData(response);
-                    }
-                } else if (msg.what == MyConstant.REQUEST_FIELD) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                    if (errMsg.equals("session过期")){
-                        BaseActivity.loginOut(context);
-                    }
-                } else if (msg.what == MyConstant.REQUEST_ERROR) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                }
-            }
-        });
-    }
+//    /**
+//     * 下载图片
+//     */
+//    public void requestLoadImages() {
+//        if (swipeLayout != null) {
+//            swipeLayout.setRefreshing(true);
+//        }
+//        new CheckWorkServices(context).loadImagesService(id, new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+//                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+//                }
+//                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+//                    Map<String, Object> response = (Map<String, Object>) msg.obj;
+//                    if (response != null) {
+//                        setViewData(response);
+//                    }
+//                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                    if (errMsg.equals("session过期")) {
+//                        BaseActivity.loginOut(context);
+//                    }
+//                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+//                    String errMsg = (String) msg.obj;
+//                    ToastUtils.showShort(context, errMsg);
+//                }
+//            }
+//        });
+//    }
 
-    public void setViewData(Map<String,Object> response){
+    public void setViewData(Map<String, Object> response) {
         if (applyType == 0) {
             state_text.setText("请假");
         } else if (applyType == 1) {
@@ -300,24 +365,24 @@ public class DocumentDetailActivity extends BaseActivity {
         } else if (applyType == 3) {
             state_text.setText("加班");
         }
-        if (response.get("personName") != null){
-            name_text.setText(response.get("personName")+"");
+        if (response.get("personName") != null) {
+            name_text.setText(response.get("personName") + "");
         }
-        if (response.get("personname") != null){
-            name_text.setText(response.get("personname")+"");
+        if (response.get("personname") != null) {
+            name_text.setText(response.get("personname") + "");
         }
-        if (response.get("startDate") != null){
-            time_text.setText(response.get("startDate")+"");
-        }else if (response.get("createdate") != null){
-            time_text.setText(response.get("createdate")+"");
+        if (response.get("startDate") != null) {
+            time_text.setText(response.get("startDate") + "");
+        } else if (response.get("createdate") != null) {
+            time_text.setText(response.get("createdate") + "");
         }
-        if (response.get("reason") != null){
-            reason_text.setText(response.get("reason")+"");
+        if (response.get("reason") != null) {
+            reason_text.setText(response.get("reason") + "");
         }
-        if (response.get("leaderName") != null){
-            check_name.setText(response.get("leaderName")+"");
+        if (response.get("leaderName") != null) {
+            check_name.setText(response.get("leaderName") + "");
         }
-        if(response.get("urls") != null){
+        if (response.get("urls") != null) {
             urlStr = (String) response.get("urls");
             setImageViews();
         }
@@ -326,28 +391,29 @@ public class DocumentDetailActivity extends BaseActivity {
     /**
      *
      */
-    public void setImageViews(){
+    public void setImageViews() {
         int numUrl = 0;
-        urlArr = new String[appearNumber(urlStr,",")+1];
+        urlArr = new String[appearNumber(urlStr, ",") + 1];
         while (urlStr != null && !urlStr.equals("")) {
-            if (urlStr.contains(",")){
-                String subUrl = StringUtils.substringBefore(urlStr,","); //截取第一个路径
-                urlStr = urlStr.substring(subUrl.length()+1,urlStr.length());//删除第一个路径
+            if (urlStr.contains(",")) {
+                String subUrl = StringUtils.substringBefore(urlStr, ","); //截取第一个路径
+                urlStr = urlStr.substring(subUrl.length() + 1, urlStr.length());//删除第一个路径
                 urlArr[numUrl] = subUrl; //路径添加
                 numUrl++;
-            }else {
+            } else {
                 urlArr[numUrl] = urlStr; //路径添加
                 urlStr = "";
             }
         }
-        LogUtils.e(TAG,"图片加载路径 ：" + urlArr.toString());
+        LogUtils.e(TAG, "图片加载路径 ：" + urlArr.toString());
 
         getItemsData();
     }
+
     /**
      * 获取指定字符串出现的次数
      *
-     * @param srcText 源字符串
+     * @param srcText  源字符串
      * @param findText 要查找的字符串
      * @return
      */
@@ -372,7 +438,6 @@ public class DocumentDetailActivity extends BaseActivity {
     }
 
     /**
-     *
      * @param imageUrl
      * @return
      */
@@ -381,23 +446,128 @@ public class DocumentDetailActivity extends BaseActivity {
         ImageView photo_image = (ImageView) photo_view.findViewById(R.id.item_view_photo_image);
         ViewGroup.LayoutParams params = photo_image.getLayoutParams();
         params.width = ScreenUtils.getScreenWidth(context);
-        params.height = ScreenUtils.getScreenWidth(context) - DensityUtil.dp2px(context,20);
-        Glide.with(context).load(MyConstant.BASE_URL+imageUrl).into(photo_image);
+        params.height = ScreenUtils.getScreenWidth(context) - DensityUtil.dp2px(context, 20);
+        Glide.with(context).load(MyConstant.BASE_URL + imageUrl).into(photo_image);
         return photo_view;
     }
 
-//    public View getItemView(Map<String, Object> itemData) {
-//        View item_view = LayoutInflater.from(context).inflate(R.layout.item_view_apply_detail, null);
-//        TextView name_text = (TextView) item_view.findViewById(R.id.item_view_apply_detail_name);
-//        TextView value_text = (TextView) item_view.findViewById(R.id.item_view_apply_detail_value);
-//        if (itemData != null) {
-//            if (itemData.get("name") != null) {
-//                name_text.setText(itemData.get("name") + "");
-//            }
-//            if (itemData.get("value") != null) {
-//                value_text.setText(itemData.get("value") + "");
-//            }
-//        }
-//        return item_view;
-//    }
+    /**
+     * 请假审核
+     */
+    public void requestAgreeLeave() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new CheckWorkServices(context).leaveOrderAgreeService(id, auditflag, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    finish();
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")) {
+                        BaseActivity.loginOut(context);
+                    }
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
+    }
+
+    /**
+     * 外出登记审核
+     */
+    public void requestAgreeOutRegister() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new CheckWorkServices(context).outGoingAgreeService(id, auditflag, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    finish();
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")) {
+                        BaseActivity.loginOut(context);
+                    }
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
+    }
+
+    /**
+     * 出差审核
+     */
+    public void requestAgreeOut() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new CheckWorkServices(context).bussinessAgreeService(id, auditflag, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    finish();
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")) {
+                        BaseActivity.loginOut(context);
+                    }
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
+    }
+
+    /**
+     * 加班登记审核
+     */
+    public void requestAgreeWork() {
+        if (swipeLayout != null) {
+            swipeLayout.setRefreshing(true);
+        }
+        new CheckWorkServices(context).workAgreeService(id, auditflag, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
+                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
+                }
+                if (msg.what == MyConstant.REQUEST_SUCCESS) {
+                    finish();
+                } else if (msg.what == MyConstant.REQUEST_FIELD) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                    if (errMsg.equals("session过期")) {
+                        BaseActivity.loginOut(context);
+                    }
+                } else if (msg.what == MyConstant.REQUEST_ERROR) {
+                    String errMsg = (String) msg.obj;
+                    ToastUtils.showShort(context, errMsg);
+                }
+            }
+        });
+    }
 }

@@ -304,6 +304,51 @@ public class CheckWorkServices extends BaseService {
         requesQueue.add(request);
     }
     /**
+     *                  出差登记表审核
+     *
+     * @param id    员工id
+     * @param auditflag    审核标志（1:审核通过，2:审核驳回）
+     * @param handler
+     */
+    public void bussinessAgreeService(int id,int auditflag,final Handler handler) {
+        LogUtils.e(TAG, "==============================   出差登记表审核 request   =======================================");
+        String urlStr = MyConstant.BASE_URL + "/app/businessTrip!verify.action";
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        params.put("auditflag", auditflag);
+        //        getVerificationParams(params, 1);//获取验证参数
+        Map<String,String> mHeaders = getHeader();
+        GsonRequest<RepBase<Map<String,Object>>> request = null;
+        try {
+            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<Map<String,Object>>>() {
+            },
+                    new Response.Listener<RepBase<Map<String,Object>>>() {
+                        @Override
+                        public void onResponse(RepBase<Map<String,Object>> response) {
+                            if (response == null || response.getSuccess() == null) {
+                                Log.e(TAG, "出差登记表审核 null" + response);
+                                return;
+                            }
+                            Message message = new Message();
+                            if (response.getSuccess()) {
+                                Map<String,Object> responseData = response.getObj();
+                                message.what = MyConstant.REQUEST_SUCCESS;
+                                message.obj = responseData;
+                                Log.e(TAG, "出差登记表审核 success");
+                            } else {
+                                message.what = MyConstant.REQUEST_FIELD;
+                                message.obj = response.getMsg();
+                                Log.e(TAG, "出差登记表审核 field");
+                            }
+                            handler.sendMessage(message);
+                        }
+                    }, new EZErrListener<>(context, handler));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        requesQueue.add(request);
+    }
+    /**
      *                    外出登记查询
      *
      * @param personid   发布人id
@@ -391,7 +436,51 @@ public class CheckWorkServices extends BaseService {
         }
         requesQueue.add(request);
     }
-
+    /**
+     *                    外出登记审核
+     *
+     * @param id   发布人id
+     * @param auditflag   审核标志（1:审核通过，2:审核驳回）
+     * @param handler
+     */
+    public void outGoingAgreeService(int id,int auditflag,final Handler handler) {
+        LogUtils.e(TAG, "==============================   外出登记审核 request   =======================================");
+        String urlStr = MyConstant.BASE_URL + "/app/outgoingAPPAction!verify.action";
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        params.put("auditflag", auditflag);
+        //        getVerificationParams(params, 1);//获取验证参数
+        Map<String,String> mHeaders = getHeader();
+        GsonRequest<RepBase<Map<String,Object>>> request = null;
+        try {
+            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<Map<String,Object>>>() {
+            },
+                    new Response.Listener<RepBase<Map<String,Object>>>() {
+                        @Override
+                        public void onResponse(RepBase<Map<String,Object>> response) {
+                            if (response == null || response.getSuccess() == null) {
+                                Log.e(TAG, "外出登记审核 null" + response);
+                                return;
+                            }
+                            Message message = new Message();
+                            if (response.getSuccess()) {
+                                Map<String,Object> responseData = response.getObj();
+                                message.what = MyConstant.REQUEST_SUCCESS;
+                                message.obj = responseData;
+                                Log.e(TAG, "外出登记审核 success");
+                            } else {
+                                message.what = MyConstant.REQUEST_FIELD;
+                                message.obj = response.getMsg();
+                                Log.e(TAG, "外出登记审核 field");
+                            }
+                            handler.sendMessage(message);
+                        }
+                    }, new EZErrListener<>(context, handler));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        requesQueue.add(request);
+    }
     /**
      *                    外出登记添加
      *
@@ -581,6 +670,51 @@ public class CheckWorkServices extends BaseService {
                                 message.what = MyConstant.REQUEST_FIELD;
                                 message.obj = response.getMsg();
                                 Log.e(TAG, "请假单详情查询 field");
+                            }
+                            handler.sendMessage(message);
+                        }
+                    }, new EZErrListener<>(context, handler));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        requesQueue.add(request);
+    }
+    /**
+     *                    请假查询
+     *
+     * @param id   要查询的记录
+     * @param auditflag   审核标志（1:审核通过，2:审核驳回）
+     * @param handler
+     */
+    public void leaveOrderAgreeService(int id,int auditflag,final Handler handler) {
+        LogUtils.e(TAG, "==============================   请假查询 request   =======================================");
+        String urlStr = MyConstant.BASE_URL + "/app/leaveOrderAPPAction!verify.action";
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        params.put("auditflag", auditflag);
+        //        getVerificationParams(params, 1);//获取验证参数
+        Map<String,String> mHeaders = getHeader();
+        GsonRequest<RepBase<Map<String,Object>>> request = null;
+        try {
+            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<Map<String,Object>>>() {
+            },
+                    new Response.Listener<RepBase<Map<String,Object>>>() {
+                        @Override
+                        public void onResponse(RepBase<Map<String,Object>> response) {
+                            if (response == null || response.getSuccess() == null) {
+                                Log.e(TAG, "请假查询 null" + response);
+                                return;
+                            }
+                            Message message = new Message();
+                            if (response.getSuccess()) {
+                                Map<String,Object> responseData = response.getObj();
+                                message.what = MyConstant.REQUEST_SUCCESS;
+                                message.obj = responseData;
+                                Log.e(TAG, "请假查询 success");
+                            } else {
+                                message.what = MyConstant.REQUEST_FIELD;
+                                message.obj = response.getMsg();
+                                Log.e(TAG, "请假查询 field");
                             }
                             handler.sendMessage(message);
                         }
@@ -789,7 +923,51 @@ public class CheckWorkServices extends BaseService {
         }
         requesQueue.add(request);
     }
-
+    /**
+     *                    加班审核
+     *
+     * @param id   要查询的记录
+     * @param auditflag   审核标志（1:审核通过，2:审核驳回）
+     * @param handler
+     */
+    public void workAgreeService(int id,int auditflag,final Handler handler) {
+        LogUtils.e(TAG, "==============================   加班审核 request   =======================================");
+        String urlStr = MyConstant.BASE_URL + "/app/workAPPAction!verify.action";
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        params.put("auditflag", auditflag);
+        //        getVerificationParams(params, 1);//获取验证参数
+        Map<String,String> mHeaders = getHeader();
+        GsonRequest<RepBase<Map<String,Object>>> request = null;
+        try {
+            request = new GsonRequest<>(context, Request.Method.POST, urlStr,mHeaders, params, new TypeToken<RepBase<Map<String,Object>>>() {
+            },
+                    new Response.Listener<RepBase<Map<String,Object>>>() {
+                        @Override
+                        public void onResponse(RepBase<Map<String,Object>> response) {
+                            if (response == null || response.getSuccess() == null) {
+                                Log.e(TAG, "加班审核 null" + response);
+                                return;
+                            }
+                            Message message = new Message();
+                            if (response.getSuccess()) {
+                                Map<String,Object> responseData = response.getObj();
+                                message.what = MyConstant.REQUEST_SUCCESS;
+                                message.obj = responseData;
+                                Log.e(TAG, "加班审核 success");
+                            } else {
+                                message.what = MyConstant.REQUEST_FIELD;
+                                message.obj = response.getMsg();
+                                Log.e(TAG, "加班审核 field");
+                            }
+                            handler.sendMessage(message);
+                        }
+                    }, new EZErrListener<>(context, handler));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        requesQueue.add(request);
+    }
     /**
      *                    加班信息新增
      *

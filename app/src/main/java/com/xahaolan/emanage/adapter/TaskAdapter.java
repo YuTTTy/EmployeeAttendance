@@ -2,6 +2,7 @@ package com.xahaolan.emanage.adapter;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,6 +87,8 @@ public class TaskAdapter extends BaseAdapter {
                     holder.state_text.setText("未完成");
                 }else if (state == 1){
                     holder.state_text.setText("已完成");
+                }else if (state == 2){
+                    holder.state_text.setText("已超时");
                 }
             }
         }

@@ -8,7 +8,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,10 +18,8 @@ import com.xahaolan.emanage.base.BaseActivity;
 import com.xahaolan.emanage.base.MyConstant;
 import com.xahaolan.emanage.dialog.DialogSingleText;
 import com.xahaolan.emanage.http.services.CheckServices;
-import com.xahaolan.emanage.http.services.CheckWorkServices;
-import com.xahaolan.emanage.ui.checkwork.apply.DocumentDetailActivity;
+import com.xahaolan.emanage.ui.checkwork.DocumentDetailActivity;
 import com.xahaolan.emanage.utils.common.ToastUtils;
-import com.xahaolan.emanage.utils.mine.AppUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
 
 import java.util.ArrayList;
@@ -146,6 +143,11 @@ public class CheckApplyActivity extends BaseActivity {
                 Bundle bundle = new Bundle();
                 bundle.putInt("id",personId);
                 bundle.putInt("ApplyType",type);
+                if (checkType == 1){
+                    bundle.putInt("examineType",2);
+                }else if (checkType == 2){
+                    bundle.putInt("examineType",examineType);
+                }
                 MyUtils.jump(context, DocumentDetailActivity.class,bundle,false,null);
             }
         });

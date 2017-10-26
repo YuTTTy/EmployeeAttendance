@@ -158,6 +158,39 @@
                     android:textSize="@dimen/text_main_content" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/apply_detail_check_btn_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/usually_spacing_big"
+                >
+                <TextView
+                    android:id="@+id/apply_detail_check_agree"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_margin="@dimen/usually_spacing_big"
+                    android:layout_height="wrap_content"
+                    android:text="审核通过"
+                    android:background="@color/baseButton"
+                    android:textColor="@color/white"
+                    android:padding="@dimen/usually_spacing_middle"
+                    />
+                <TextView
+                    android:id="@+id/apply_detail_check_refuse"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_margin="@dimen/usually_spacing_big"
+                    android:layout_height="wrap_content"
+                    android:text="审核驳回"
+                    android:background="@color/baseButton"
+                    android:textColor="@color/white"
+                    android:padding="@dimen/usually_spacing_middle"
+                    />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </android.support.v4.widget.SwipeRefreshLayout>

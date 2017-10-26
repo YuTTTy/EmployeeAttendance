@@ -46,6 +46,7 @@ public class TaskDetailActivity extends BaseActivity {
     private TextView btn_text;
 
     private int taskId;
+    private int state;
     private Map<String,Object> detailData;
     private String urlStr = "";
     private String[] urlArr;
@@ -89,7 +90,12 @@ public class TaskDetailActivity extends BaseActivity {
     public void initData() {
         intent = getIntent();
         taskId = intent.getIntExtra("taskId",0);
-
+        state = intent.getIntExtra("state",0);
+        if (state == 1){
+            btn_text.setVisibility(View.GONE);
+        }else {
+            btn_text.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
