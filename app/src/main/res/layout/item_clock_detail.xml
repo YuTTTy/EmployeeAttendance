@@ -21,17 +21,6 @@
         android:src="@drawable/icon_loction" />
 
     <TextView
-        android:id="@+id/item_clock_detail_address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/item_clock_detail_text"
-        android:layout_marginLeft="@dimen/usually_spacing_middle"
-        android:layout_marginTop="@dimen/usually_spacing_middle"
-        android:layout_toRightOf="@+id/item_clock_detail_icon"
-        android:textColor="@color/baseTextMain"
-        android:textSize="@dimen/text_assist_content" />
-
-    <TextView
         android:id="@+id/item_clock_detail_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,4 +30,18 @@
         android:layout_marginTop="@dimen/usually_spacing_middle"
         android:textColor="@color/baseTextMain"
         android:textSize="@dimen/text_assist_content" />
+
+    <TextView
+        android:id="@+id/item_clock_detail_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_clock_detail_text"
+        android:layout_marginLeft="@dimen/usually_spacing_middle"
+        android:layout_marginRight="@dimen/usually_spacing_middle"
+        android:layout_marginTop="@dimen/usually_spacing_middle"
+        android:layout_toLeftOf="@+id/item_clock_detail_time"
+        android:layout_toRightOf="@+id/item_clock_detail_icon"
+        android:textColor="@color/baseTextMain"
+        android:textSize="@dimen/text_assist_content" />
+
 </RelativeLayout>

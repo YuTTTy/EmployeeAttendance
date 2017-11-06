@@ -56,11 +56,19 @@ public class ClockDetailActivity extends BaseActivity {
             }
             if (data.get("createTime") != null) {
                 String createTime = (String) data.get("createTime");
-                items_layout.addView(addItemView("签到", address, createTime));
+                if (data.get("signflag")!= null){
+                    int signFlag = new Double((Double)data.get("signflag")).intValue();
+                    if (signFlag == 0){
+                        items_layout.addView(addItemView("签到", address, createTime));
+                    }else if (signFlag == 1){
+                        items_layout.addView(addItemView("签退", address, createTime));
+                    }
+                }
             }
+
             if (data.get("createdate") != null) {
                 String createData = (String) data.get("createdate");
-                items_layout.addView(addItemView("签退", address, createData));
+
             }
         }
     }
@@ -76,7 +84,9 @@ public class ClockDetailActivity extends BaseActivity {
         TextView address_text = (TextView) itemView.findViewById(R.id.item_clock_detail_address);
         TextView time_text = (TextView) itemView.findViewById(R.id.item_clock_detail_time);
         name_text.setText(nameStr);
-        address_text.setText(addressStr);
+        if (addressStr != null && !addressStr.equals("")){
+            address_text.setText(addressStr);
+        }
         time_text.setText(timeStr);
         return itemView;
     }

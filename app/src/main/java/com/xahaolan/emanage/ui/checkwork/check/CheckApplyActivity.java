@@ -20,6 +20,7 @@ import com.xahaolan.emanage.dialog.DialogSingleText;
 import com.xahaolan.emanage.http.services.CheckServices;
 import com.xahaolan.emanage.ui.checkwork.DocumentDetailActivity;
 import com.xahaolan.emanage.utils.common.ToastUtils;
+import com.xahaolan.emanage.utils.mine.AppUtils;
 import com.xahaolan.emanage.utils.mine.MyUtils;
 
 import java.util.ArrayList;
@@ -155,8 +156,7 @@ public class CheckApplyActivity extends BaseActivity {
 
     @Override
     public void initData() {
-        personid = 49;
-//        personid = AppUtils.getPersonId(context);
+        personid = AppUtils.getPersonId(context);
         dataList = new ArrayList<>();
         intent = getIntent();
         checkType = intent.getIntExtra("CheckType", 1);

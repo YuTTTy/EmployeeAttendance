@@ -2,11 +2,14 @@ package com.xahaolan.emanage.ui;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.BoolRes;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.KeyEvent;
 import android.view.View;

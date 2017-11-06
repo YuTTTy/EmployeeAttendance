@@ -31,6 +31,8 @@ import com.xahaolan.emanage.fragment.EngineeFragment;
 import com.xahaolan.emanage.fragment.LeaseFragment;
 import com.xahaolan.emanage.fragment.NoticeFragment;
 import com.xahaolan.emanage.http.services.TrailServices;
+import com.xahaolan.emanage.manager.polling.PollingService;
+import com.xahaolan.emanage.manager.polling.PollingUtil;
 import com.xahaolan.emanage.utils.common.DateUtil;
 import com.xahaolan.emanage.utils.common.LogUtils;
 import com.xahaolan.emanage.utils.common.ToastUtils;
@@ -75,8 +77,6 @@ public class MainActivity extends BaseActivity {
     @Override
     public void initData() {
         tabHost.setCurrentTab(3);
-//        /* 开启上传位置轮询服务 */
-//        PollingUtil.startPollingService(context, 1 * 60, PollingService.class, PollingService.ACTION);
     }
 
     @Override
@@ -86,11 +86,11 @@ public class MainActivity extends BaseActivity {
         MyUtils.closeAllActivity(context);
         LogUtils.e(TAG, "是否首次登录 ：" + MyApplication.getFirstMain());
         if (MyApplication.getFirstMain()) {
-            getLocation();
+//            getLocation();
+            /* 开启上传位置轮询服务 */
+            PollingUtil.startPollingService(context, 10 * 60, PollingService.class, PollingService.ACTION);
+            MyApplication.setFirstMain(false);
         }
-        MyApplication.setFirstMain(false);
-//        /* 开启上传位置轮询服务 */
-//        PollingUtil.startPollingService(context, 5 * 60, PollingService.class, PollingService.ACTION);
     }
 
     /**
@@ -177,15 +177,12 @@ public class MainActivity extends BaseActivity {
     private String autoflag = "0";   //上传方式（0：自动，1：手动）
 
     public void getLocation() {
-        //初始化client
-        locationClient = new AMapLocationClient(this.getApplicationContext());
+        /* 默认的定位参数 */
         getDefaultOption();
-        //设置定位参数
-        locationClient.setLocationOption(locationOption);
-        // 设置定位监听
-        locationClient.setLocationListener(locationListener);
         /* 开始定位 */
         startLocation();
+        /* 申请电源锁，禁止休眠 */
+        acquireWakeLock();
     }
 
     /**
@@ -195,11 +192,13 @@ public class MainActivity extends BaseActivity {
      * @since 2.8.0
      */
     private void getDefaultOption() {
+        //初始化client
+        locationClient = new AMapLocationClient(this.getApplicationContext());
         locationOption = new AMapLocationClientOption();
         locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);//可选，设置定位模式，可选的模式有高精度、仅设备、仅网络。默认为高精度模式
         locationOption.setGpsFirst(false);//可选，设置是否gps优先，只在高精度模式下有效。默认关闭
         locationOption.setHttpTimeOut(30000);//可选，设置网络请求超时时间。默认为30秒。在仅设备模式下无效
-        locationOption.setInterval(10*60*1000);//可选，设置定位间隔。默认为2秒
+        locationOption.setInterval(1*60*1000);//可选，设置定位间隔。默认为2秒
         locationOption.setNeedAddress(true);//可选，设置是否返回逆地理地址信息。默认是true
         locationOption.setOnceLocation(false);//可选，设置是否单次定位。默认是false
         locationOption.setOnceLocationLatest(false);//可选，设置是否等待wifi刷新，默认为false.如果设置为true,会自动变为单次定位，持续定位时不要使用
@@ -207,7 +206,10 @@ public class MainActivity extends BaseActivity {
         locationOption.setSensorEnable(false);//可选，设置是否使用传感器。默认是false
         locationOption.setWifiScan(true); //可选，设置是否开启wifi扫描。默认为true，如果设置为false会同时停止主动刷新，停止以后完全依赖于系统刷新，定位位置可能存在误差
         locationOption.setLocationCacheEnable(false); //可选，设置是否使用缓存定位，默认为true
-        acquireWakeLock();
+        //设置定位参数
+        locationClient.setLocationOption(locationOption);
+        // 设置定位监听
+        locationClient.setLocationListener(locationListener);
     }
 
     /**
@@ -242,8 +244,7 @@ public class MainActivity extends BaseActivity {
     private void acquireWakeLock() {
         if (null == wakeLock) {
             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass()
-                    .getCanonicalName());
+            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, context.getClass().getCanonicalName());
             if (null != wakeLock) {
                 wakeLock.acquire();
 //                wakeLock.setReferenceCounted(false);

@@ -67,11 +67,19 @@ public class ClockRecordAdapter extends BaseAdapter {
             if (data.get("createTime") != null) {
                 String createTime = (String) data.get("createTime");
                 holder.time_text.setText(createTime.substring(0,11));
-                holder.in_time_text.setText(createTime.substring(11,16));
+                if (data.get("signflag") != null){
+                    int signFlag = new Double((Double)data.get("signflag")).intValue();
+                    if (signFlag == 0){
+                        holder.in_time_text.setText(createTime.substring(11,16));
+                    }else if (signFlag == 1){
+                        holder.out_time_text.setText(createTime.substring(11,16));
+                    }
+                }
             }
+
             if (data.get("createdate") != null) {
                 String createData = (String) data.get("createdate");
-                holder.out_time_text.setText(createData.substring(11,16));
+
             }
         }
         return convertView;
