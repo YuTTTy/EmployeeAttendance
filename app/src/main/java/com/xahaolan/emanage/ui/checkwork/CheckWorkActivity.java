@@ -1,5 +1,6 @@
 package com.xahaolan.emanage.ui.checkwork;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -250,6 +251,7 @@ public class CheckWorkActivity extends BaseActivity implements LocationSource, A
     /**
      * sign  in  or  out
      */
+    @SuppressLint("HandlerLeak")
     public void requestInOut() {
         if (swipeLayout != null) {
             swipeLayout.setRefreshing(true);

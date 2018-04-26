@@ -19,21 +19,26 @@
             <ImageView
                 android:layout_width="@dimen/usually_image_hight"
                 android:layout_height="@dimen/usually_image_hight"
-                android:src="@drawable/main_title_icon" />
+                android:src="@drawable/main_title_icon"
+                android:contentDescription="@null" />
         </RelativeLayout>
 
         <FrameLayout
             android:id="@+id/main_body"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/main_title_layout"></FrameLayout>
+            android:layout_below="@+id/main_title_layout">
+
+        </FrameLayout>
 
         <android.support.v4.app.FragmentTabHost
-            android:id="@+id/main_tabhost"
+            android:id="@android:id/tabhost"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/alpha"></android.support.v4.app.FragmentTabHost>
+            android:background="@color/alpha">
+
+        </android.support.v4.app.FragmentTabHost>
 
 
     </RelativeLayout>

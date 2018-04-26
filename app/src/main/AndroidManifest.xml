@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.xahaolan.emanage">
 
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
@@ -11,7 +13,8 @@
     <!-- 相机权限 -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <!-- 在SD卡中创建与删除文件权限 -->
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+        tools:ignore="ProtectedPermissions" />
 
     <!--允许程序打开网络套接字-->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,12 +26,14 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
 
     <!-- voice -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <!-- 通过GPS芯片接收卫星的定位信息，定位精度达10米以内 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -36,8 +41,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- 唤醒锁 -->
-    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
-    <uses-permission android:name="android.permission.DEVICE_POWER"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.DEVICE_POWER"
+        tools:ignore="ProtectedPermissions" />
     <application
         android:name=".base.MyApplication"
         android:allowBackup="true"
@@ -46,8 +52,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.LoginActivity"
-            android:launchMode="singleTask"
+
             android:screenOrientation="portrait"
+            android:label="login"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,103 +63,149 @@
             </intent-filter>
         </activity>
 
+
+        <activity android:name=".ui.RegisterActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            />
+
         <activity
             android:name=".ui.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
 
         <!--考勤-->
         <activity
             android:name=".ui.checkwork.CheckWorkActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <!--请假申请 外出登记 出差申请 加班登记-->
         <activity
             android:name=".ui.checkwork.apply.DocumentActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <!-- 详情 -->
         <activity
             android:name=".ui.checkwork.DocumentDetailActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
 
         <!--打卡记录-->
         <activity
             android:name=".ui.checkwork.clockrecord.ClockRecordActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <activity
             android:name=".ui.checkwork.clockrecord.ClockDetailActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <!--查看我的申请,审批-->
         <activity
             android:name=".ui.checkwork.check.CheckApplyActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
 
         <!-- 日报 -->
         <activity
             android:name=".ui.daily.DailyListActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <activity
             android:name=".ui.daily.SendDailyActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <!-- 工作轨迹 -->
         <activity
             android:name=".ui.trail.WorkTrailActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <activity
             android:name=".ui.trail.PosListActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <activity
             android:name=".ui.trail.SltDepartmentActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <activity
             android:name=".ui.trail.SltEmployeeActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <!-- 任务 -->
         <activity
             android:name=".ui.task.TaskActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <activity
             android:name=".ui.task.TaskDetailActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <activity
             android:name=".ui.task.CreateTaskActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <!-- 客户拜访 -->
         <activity
             android:name=".ui.visit.VisitActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <!-- 更多 -->
         <activity
             android:name=".ui.more.MoreActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="db06270a7d664098edb32506385f38fa" />
         <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
-        <service android:name="com.amap.api.location.APSService"></service>
+        <service android:name="com.amap.api.location.APSService">
+
+        </service>
 
         <!-- 轮训 -->
-        <service android:name=".manager.polling.PollingService"></service>
+        <service android:name=".manager.polling.PollingService">
+
+        </service>
 
         <activity android:name=".manager.camer.PermissionsActivity" />
         <!-- 7.0系统相机拍照问题 ，通过FileProvider创建一个content类型的Uri -->

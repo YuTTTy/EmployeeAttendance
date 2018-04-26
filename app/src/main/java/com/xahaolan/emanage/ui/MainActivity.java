@@ -1,5 +1,6 @@
 package com.xahaolan.emanage.ui;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -98,7 +99,7 @@ public class MainActivity extends BaseActivity {
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void initTabView() {
-        tabHost = (FragmentTabHost) findViewById(R.id.main_tabhost);
+        tabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         tabHost.setup(this, getSupportFragmentManager(), R.id.main_body);
         for (int i = 0; i < fragmentArray.length; i++) {
             /*给每个Tab按钮设置图标、文字和内容*/
@@ -263,6 +264,7 @@ public class MainActivity extends BaseActivity {
     /**
      * 上传位置
      */
+    @SuppressLint("HandlerLeak")
     public void requestLoadLoc() {
         personId = AppUtils.getPersonId(getApplicationContext());
         LogUtils.e(TAG, "===================== 上传定位数据时间 ：" + DateUtil.getStringByFormat(System.currentTimeMillis(), MyConstant.DATE_FORMAT_YMDHMS));

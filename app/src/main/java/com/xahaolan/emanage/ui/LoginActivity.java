@@ -1,211 +1,199 @@
 package com.xahaolan.emanage.ui;
 
-import android.Manifest;
-import android.annotation.TargetApi;
+
+import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.BoolRes;
-import android.support.annotation.NonNull;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.xahaolan.emanage.R;
-import com.xahaolan.emanage.base.BaseActivity;
-import com.xahaolan.emanage.base.MyApplication;
-import com.xahaolan.emanage.base.MyConstant;
-import com.xahaolan.emanage.http.services.LoginServices;
-import com.xahaolan.emanage.manager.camer.PermissionsActivity;
-import com.xahaolan.emanage.manager.camer.PermissionsChecker;
-import com.xahaolan.emanage.utils.common.SPUtils;
-import com.xahaolan.emanage.utils.common.ToastUtils;
+import com.xahaolan.emanage.dao.UserDataManager;
 import com.xahaolan.emanage.utils.mine.MyUtils;
 
-import java.util.List;
-import java.util.Map;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
- * Created by helinjie on 2017/9/2.
+ * Created by yujx on 2018/4/17.
  */
+public class LoginActivity extends Activity {
+    public static final int CONNECTION_TIMEOUT = 40;
+    public static final int READ_TIMEOUT = 40;
+    @BindView(R.id.account_et)
+    EditText etAccount;
+    @BindView(R.id.password_et)
+    EditText etPassword;
+    @BindView(R.id.login_button)
+    Button button_login;
+    @BindView(R.id.login_rememberpassword)
+    CheckBox rememberpassword_login;
+    @BindView(R.id.login_avatar)
+    ImageView avatar_login;
+    @BindView(R.id.btn_register)
+    TextView register_btn;
+    @BindView(R.id.login_cancle)
+    ImageView cancle_btn;
+    @BindView(R.id.edit_text)
+    View loginView;    //登录
+    @BindView(R.id.login_success_view)
+    View loginSuccessView;
+    @BindView(R.id.login_success_show)
+    TextView loginSuccessShow;
 
-public class LoginActivity extends BaseActivity {
-    private static final String TAG = LoginActivity.class.getSimpleName();
-    private SwipeRefreshLayout swipeLayout;
-    private EditText account_et;
-    private EditText pass_et;
-    private TextView btn_text;
+    private SharedPreferences sp;
+    private String idValue;
+    private String passwordValue;
+    private static final int PASSWORD_MIWEN = 0x81;
+    private UserDataManager mUserDataManager;         //用户数据管理类
 
-    private PermissionsChecker mPermissionsChecker; // 权限检测器
-    private static final int REQUEST_PERMISSION = 444;  //权限请求
-    static final String[] PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.WAKE_LOCK};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPermissionsChecker = new PermissionsChecker(this);
+        //找到相应的布局
+        setContentView(R.layout.activity_login);
+        //装载资源文件
+        ButterKnife.bind(this);
+        sp = this.getSharedPreferences("UserInfo", 0);
+        String name=sp.getString("USER_NAME", "");
+        String pwd =sp.getString("PASSWORD", "");
 
-        //检查权限(6.0以上做权限判断)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
-                PermissionsActivity.startActivityForResult(this, REQUEST_PERMISSION,
-                        PERMISSIONS);
-            } else {
-                isLogin();
+        boolean choseRemember = sp.getBoolean("rememberpassword_login",false);
+        if (choseRemember){
+            etAccount.setText(name);
+            etPassword.setText(pwd);
+            etPassword.setInputType(PASSWORD_MIWEN);
+            rememberpassword_login.setChecked(true);
+        }
+
+        //avatar_login.setImageResource(R.drawable.head);
+
+        if (mUserDataManager == null) {
+            mUserDataManager = new UserDataManager(this);
+            mUserDataManager.openDataBase();                              //建立本地数据库
+        }
+    }
+    //不同按钮按下的监听事件选择
+
+        @OnClick({R.id.btn_register,R.id.login_button,R.id.login_cancle})
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.btn_register:
+                    Intent intent_login_to_register = new Intent(LoginActivity.this,
+                            RegisterActivity.class);
+                    startActivity(intent_login_to_register);
+                    finish();
+                    break;
+                case R.id.login_button:
+                    logoin();
+                    break;
+                case R.id.login_cancle:
+                    cancle();
+                    break;
             }
-        } else {
-            isLogin();
+
+        }
+
+    //登录
+    public void logoin() {
+        if (isUserNameAndPwdValid()){
+            String userName = etAccount.getText().toString().trim();
+            String userPwd = etPassword.getText().toString().trim();
+            SharedPreferences.Editor editor = sp.edit();
+            int result = mUserDataManager.findUserByNameAndPwd(userName,userPwd);
+            if (result == 1){
+                //保存用户名和密码
+                editor.putString("USER_NAME", userName);
+                editor.putString("PASSWORD", userPwd);
+                //是否记住密码
+                if (rememberpassword_login.isChecked()){
+                    editor.putBoolean("rememberpassword_login",true);
+                }else {
+                    editor.putBoolean("rememberpassword_login",false);
+                }
+                editor.commit();
+                //切换到MainActivity
+                Intent intent_login_to_main = new Intent(LoginActivity.this,MainActivity.class);
+                startActivity(intent_login_to_main);
+                finish();
+                //登录成功提示
+                Toast.makeText(this,"登陆成功！",Toast.LENGTH_SHORT).show();
+            }else if (result == 0){
+                //登录失败提示
+                Toast.makeText(this, "登录失败！",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    //注销
+    public void cancle() {
+        if (isUserNameAndPwdValid()) {
+            String userName = etAccount.getText().toString().trim();    //获取当前输入的用户名和密码信息
+            String userPwd = etPassword.getText().toString().trim();
+            int result=mUserDataManager.findUserByNameAndPwd(userName, userPwd);
+            if(result==1){                                             //返回1说明用户名和密码均正确
+                Toast.makeText(this, "注销失败！！！",Toast.LENGTH_SHORT).show(); //注销成功提示
+                etPassword.setText("");
+                etAccount.setText("");
+                mUserDataManager.deleteUserDatabyname(userName);
+            }else if(result==0){
+                Toast.makeText(this, "注销成功！！！",Toast.LENGTH_SHORT).show();  //注销失败提示
+            }
         }
     }
 
-    public void isLogin() {
-        Boolean isLogin = (Boolean) SPUtils.get(context, MyConstant.SHARED_SAVE, MyConstant.IS_ALREADY_LOGIN, false);
-        if (isLogin) {
-            MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
-            finish();
-        } else {
-            setcontentLayout(R.layout.activity_login);
+    public boolean isUserNameAndPwdValid(){
+        if (etAccount.getText().toString().trim().equals("")){
+            Toast.makeText(this, getString(R.string.account_empty),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }else if (etPassword.getText().toString().trim().equals("")){
+            Toast.makeText(this, getString(R.string.pwd_empty),
+                    Toast.LENGTH_SHORT).show();
+            return false;
         }
+        return true;
     }
 
     @Override
-    public void setTitleAttribute() {
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @Override
-    public void initView() {
-        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        swipeLayout.setEnabled(false); //禁止下拉刷新
-        setSwipRefresh(swipeLayout, null);
-        account_et = (EditText) findViewById(R.id.login_account);
-        account_et.setBackground(MyUtils.getShape(MyConstant.COLOR_ALPHA, 5f, 1, MyConstant.COLOR_GRAY_BG));
-        pass_et = (EditText) findViewById(R.id.login_password);
-        pass_et.setBackground(MyUtils.getShape(MyConstant.COLOR_ALPHA, 5f, 1, MyConstant.COLOR_GRAY_BG));
-        btn_text = (TextView) findViewById(R.id.login_btn);
-        btn_text.setBackground(MyUtils.getShape(MyConstant.COLOR_ORANGE, 5f, 1, MyConstant.COLOR_GRAY_BG));
-        btn_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
-//                finish();
-                login();
-            }
-        });
-    }
-
-    @Override
-    public void initData() {
-
-    }
-
-    @Override
-    public void onClick(View v) {
-
-    }
-
-    public void login() {
-        if (account_et.getText().toString() == null || account_et.getText().toString().equals("")) {
-            errDeal();
-            ToastUtils.showShort(this, "请输入手机号码");
-            return;
+    protected void onResume() {
+        if (mUserDataManager == null) {
+            mUserDataManager = new UserDataManager(this);
+            mUserDataManager.openDataBase();
         }
-        if (pass_et.getText().toString() == null || pass_et.getText().toString().equals("")) {
-            errDeal();
-            ToastUtils.showShort(this, "请输入密码");
-            return;
-        }
-//        if (pass_et.getText().toString().length() < 6) {
-//            errDeal();
-//            ToastUtils.showShort(context, "密码不能小于六位");
-//            pass_et.setText("");
-//            return;
-//        }
-
-        if (swipeLayout != null) {
-            swipeLayout.setRefreshing(true);
-        }
-        requestGetSession();
+        super.onResume();
     }
-
-    /**
-     * get session
-     */
-    public void requestGetSession() {
-        new LoginServices(context).getSessionService(account_et.getText().toString(), pass_et.getText().toString(), new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-                }
-                if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    String data = (String) msg.obj;
-                    requestLogin();
-                } else if (msg.what == MyConstant.REQUEST_FIELD) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                } else if (msg.what == MyConstant.REQUEST_ERROR) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                }
-            }
-        });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
-
-    /**
-     * login
-     */
-    public void requestLogin() {
-        new LoginServices(context).loginService(account_et.getText().toString(), pass_et.getText().toString(), new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (swipeLayout.isRefreshing()) {  //3.检查是否处于刷新状态
-                    swipeLayout.setRefreshing(false);  //4.显示或隐藏刷新进度条
-                }
-                if (msg.what == MyConstant.REQUEST_SUCCESS) {
-                    List<Map<String, Object>> dataList = (List<Map<String, Object>>) msg.obj;
-                    if (dataList != null && dataList.size() > 0) {
-                        Map<String, Object> data = dataList.get(0);
-                        MyApplication.setLoginData(data);
-                        MyApplication.setFirstMain(true);
-                        SPUtils.put(context, MyConstant.SHARED_SAVE, MyConstant.SP_LOGIN_DATA, data);
-                        SPUtils.put(context, MyConstant.SHARED_SAVE, MyConstant.IS_ALREADY_LOGIN, true);
-                        MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
-                        finish();
-                    } else {
-                        ToastUtils.showShort(context, "未获取用户数据，请稍后再试");
-//                        MyUtils.jump(context, MainActivity.class, new Bundle(), false, null);
-//                        finish();
-                    }
-                } else if (msg.what == MyConstant.REQUEST_FIELD) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                } else if (msg.what == MyConstant.REQUEST_ERROR) {
-                    String errMsg = (String) msg.obj;
-                    ToastUtils.showShort(context, errMsg);
-                }
-            }
-        });
+    @Override
+    protected void onPause() {
+        if (mUserDataManager != null) {
+            mUserDataManager.closeDataBase();
+            mUserDataManager = null;
+        }
+        super.onPause();
     }
 
     /**
      * 错误处理
      */
     public void errDeal() {
-        pass_et.setText("");
+        etPassword.setText("");
         /*隐藏软键盘*/
         MyUtils.hideKeyboard(LoginActivity.this);
     }
 
-    @Override
+
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
             finish();

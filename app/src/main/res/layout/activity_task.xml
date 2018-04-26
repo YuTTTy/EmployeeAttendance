@@ -9,7 +9,9 @@
     <include
         layout="@layout/public_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></include>
+        android:layout_height="wrap_content">
+
+    </include>
 
     <LinearLayout
         android:id="@+id/task_list_title_layout"
@@ -57,6 +59,8 @@
             android:divider="@color/baseLine"
             android:dividerHeight="@dimen/usually_line"
             android:listSelector="@android:color/transparent"
-            android:scrollbars="none"></ListView>
+            android:scrollbars="none">
+
+        </ListView>
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

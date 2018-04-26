@@ -1,5 +1,10 @@
 <resources>
-    <string name="app_name">Emanage</string>
+
+    <string name="app_name">work_assistant</string>
+    <string name="account_empty">用户名为空，请输入用户名</string>
+    <string name="pwd_empty">密码为空，请输入密码</string>
+    <string name="name_already_exist">用户名已存在</string>
+    <string name="pwd_not_the_same">密码不一致</string>
 
 
 </resources>

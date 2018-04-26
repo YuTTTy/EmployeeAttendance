@@ -29,4 +29,7 @@
     <color name="blue">#99ccff</color>
     <color name="green">#99cc33</color>
     <color name="gray">#d0d0d0</color>
+    <color name="sign_page_summary_text_special_color">#ff14cabb</color>
+    <color name="main_rb_text_color">#ff636e81</color>
+    <color name="transparent">#00000000</color>
 </resources>

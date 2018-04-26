@@ -28,12 +28,14 @@
                 android:textSize="@dimen/text_main_content" />
 
             <View
-                android:visibility="gone"
                 android:id="@+id/tab_activity_progress_all_view"
                 android:layout_width="20dp"
                 android:layout_height="3dp"
                 android:layout_marginTop="5dp"
-                android:background="@color/blue"></View>
+                android:background="@color/blue"
+                android:visibility="gone">
+
+            </View>
         </LinearLayout>
 
         <LinearLayout
@@ -53,13 +55,14 @@
                 android:textSize="@dimen/text_main_content" />
 
             <View
-                android:visibility="gone"
                 android:id="@+id/tab_activity_progress_effect_view"
                 android:layout_width="30dp"
                 android:layout_height="3dp"
                 android:layout_marginTop="5dp"
                 android:background="@color/blue"
-                ></View>
+                android:visibility="gone">
+
+            </View>
         </LinearLayout>
 
         <LinearLayout
@@ -84,7 +87,9 @@
                 android:layout_height="3dp"
                 android:layout_marginTop="5dp"
                 android:background="@color/blue"
-                android:visibility="gone"></View>
+                android:visibility="gone">
+
+            </View>
         </LinearLayout>
 
         <LinearLayout
@@ -109,15 +114,17 @@
                 android:layout_height="3dp"
                 android:layout_marginTop="5dp"
                 android:background="@color/blue"
-                android:visibility="gone"
-                ></View>
+                android:visibility="gone">
+
+            </View>
         </LinearLayout>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/baseLine"
         android:layout_marginTop="50dp"
-        ></View>
+        android:background="@color/baseLine">
+
+    </View>
 </RelativeLayout>
